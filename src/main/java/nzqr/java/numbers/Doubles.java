@@ -2,6 +2,7 @@ package nzqr.java.numbers;
 
 import static java.lang.Double.MAX_EXPONENT;
 import static java.lang.Double.MIN_EXPONENT;
+import static java.lang.Double.NEGATIVE_INFINITY;
 import static java.lang.Double.doubleToRawLongBits;
 import static java.lang.Double.longBitsToDouble;
 
@@ -23,16 +24,19 @@ import org.apache.commons.rng.sampling.distribution.GaussianSampler;
 import org.apache.commons.rng.sampling.distribution.NormalizedGaussianSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSampler;
 
+import nzqr.java.accumulators.Accumulator;
+import nzqr.java.accumulators.BigFloatAccumulator;
 import nzqr.java.algebra.OneSetOneOperation;
 import nzqr.java.algebra.OneSetTwoOperations;
 import nzqr.java.algebra.Set;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
+import nzqr.java.prng.PRNG;
 
 /** Utilities for <code>double</code>, <code>double[]</code>.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-07
+ * @version 2021-07-08
  */
 public final class Doubles implements Set {
 
@@ -977,6 +981,56 @@ public final class Doubles implements Set {
   generator (final int n,
              final UniformRandomProvider urp) {
     return arrayGenerator(n,generator(urp)); }
+
+
+  //--------------------------------------------------------------
+  // array utilities
+  //--------------------------------------------------------------
+  
+  public static final double maxAbs (final double[] x) {
+    double m = NEGATIVE_INFINITY;
+    for (final double element : x) {
+      m = Math.max(m,Math.abs(element)); }
+    return m; }
+
+  public static final double l1Dist (final double[] x0,
+                                     final double[] x1) {
+    final int n = x0.length;
+    assert n == x1.length;
+    final Accumulator a = BigFloatAccumulator.make();
+    for (int i=0;i<n;i++) { a.add(Math.abs(x0[i]-x1[i])); }
+    return a.doubleValue(); }
+
+  // TODO: more efficient via bits?
+  public static final boolean isEven (final int k) {
+    return k == (2*(k/2)); }
+
+  public static final double[] zeroSum (final double[] x) {
+    final int n = x.length;
+    final double[] y = new double[2*n];
+    System.arraycopy(x,0,y,0,n);
+    for (int i=0;i<n;i++) { y[i+n] = -x[i]; }
+    return y; }
+
+  // exact sum is 0.0
+  public static double[] sampleDoubles (final Generator g,
+                                         final UniformRandomProvider urp) {
+    final double[] x = zeroSum((double[]) g.next());
+    ListSampler.shuffle(urp,Arrays.asList(x));
+    return x; }
+
+
+  public static double[][] sampleDoubles (final int dim,
+                                           final int n) {
+    assert isEven(dim);
+    final UniformRandomProvider urp =
+      PRNG.well44497b("seeds/Well44497b-2019-01-05.txt");
+    final Generator g =
+      Doubles.finiteGenerator(dim/2,urp,Doubles.deMax(dim));
+
+    final double[][] x = new double[n][];
+    for (int i=0;i<n;i++) { x[i] = sampleDoubles(g,urp); }
+    return x; }
 
   //--------------------------------------------------------------
   // construction

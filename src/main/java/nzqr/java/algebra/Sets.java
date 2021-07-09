@@ -9,7 +9,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.CollectionSampler;
 
 import nzqr.java.Classes;
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Utilities merging <code>java.util.Set</code> and
  * <code>nzqr.java.sets.Set</code>.

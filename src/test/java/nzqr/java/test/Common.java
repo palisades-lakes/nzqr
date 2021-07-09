@@ -20,22 +20,19 @@ import org.junit.jupiter.api.Assertions;
 import nzqr.java.Classes;
 import nzqr.java.Debug;
 import nzqr.java.accumulators.Accumulator;
-import nzqr.java.linear.Dn;
 import nzqr.java.numbers.BoundedNatural;
 import nzqr.java.numbers.Doubles;
 import nzqr.java.numbers.Floats;
 import nzqr.java.numbers.NaturalDivide;
 import nzqr.java.numbers.Ringlike;
-import nzqr.java.polynomial.Polynomial;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.Generators;
 import nzqr.java.prng.PRNG;
-import nzqr.java.test.polynomial.MonomialEFloat;
 
 /** Test utilities
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-01-27
+ * @version 2021-07-08
  */
 @SuppressWarnings("unchecked")
 public final class Common {
@@ -1713,66 +1710,5 @@ public final class Common {
     for (final Generator g : generators) {
       dotTest(g,accumulators,base); } }
 
-  //--------------------------------------------------------------
-
-  public static final Polynomial
-  makeMonomial (final String className,
-                final double[] a) {
-    try {
-
-      final Class c = Class.forName(className);
-      final Method m = c.getMethod("make",double[].class);
-      return (Polynomial) m.invoke(null,a); }
-
-    catch (final
-      ClassNotFoundException
-      | NoSuchMethodException
-      | SecurityException
-      | IllegalAccessException
-      | IllegalArgumentException
-      | InvocationTargetException e) {
-      // e.printStackTrace();
-      throw new RuntimeException(className,e); } }
-
-  //--------------------------------------------------------------
-
-  public static final void monomial (final Class qclass) {
-    try {
-      final int dim = 256;
-      final int ntrys = 4;
-      final Method make = qclass.getMethod("make",double[].class);
-      final List<Generator> gs = baseGenerators(dim);
-      for (int degree=0;degree<3;degree++) {
-        // coefficient generators
-        final List<Generator> ags = baseGenerators(degree+1);
-        for (final Generator ag : ags) {
-          final double[] a = (double[]) ag.next();
-          final Polynomial e = MonomialEFloat.make(a);
-          final Polynomial q = 
-            (Polynomial) make.invoke(null,a);
-          for (final Generator g : gs) {
-            for (int k=0;k<ntrys;k++) {
-              final double[] x = (double[]) g.next();
-              final double[] qz = q.doubleValue(x);
-              final double[] ez = e.doubleValue(x);
-              for (int i=0;i<qz.length;i++) {
-                final int ii=i;
-                final double xi =x[i];
-                final double ei = ez[i];
-                final double qi = qz[i];
-                if (q.isExact()) {
-                  Assertions.assertEquals(ei,qi,
-                    () ->
-                  "\n" + Classes.className(q)
-                  + "\ni=" + ii
-                  + "\na=" + Dn.toHexString(a)
-                  + "\nx=" + Double.toHexString(xi)
-                  + "\ne=  " + Double.toHexString(ei)
-                  + "\nq=  " + Double.toHexString(qi)
-                  + "\n"); } } } } } }
-    }
-    catch (final Throwable t) { throw new RuntimeException(t); } }
-
-  //--------------------------------------------------------------
 }
 //--------------------------------------------------------------

@@ -13,10 +13,10 @@ import org.apache.commons.rng.sampling.CollectionSampler;
 import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
 
+import nzqr.java.Exceptions;
 import nzqr.java.algebra.OneSetOneOperation;
 import nzqr.java.algebra.OneSetTwoOperations;
 import nzqr.java.algebra.Set;
-import nzqr.java.exceptions.Exceptions;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
 import nzqr.java.prng.Generators;

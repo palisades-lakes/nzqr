@@ -6,7 +6,7 @@ import static nzqr.java.numbers.Numbers.loBit;
 
 import java.util.Objects;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** A sign times a {@link BoundedNatural} significand times 2 to a
  * <code>int</code> exponent.

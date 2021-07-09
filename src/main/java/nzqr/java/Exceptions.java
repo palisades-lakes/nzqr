@@ -1,8 +1,6 @@
-package nzqr.java.exceptions;
+package nzqr.java;
 
 import java.util.stream.Stream;
-
-import nzqr.java.Classes;
 
 /** Exception utilities.
  * <p>

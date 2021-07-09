@@ -1,6 +1,6 @@
 package nzqr.java.prng;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Generators of primitives or Objects as zero-arity 'functions'
  * that return different values on each call.

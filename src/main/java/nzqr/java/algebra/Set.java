@@ -12,7 +12,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import com.google.common.collect.ImmutableMap;
 
 import clojure.lang.Keyword;
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 import nzqr.java.prng.PRNG;
 
 /** General, possibly unbounded, sets of <code>Object</code>s,

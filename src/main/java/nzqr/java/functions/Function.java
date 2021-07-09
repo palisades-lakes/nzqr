@@ -1,6 +1,6 @@
 package nzqr.java.functions;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 // TODO:
 // should FUnctions be required/allowed to return correct limiting

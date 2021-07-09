@@ -2,7 +2,7 @@ package nzqr.java.numbers;
 
 import java.util.List;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** arithmetic operations.
  *

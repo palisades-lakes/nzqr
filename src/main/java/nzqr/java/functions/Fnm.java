@@ -3,7 +3,7 @@ package nzqr.java.functions;
 import java.util.HashMap;
 import java.util.Map;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Function spaces.
  * 

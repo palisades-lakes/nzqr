@@ -1,6 +1,6 @@
 package nzqr.java.accumulators;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Convenience interface for mutable, <em>non-</em>thread safe
  * objects used for general kinds of reductions of data sets,

@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.commons.rng.simple.internal.SeedFactory;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Seeds for pseduo-random number generators.
  *

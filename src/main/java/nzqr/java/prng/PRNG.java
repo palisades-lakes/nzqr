@@ -3,7 +3,7 @@ package nzqr.java.prng;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Providers for pseduo-random number generators.
  *

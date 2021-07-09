@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Representing a rational number as a sign times a ratio of
  * {@link BoundedNatural} numbers times 2 to a <code>int</code> exponent.

@@ -12,10 +12,6 @@ import com.google.common.collect.ImmutableMap;
 
 import nzqr.java.algebra.Set;
 import nzqr.java.algebra.Structure;
-import nzqr.java.linear.Dn;
-import nzqr.java.linear.Fn;
-import nzqr.java.linear.Qn;
-import nzqr.java.linear.RationalFloatsN;
 import nzqr.java.numbers.BigFloats;
 import nzqr.java.numbers.Doubles;
 import nzqr.java.numbers.Floats;
@@ -28,7 +24,7 @@ import nzqr.java.prng.PRNG;
  * mvn -q -Dtest=nzqr/java/test/algebra/AlgebraicStructureTests test > AST.txt
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2021-05-31
+ * @version 2021-07-08
  */
 
 @SuppressWarnings("unchecked")
@@ -78,19 +74,6 @@ public final class AlgebraicStructureTests {
     structureTests(Doubles.MULTIPLICATIVE_MAGMA,TRYS);
     structureTests(Doubles.FLOATING_POINT,TRYS);
 
-    for (final int n : new int[] { 1, 3, 63, 257 }) {
-      structureTests(RationalFloatsN.group(n),SPACE_TRYS);
-      structureTests(RationalFloatsN.space(n),SPACE_TRYS);
-
-      structureTests(Qn.group(n),SPACE_TRYS);
-      structureTests(Qn.space(n),SPACE_TRYS);
-
-      structureTests(Fn.magma(n),SPACE_TRYS);
-      structureTests(Fn.space(n),SPACE_TRYS);
-
-      structureTests(Dn.magma(n),SPACE_TRYS);
-      structureTests(Dn.space(n),SPACE_TRYS);
-    }
     //Debug.DEBUG=false;
   }
 

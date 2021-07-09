@@ -10,7 +10,6 @@ import org.apache.commons.rng.sampling.ListSampler;
 import nzqr.java.Classes;
 import nzqr.java.accumulators.Accumulator;
 import nzqr.java.accumulators.RationalFloatAccumulator;
-import nzqr.java.linear.Dn;
 import nzqr.java.numbers.Doubles;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.PRNG;
@@ -21,36 +20,12 @@ import nzqr.java.prng.PRNG;
  * jy --source 12 src/scripts/java/xfp/java/scripts/RationalDot.java
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2019-04-14
+ * @version 2021-07-08
  */
 @SuppressWarnings("unchecked")
 public final class RationalDot {
 
   //--------------------------------------------------------------
-  // TODO: more efficient via bits?
-  private static final boolean isEven (final int k) {
-    return k == (2*(k/2)); }
-
-  // exact sum is 0.0
-  private static double[] sampleDoubles (final Generator g,
-                                         final UniformRandomProvider urp) {
-    double[] x = (double[]) g.next();
-    x = Dn.concatenate(x,Dn.minus(x));
-    ListSampler.shuffle(urp,Arrays.asList(x));
-    return x; }
-
-
-  private static double[][] sampleDoubles (final int dim,
-                                           final int n) {
-    assert isEven(dim);
-    final UniformRandomProvider urp =
-      PRNG.well44497b("seeds/Well44497b-2019-01-05.txt");
-    final Generator g =
-      Doubles.finiteGenerator(dim/2,urp,Doubles.deMax(dim));
-
-    final double[][] x = new double[n][];
-    for (int i=0;i<n;i++) { x[i] = sampleDoubles(g,urp); }
-    return x; }
 
   private static final int DIM = 1024 * 1024;
   private static final int N = 128;
@@ -60,8 +35,8 @@ public final class RationalDot {
   public static final void main (final String[] args)
     throws InterruptedException {
 
-    final double[][] x0 = sampleDoubles(DIM,N);
-    final double[][] x1 = sampleDoubles(DIM,N);
+    final double[][] x0 = Doubles.sampleDoubles(DIM,N);
+    final double[][] x1 = Doubles.sampleDoubles(DIM,N);
 
     // should be zero with current construction
     final double[] truth = new double[N];
@@ -75,9 +50,9 @@ public final class RationalDot {
         i + " : "
           + Double.toHexString(truth[i])
           + ", "
-          + Double.toHexString(Dn.maxAbs(x0[i]))
+          + Double.toHexString(Doubles.maxAbs(x0[i]))
           + ", "
-          + Double.toHexString(Dn.maxAbs(x1[i]))); }
+          + Double.toHexString(Doubles.maxAbs(x1[i]))); }
     System.out.println();
     final Accumulator[] accumulators =
     {
@@ -93,7 +68,7 @@ public final class RationalDot {
           a.clear().addProducts(x0[i],x1[i]).doubleValue(); }
       t = (System.nanoTime()-t);
 
-      System.out.println(toHexString(Dn.l1Dist(truth,pred)) +
+      System.out.println(toHexString(Doubles.l1Dist(truth,pred)) +
         " in " + (t*1.0e-9)
         + " secs " + Classes.className(a)); }
 

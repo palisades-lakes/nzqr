@@ -56,9 +56,6 @@
 \maketitle
 \PalisadesLakesTableOfContents{7}
 %-----------------------------------------------------------------
-\def\sharedFolder{../../shared/}
-%-----------------------------------------------------------------
-\TODO Choose sans math font to match pseudocode font everywhere?
 \begin{plSection}{Introduction} 
 
 This project was started in reaction to 
@@ -72,9 +69,13 @@ and ``multimethods'' in Clojure~\cite{Clojure:Multimethods}.
 
 \end{plSection}%{Introduction}
 %-----------------------------------------------------------------
+\begin{plSection}{Generic functions} 
+
+
+
+\end{plSection}%{Generic functions}
 %-----------------------------------------------------------------
-\begin{plSection}{Number systems and arithmetic}
-\label{sec:NumberSystems}
+\begin{plSection}{Arithmetic} 
 
 I think when most software developers see ``arithmetic''
 they remember elementary school
@@ -82,6 +83,17 @@ and think of addition, subtraction, multiplication, and division.
 The ``numbers'' passed to these operations are 
 understood to be the (classical) reals, 
 though probably only partially understood.
+
+
+\end{plSection}%{Arithmetic}
+%-----------------------------------------------------------------
+\begin{plSection}{Numbers} 
+
+
+\end{plSection}%{Numbers}
+%-----------------------------------------------------------------
+\begin{plSection}{Mathematical structures} 
+
 
 This adds up to what a mathematician would call an ordered 
 \emph{field}~\cite{wiki:FieldMathematics}.
@@ -142,7 +154,8 @@ $a \,\Sub{\Space{F}}\, b =
 a \,\Add{\Space{F}}\, \left(\Sub{\Space{F}}(b)\right) $
 
 \item[Multiplicative inverse:] 
-$\Div{\Space{F}}(a) \;\Mul{\Space{F}}\; a = \One{\Space{F}}$ for all $a \neq \Zero{\Space{F}}$.
+$\Div{\Space{F}}(a) \;\Mul{\Space{F}}\; a = \One{\Space{F}}$ 
+for all $a \neq \Zero{\Space{F}}$.
 Binary division is defined as with binary addition,
 with the wrinkle that the second argument (the divisor)
 cannot be the additive identity.
@@ -171,6 +184,10 @@ $a \, \Mul{\Space{F}} \, \left( b \Add{\Space{F}} c \right)
 \left(a \Mul{\Space{F}} c \right)$
 
 \end{description}
+
+\end{plSection}%{Mathematical structures}
+%-----------------------------------------------------------------
+\begin{plSection}{Foundations}
 
 The problem with this viewpoint is that computer arithmetic
 doesn't work this way
@@ -225,9 +242,6 @@ in terms of previous (structures),
 which can then be abstracted into a set of axioms.
 The goal is to end up with something that is both
 implementable and covers ``scientifically applicable mathematics''.
-
-%-----------------------------------------------------------------
-\begin{plSection}{Nonstandard foundations}
 
 \begin{plQuote}
 {\citeAuthorYearTitle{Thurston:1994:Proof}}{}%
@@ -320,7 +334,7 @@ or is just very slow.
 
 \end{itemize}
 
-\end{plSection}%{Nonstandard foundations}
+\end{plSection}%{Foundations}
 %-----------------------------------------------------------------
 \begin{plSection}{Natural numbers}
 
@@ -515,7 +529,7 @@ distinction.)
 
 \end{plSection}%{Modular arithmetic}
 %-----------------------------------------------------------------
-\begin{plSection}{Implementation}
+\begin{plSection}{Implementations}
 
 Implementing $\Naturals$ is straightforward 
 (as long as we ignore time and space constraints).
@@ -899,7 +913,7 @@ both behave this way.
   
 \end{itemize}
 
-\end{plSection}%{Implementation}
+\end{plSection}%{Implementations}
 %-----------------------------------------------------------------
 \end{plSection}%{Natural numbers}
 %-----------------------------------------------------------------
@@ -969,7 +983,7 @@ $\Sub{\Naturals}:
 
 
 %-----------------------------------------------------------------
-\begin{plSection}{Implementation}
+\begin{plSection}{Implementations}
 %-----------------------------------------------------------------
 \begin{plSection}{\javaFont BigInteger}
 
@@ -979,13 +993,35 @@ $\Sub{\Naturals}:
 
 \end{plSection}%{Primtives}
 %-----------------------------------------------------------------
-\end{plSection}%{Implementation}
+\end{plSection}%{Implementations}
 %-----------------------------------------------------------------
 \end{plSection}%{Integers}
 %-----------------------------------------------------------------
 \begin{plSection}{Rationals}
 
+%-----------------------------------------------------------------
+\begin{plSection}{B-adic numbers}
 
+
+\end{plSection}%{B-adic numbers}
+%-----------------------------------------------------------------
+\begin{plSection}{Floating point}
+
+
+\end{plSection}%{Floating point}
+%-----------------------------------------------------------------
+\begin{plSection}{Implementations}
+%-----------------------------------------------------------------
+\begin{plSection}{\javaFont RationalFloat}
+
+\end{plSection}%{\javaFont RationalFloat}
+%-----------------------------------------------------------------
+\begin{plSection}{Primitives}
+
+\end{plSection}%{Primtives}
+%-----------------------------------------------------------------
+\end{plSection}%{Implementations}
+%-----------------------------------------------------------------
 \end{plSection}%{Rationals}
 %-----------------------------------------------------------------
 \begin{plSection}{Classical Reals}
@@ -995,18 +1031,14 @@ $\Sub{\Naturals}:
 %-----------------------------------------------------------------
 \begin{plSection}{Computable Reals}
 
+%-----------------------------------------------------------------
+\begin{plSection}{Implementations}
+\end{plSection}%{Implementations}
+%-----------------------------------------------------------------
 \end{plSection}%{Computable Reals}
 %-----------------------------------------------------------------
-\begin{plSection}{Hyperreals and infinitesimals}
-
-\end{plSection}%{Hyperreals and infinitesimals}
-%-----------------------------------------------------------------
-
-\end{plSection}%{Number systems}
-
-%-----------------------------------------------------------------
+\BeginAppendices
 \input{typesetting}
-%-----------------------------------------------------------------
 %-----------------------------------------------------------------
 \end{document}
 %-----------------------------------------------------------------

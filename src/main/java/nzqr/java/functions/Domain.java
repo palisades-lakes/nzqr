@@ -1,6 +1,6 @@
 package nzqr.java.functions;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** A general set, intended to be used for the domain,
  * codomain, support, range, etc., of {@link Function functions}.

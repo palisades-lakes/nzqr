@@ -2,8 +2,8 @@ package nzqr.java.numbers;
 
 import static nzqr.java.numbers.Numbers.hiBit;
 
+import nzqr.java.Exceptions;
 import nzqr.java.algebra.Set;
-import nzqr.java.exceptions.Exceptions;
 
 /** Utilities for <code>long</code>, <code>long[]</code>.
  *

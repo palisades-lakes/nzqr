@@ -8,8 +8,8 @@ import java.util.List;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.CollectionSampler;
 
+import nzqr.java.Exceptions;
 import nzqr.java.algebra.Set;
-import nzqr.java.exceptions.Exceptions;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
 import nzqr.java.prng.Generators;

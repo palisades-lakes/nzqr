@@ -3,7 +3,7 @@ package nzqr.java.functions;
 import com.carrotsearch.hppc.IntObjectHashMap;
 import com.carrotsearch.hppc.IntObjectMap;
 
-import nzqr.java.exceptions.Exceptions;
+import nzqr.java.Exceptions;
 
 /** Approximate <b>R</b><sup>n</sup> with <code>double</code>s.
  * <p>

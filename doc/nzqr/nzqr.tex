@@ -78,9 +78,26 @@ which is the purpose of this document.
 In this section, I intend to present generic function 
 from something like first principles.
 
+Generic functions are often presented as some kind of unusual 
+add-ons to ``norma;l'' object-oriented languages..
+An example of this is thechoice of  naming in Clojure,
+which implies that there are ``normal'' (single-dispatch)
+methods, and then there are these odd things called 
+``multimethods'', 
+which are poorly integrated into the language,
+and rarely used, as far as I can tell.
+This may be due to the message-passing metaphor,
+common in early object-oriented languages
 \cite{GoldbergRobson:1983:Smalltalk80,
 Krasner:1983:Smalltalk80History,
-Goldberg:1984:Smalltalk80IPE}
+Goldberg:1984:Smalltalk80IPE},
+but whatever the reason, 
+I think it's worth caoming at this from a different direction:
+
+It is common for proceduires to begin by analyzing their inputs,
+and using the result to choose a specific algorithm.
+
+An example of this is 
 
 \end{plSection}%{Generic functions}
 %-----------------------------------------------------------------

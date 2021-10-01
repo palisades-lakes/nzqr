@@ -57,7 +57,7 @@
 \PalisadesLakesTableOfContents{7}
 %-----------------------------------------------------------------
 \begin{plSection}{Introduction} 
-
+ 
 This project was started in reaction to 
 \citeAuthorYearTitle[sections 3.1--3.2]{HansonSussman:2021:SDFF}.
 They take ``arithmetic'' as the first motivating example 
@@ -79,8 +79,8 @@ In this section, I intend to present generic function
 from something like first principles.
 
 Generic functions are often presented as some kind of unusual 
-add-ons to ``norma;l'' object-oriented languages..
-An example of this is thechoice of  naming in Clojure,
+addons to ``normal'' object-oriented languages..
+An example of this is the choice of  naming in Clojure,
 which implies that there are ``normal'' (single-dispatch)
 methods, and then there are these odd things called 
 ``multimethods'', 
@@ -92,12 +92,42 @@ common in early object-oriented languages
 Krasner:1983:Smalltalk80History,
 Goldberg:1984:Smalltalk80IPE},
 but whatever the reason, 
-I think it's worth caoming at this from a different direction:
+I think it's worth coming at this from a different direction:
 
-It is common for proceduires to begin by analyzing their inputs,
+(Languages where all functions are generic: 
+Dylan~\cite{ShalitPiazzaMoon:1992:Dylan}, 
+Julia~\cite{Bezanson:2017:Julia}, ...)
+
+It is common for procedures to begin by analyzing their inputs,
 and using the result to choose a specific algorithm.
 
 An example of this is 
+{\javaFont 
+java.math.BigInteger.multiply}~\cite{BigInteger.multiply:2021}.
+
+Instances of {\javaFont BigInteger} represent a large---but not
+unbounded---range of integers,
+using essentially a bit sequence for the magnitude, 
+plus a flag for positive or negative.
+{\javaFont BigInteger.multiply(BigInteger)} 
+is a procedure which computes the product of $2$ 
+{\javaFont BigInteger}s:
+\begin{enumerate}
+  \item It first checks if either input number if zero,
+returning an existing {\javaFont ZERO} singleton in that case.
+
+\item It then checks whether both inputs are the same 
+{\javaFont BigInteger} instance, and have more 
+than a certain number of significant bits,
+in which case it hands off to a procedure optimized
+for \textit{squaring}---multiplying  a number by itself.
+
+\item \cite{wiki:Karatsuba}
+ 
+\item \cite{wiki:ToomCook}
+ 
+\end{enumerate}
+
 
 \end{plSection}%{Generic functions}
 %-----------------------------------------------------------------

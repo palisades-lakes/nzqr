@@ -101,6 +101,7 @@ Julia~\cite{Bezanson:2017:Julia}, ...)
 It is common for procedures to begin by analyzing their inputs,
 and using the result to choose a specific algorithm.
 
+\begin{plExample}{{\javaFont BigInteger.multiply}}{BigInteger.multiply}
 An example of this is 
 {\javaFont 
 java.math.BigInteger.multiply}~\cite{BigInteger.multiply:2021}.
@@ -111,23 +112,37 @@ using essentially a bit sequence for the magnitude,
 plus a flag for positive or negative.
 {\javaFont BigInteger.multiply(BigInteger)} 
 is a procedure which computes the product of $2$ 
-{\javaFont BigInteger}s:
+{\javaFont BigInteger}s.
+It chooses among $8$--$12$ 'methods' (depending on how you want to
+count):
 \begin{enumerate}
   \item It first checks if either input number if zero,
 returning an existing {\javaFont ZERO} singleton in that case.
 
 \item It then checks whether both inputs are the same 
-{\javaFont BigInteger} instance, and have more 
-than a certain number of significant bits,
-in which case it hands off to a procedure optimized
+{\javaFont BigInteger} instance (and have more 
+than a certain number of significant bits),
+in which case it hands off to a similar  procedure optimized
 for \textit{squaring}---multiplying  a number by itself.
 
-\item \cite{wiki:Karatsuba}
- 
-\item \cite{wiki:ToomCook}
+\item It then chooses sequentially from $4$ 'methods', 
+depending on the number of
+significant bits in \textit{both} arguments:
+\begin{enumerate}
+  \item Either argument fits in a $32$ bit {\javaFont int}.
+  \item Both arguments are below a threshold for
+  \textit{grade school} 
+  multiplication~\cite{wiki:GradeSchoolMultiplication}.
+  \item Both arguments are below a threshold for 
+  \textit{Karatsuba} multiplication~\cite{wiki:KaratsubaMultiplication}.
+  \item Otherwise use \textit{Toom-Cook} 
+  multiplication~\cite{wiki:ToomCookMultiplication}
  
 \end{enumerate}
-
+\end{enumerate}
+Note that all these tests depend on \textit{both} arguments,
+and depend on their state/value, rather than type/class.
+\end{plExample}%{{\javaFont BigInteger.multiply}}{BigInteger.multiply}}
 
 \end{plSection}%{Generic functions}
 %-----------------------------------------------------------------

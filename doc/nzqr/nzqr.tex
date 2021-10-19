@@ -136,13 +136,67 @@ significant bits in \textit{both} arguments:
   \item Both arguments are below a threshold for 
   \textit{Karatsuba} multiplication~\cite{wiki:KaratsubaMultiplication}.
   \item Otherwise use \textit{Toom-Cook} 
-  multiplication~\cite{wiki:ToomCookMultiplication}
+  multiplication~\cite{wiki:ToomCookMultiplication}.
  
 \end{enumerate}
 \end{enumerate}
+
 Note that all these tests depend on \textit{both} arguments,
 and depend on their state/value, rather than type/class.
 \end{plExample}%{{\javaFont BigInteger.multiply}}{BigInteger.multiply}}
+
+Asymptotically faster algorithms that might be added
+for larger integer values
+\cite{wiki:SchonhageStrassenMultiplication,
+ wiki:FurerMultiplication,
+ Hartnett:2019:NLogNIntegerMultiplication,
+ HarveyVanDerHoeven:2020:NLogNIntegerMultiplication}.
+
+{\javaFont clojure.lang.BigInt} is a minimal wrapper around
+{\javaFont java.math.BigInteger}, primarily to provide
+a large integer implementation whose {\javaFont hashCode}
+matches the {\javaFont hashCode} for {\javaFont Long}'s
+representing the same integer value---{\javaFont BigInteger}'s 
+does not.~\cite[page 438]{EmerickCarperGrand:2012:ClojureProgramming}
+
+Because {\javaFont BigInt} doesn't provide an API comparable to
+{\javaFont BigInteger}, it's much less useful than
+{\javaFont BigInteger}, and probably best reserved as a wrapper
+for keys in hashtables or sets the might be either
+{\javaFont Long} or {\javaFont BigInteger}---though even in that
+case, it would be simpler to just coerce all the keys to
+{\javaFont BigInteger}.
+
+(\TODO 
+More about hashcodes and implications of equivalence across 
+implementations/representations.
+
+The fundamental problem is Java's assumption
+that ``correct'' {\javaFont equals}
+and {\javaFont hashCode} can be defined for a single class
+in isolation.
+For any (mathematical) set of objects, there are many possible
+notions of equivalence (\TODO what's this called?).
+The ``correct'' one depends on the problem being solved.
+(\TODO examples).
+A ``correct'' hashcode preserves the equivalence:
+\begin{equation}
+a \approx b \; \implies \; \text{hashcode}(a) = \text{hashcode}(b)
+\end{equation}
+(What's the right way to say this?)
+
+Check {\javaFont Byte}'s, {\javaFont Short's}, or
+{\javaFont Integer}'s representing the same integer value.
+Also, the value of getting {\javaFont BigInt}'s 
+{\javaFont hashCode} ``right'' is diminished by uncertainty
+about exactly what implementation will be returned when
+doing arithmetic in Clojure.) 
+
+{\javaFont BigInt} also ``optimizes'' the case where the value
+would fit in $64$ two's complement bits (ie a {\javaFont long}).
+It's not clear to me that this actually improves performance.
+
+
 
 \end{plSection}%{Generic functions}
 %-----------------------------------------------------------------

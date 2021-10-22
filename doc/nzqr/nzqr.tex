@@ -1,6 +1,7 @@
 % !TEX TS-program = arara
 % arara: xelatex: { synctex: on, options: [-halt-on-error] } 
 % arara: biber
+% % arara: biber: { options: [--noremove-tmp-dir] }
 % % arara: texindy: { markup: xelatex }
 % %% arara: makeglossaries
 % % arara: xelatex: { synctex: on, options: [-interaction=batchmode, -halt-on-error] }
@@ -1109,7 +1110,7 @@ $\Sub{\Naturals}:
 %-----------------------------------------------------------------
 \begin{plSection}{Implementations}
 %-----------------------------------------------------------------
-\begin{plSection}{\javaFont BigInteger}
+\begin{plSection}{\texorpdfstring{{\javaFont BigInteger}}{BigInteger}}
 
 \end{plSection}%{\javaFont BigInteger}
 %-----------------------------------------------------------------
@@ -1136,7 +1137,7 @@ $\Sub{\Naturals}:
 %-----------------------------------------------------------------
 \begin{plSection}{Implementations}
 %-----------------------------------------------------------------
-\begin{plSection}{\javaFont RationalFloat}
+\begin{plSection}{\texorpdfstring{\javaFont RationalFloat}{RationalFloat}}
 
 \end{plSection}%{\javaFont RationalFloat}
 %-----------------------------------------------------------------

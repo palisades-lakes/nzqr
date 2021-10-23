@@ -102,15 +102,27 @@ Julia~\cite{Bezanson:2017:Julia}, ...)
 It is common for procedures to begin by analyzing their inputs,
 and using the result to choose a specific algorithm.
 
-\begin{plExample}{{\javaFont BigInteger.multiply}}{BigInteger.multiply}
+\begin{plExample}{{\javaFont BigInteger.multiply(BigInteger)}
+}{BigInteger.multiply}
 An example of this is 
 {\javaFont 
-java.math.BigInteger.multiply}~\cite{BigInteger.multiply:2021}.
+BigInteger.multiply(BigInteger)}~\cite{BigInteger.multiply:2021}.
 
-Instances of {\javaFont BigInteger} represent a large---but not
-unbounded---range of integers,
-using essentially a bit sequence for the magnitude, 
+Instances of {\javaFont BigInteger} can represent 
+integers much larger than can be held in the fixed length
+representations 
+({\javaFont byte}/{\javaFont Byte}\ldots
+{\javaFont long}/{\javaFont Long}).
+The Java $17$ API~\cite{Oracle:2021:JDK17} 
+guarantees at least numbers in the range
+$\left[ -2^{{2^{31}}-1}, 2^{{2^{31}}-1} \right]$,
+and the reference implementation,
+ {\javaFont ArithmeticException}s for operations whose result
+would exceed it.
+The implementation is essentially a bit sequence 
+for the magnitude, 
 plus a flag for positive or negative.
+
 {\javaFont BigInteger.multiply(BigInteger)} 
 is a procedure which computes the product of $2$ 
 {\javaFont BigInteger}s.
@@ -131,14 +143,16 @@ depending on the number of
 significant bits in \textit{both} arguments:
 \begin{enumerate}
   \item Either argument fits in a $32$ bit {\javaFont int}.
-  \item Both arguments are below a threshold for
-  \textit{grade school} 
+  \item Either argument is below an upper bound for
+  \textit{grade-school} 
   multiplication~\cite{wiki:GradeSchoolMultiplication}.
-  \item Both arguments are below a threshold for 
-  \textit{Karatsuba} multiplication~\cite{wiki:KaratsubaMultiplication}.
-  \item Otherwise use \textit{Toom-Cook} 
+  \item Both arguments are above the grade-school upper bound 
+  and below an upper bound for \textit{Karatsuba}
+   multiplication~\cite{wiki:KaratsubaMultiplication}.
+  \item Otherwise (both arguments above the grade-school cap
+  and at least one above the Karatsuba cap)
+  use \textit{Toom-Cook} 
   multiplication~\cite{wiki:ToomCookMultiplication}.
- 
 \end{enumerate}
 \end{enumerate}
 
@@ -146,58 +160,73 @@ Note that all these tests depend on \textit{both} arguments,
 and depend on their state/value, rather than type/class.
 \end{plExample}%{{\javaFont BigInteger.multiply}}{BigInteger.multiply}}
 
-Asymptotically faster algorithms that might be added
-for larger integer values
-\cite{wiki:SchonhageStrassenMultiplication,
- wiki:FurerMultiplication,
- Hartnett:2019:NLogNIntegerMultiplication,
- HarveyVanDerHoeven:2020:NLogNIntegerMultiplication}.
+As of \formatdate{22}{10}{2021},
+the most recent change to {\javaFont BigInteger.multiply} 
+in the reference implementation was committed more than $3$ years 
+earlier (on \formatdate{22}{08}{2018}).
+There have only been $6$ commits 
+that affected {\javaFont BigInteger.multiply} directly
+in the $14$ years
+since the reference implementation was initially loaded into 
+GitHub on (\formatdate{7}{11}{2007}).
 
-{\javaFont clojure.lang.BigInt} is a minimal wrapper around
-{\javaFont java.math.BigInteger}, primarily to provide
-a large integer implementation whose {\javaFont hashCode}
-matches the {\javaFont hashCode} for {\javaFont Long}'s
-representing the same integer value---{\javaFont BigInteger}'s 
-does not.~\cite[page 438]{EmerickCarperGrand:2012:ClojureProgramming}
+What changes might one want to make to 
+{\javaFont BigInteger.multiply}?
 
-Because {\javaFont BigInt} doesn't provide an API comparable to
-{\javaFont BigInteger}, it's much less useful than
-{\javaFont BigInteger}, and probably best reserved as a wrapper
-for keys in hashtables or sets the might be either
-{\javaFont Long} or {\javaFont BigInteger}---though even in that
-case, it would be simpler to just coerce all the keys to
-{\javaFont BigInteger}.
+\begin{itemize}
+\item An obvious one is to add algorithms which are faster for
+larger integer values.
+The \textit{Schönhage–Strassen} 
+algorithm~\cite{wiki:SchonhageStrassenMultiplication}
+potentially outperforms Toom-Cook for numbers with more
+than $2^{15}$ bits well within the minimum value range
+required by the {\javaFont BigInteger} API.
+An alternate implementation that adds Schönhage–Strassen
+to the sequence of tests choosing between
+single {\javaFont int}, grade-school, Karatsuba, and
+Toom-Cook can be found at 
+\cite{tbuktu:2015:EfficientBigIntegerImplementation}.
 
-(\TODO 
-More about hashcodes and implications of equivalence across 
-implementations/representations.
+There are algorithms which are even faster,
+for much larger numbers.
 
-The fundamental problem is Java's assumption
-that ``correct'' {\javaFont equals}
-and {\javaFont hashCode} can be defined for a single class
-in isolation.
-For any (mathematical) set of objects, there are many possible
-notions of equivalence (\TODO what's this called?).
-The ``correct'' one depends on the problem being solved.
-(\TODO examples).
-A ``correct'' hashcode preserves the equivalence:
-\begin{equation}
-a \approx b \; \implies \; \text{hashcode}(a) = \text{hashcode}(b)
-\end{equation}
-(What's the right way to say this?)
+\textit{Fürer}'s algorithm~\cite{ wiki:FurerMultiplication}
+potentially outperforms Schönhage–Strassen,
+for numbers with more than $2^{64}$ bits, 
+outside the range required by the {\javaFont BigInteger} 
+API, requiring perhaps $10^{-4} \cdots 10^{-6}$ 
+of the total digital storage---possible, but only if there were
+some truly compelling reason.
 
-Check {\javaFont Byte}'s, {\javaFont Short's}, or
-{\javaFont Integer}'s representing the same integer value.
-Also, the value of getting {\javaFont BigInt}'s 
-{\javaFont hashCode} ``right'' is diminished by uncertainty
-about exactly what implementation will be returned when
-doing arithmetic in Clojure.) 
+There are even faster algorithms~\cite{
+Hartnett:2019:NLogNIntegerMultiplication,
+HarveyVanDerHoeven:2020:NLogNIntegerMultiplication}),
+but they fall into the class of 
+``galactic algorithms''~\cite{wiki:GalacticAlgorithm},
+meaning, in this case, they only win as the number of bits
+approaches the number of elementary particles in the universe.
 
-{\javaFont BigInt} also ``optimizes'' the case where the value
-would fit in $64$ two's complement bits (ie a {\javaFont long}).
-It's not clear to me that this actually improves performance.
+\item It would be fairly straightforward to create an unbounded
+integer representation, with no significant overhead 
+in the range {\javaFont BigInteger}
+can handle.
+Just use an unbounded sequence of {\javaFont BigInteger}s
+for the magnitude, and the grade-school algorithm on the
+of {\javaFont BigInteger} words.
+This would require a version of {\javaFont BigInteger.multiply}
+that returned an overflow amount as well as the truncated
+{\javaFont BigInteger} product. 
 
-
+\item A lot of code would be simplified if it were possible
+evaluate general arithmetic expressions without requiring 
+specifying which implementation of {\javaFont java.lang.Number}
+for the inputs and intermediate values,
+while making it possible to specify that if desired.
+It would be nice to be able to rely on the system 
+to use the most compact/efficient representation for the returned
+and intermediate values, especially where it would be possible to
+use primitives for inputs and outputs.
+\end{itemize}
 
 \end{plSection}%{Generic functions}
 %-----------------------------------------------------------------
@@ -1110,13 +1139,61 @@ $\Sub{\Naturals}:
 %-----------------------------------------------------------------
 \begin{plSection}{Implementations}
 %-----------------------------------------------------------------
-\begin{plSection}{\texorpdfstring{{\javaFont BigInteger}}{BigInteger}}
-
-\end{plSection}%{\javaFont BigInteger}
-%-----------------------------------------------------------------
 \begin{plSection}{Primitives}
 
 \end{plSection}%{Primtives}
+%-----------------------------------------------------------------
+\begin{plSection}{\texorpdfstring{{\javaFont java.math.BigInteger}}{java.math.BigInteger}}
+
+\end{plSection}%{\javaFont BigInteger}
+%-----------------------------------------------------------------
+\begin{plSection}{\texorpdfstring{{\javaFont clojure.lang.BigInt}}{clojure.lang.BigInt}}
+
+{\javaFont clojure.lang.BigInt} is a minimal wrapper around
+{\javaFont java.math.BigInteger}, primarily to provide
+a large integer implementation whose {\javaFont hashCode}
+matches the {\javaFont hashCode} for {\javaFont Long}'s
+representing the same integer value---{\javaFont BigInteger}'s 
+does not.~\cite[page 438]{EmerickCarperGrand:2012:ClojureProgramming}
+
+Because {\javaFont BigInt} doesn't provide an API comparable to
+{\javaFont BigInteger}, it's much less useful than
+{\javaFont BigInteger}, and probably best reserved as a wrapper
+for keys in hashtables or sets the might be either
+{\javaFont Long} or {\javaFont BigInteger}---though even in that
+case, it would be simpler to just coerce all the keys to
+{\javaFont BigInteger}.
+
+(\TODO 
+More about hashcodes and implications of equivalence across 
+implementations/representations.
+
+The fundamental problem is Java's assumption
+that ``correct'' {\javaFont equals}
+and {\javaFont hashCode} can be defined for a single class
+in isolation.
+For any (mathematical) set of objects, there are many possible
+notions of equivalence (\TODO what's this called?).
+The ``correct'' one depends on the problem being solved.
+(\TODO examples).
+A ``correct'' hashcode preserves the equivalence:
+\begin{equation}
+a \approx b \; \implies \; \text{hashcode}(a) = \text{hashcode}(b)
+\end{equation}
+(What's the right way to say this?)
+
+Check {\javaFont Byte}'s, {\javaFont Short's}, or
+{\javaFont Integer}'s representing the same integer value.
+Also, the value of getting {\javaFont BigInt}'s 
+{\javaFont hashCode} ``right'' is diminished by uncertainty
+about exactly what implementation will be returned when
+doing arithmetic in Clojure.) 
+
+{\javaFont BigInt} also ``optimizes'' the case where the value
+would fit in $64$ two's complement bits (ie a {\javaFont long}).
+It's not clear to me that this actually improves performance.
+
+\end{plSection}%{\ clojure.lang.BigInt}
 %-----------------------------------------------------------------
 \end{plSection}%{Implementations}
 %-----------------------------------------------------------------

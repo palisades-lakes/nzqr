@@ -1,7 +1,7 @@
 (set! *warn-on-reflection* true)
 (set! *unchecked-math* :warn-on-boxed)
 (ns ^{:author "palisades dot lakes at gmail dot com"
-      :date "2021-04-21"
+      :date "2021-10-25"
       :doc 
       "Generally useful stuff with no obvious better location" }
     
@@ -180,5 +180,20 @@
                   (pprint-str (quote ~e) 60)
                   "->\n" 
                   (pprint-str ~e 60))) 
+             es)))
+;;----------------------------------------------------------------
+(defmacro echo-types 
+  "Print the expressions followed by their values and types. 
+   Useful for quick logging.
+
+   TODO: detect and format short expressions/values on one line;
+   newlines between expression, value, and type for
+   shorter ones. Desired line length as optional arg?
+   Line up expr, value, type in columns?"
+  [& es]
+  `(do
+     ~@(mapv (fn [e] 
+               `(let [v# ~e]
+                  (println (quote ~e) "->" v# ":" (type v#)))) 
              es)))
 ;;----------------------------------------------------------------

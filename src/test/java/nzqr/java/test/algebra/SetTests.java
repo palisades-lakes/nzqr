@@ -23,7 +23,7 @@ import nzqr.java.prng.PRNG;
  * mvn -q -Dtest=xfp/java/test/algebra/SetTests test > Sets.txt
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-01
+ * @version 2022-07-31
  */
 
 @SuppressWarnings("unchecked")
@@ -34,6 +34,8 @@ public final class SetTests {
   private static final void testMembership (final Set set,
                                             final int trys,
                                             final Supplier g) {
+    assertTrue(null != set);
+    assertTrue(0 < trys);
     for (int i=0; i<trys; i++) {
       //System.out.println("set=" + set);
       final Object x = g.get();
@@ -47,6 +49,8 @@ public final class SetTests {
   private static final void testEquivalence (final Set set,
                                              final int trys,
                                              final Supplier g) {
+    assertTrue(null != set);
+    assertTrue(0 < trys);
     for (int i=0; i<trys; i++) {
       assertTrue(Sets.isReflexive(set,g));
       assertTrue(Sets.isSymmetric(set,g)); } }
@@ -59,6 +63,8 @@ public final class SetTests {
 
   public static final void tests (final Set set,
                                   final int trys) {
+    assertTrue(null != set);
+    assertTrue(0 < trys);
     final Supplier g =
       set.generator(
         ImmutableMap.of(
@@ -67,6 +73,7 @@ public final class SetTests {
       tests(set,trys,g); }
 
   public static final void tests (final Set set) {
+    assertTrue(null != set);
     tests(set,TRYS); }
 
   //--------------------------------------------------------------

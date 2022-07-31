@@ -14,7 +14,7 @@ import org.apache.commons.rng.simple.internal.SeedFactory;
 
 import nzqr.java.Exceptions;
 
-/** Seeds for pseduo-random number generators.
+/** Seeds for pseudo-random number generators.
  *
  * Static methods only; no state.
  *

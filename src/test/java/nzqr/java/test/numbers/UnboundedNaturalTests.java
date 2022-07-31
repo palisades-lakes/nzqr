@@ -23,7 +23,7 @@ import nzqr.java.test.algebra.SetTests;
  * mvn -Dtest=nzqr/java/test/numbers/UnboundedNaturalTests test > UNT.txt
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2021-05-31
+ * @version 2022-07-31
  */
 
 @SuppressWarnings("unchecked")

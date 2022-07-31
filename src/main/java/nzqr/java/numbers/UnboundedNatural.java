@@ -27,7 +27,7 @@ import nzqr.java.prng.Generators;
  * by <code>int</code>.
  *  
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-01
+ * @version 2022-07-31
  */
 
 @SuppressWarnings("unchecked")
@@ -258,7 +258,6 @@ implements Comparable<UnboundedNatural> {
 
   public static final OneSetOneOperation MONOID = 
     OneSetOneOperation.commutativeMonoid(adder(),SET,ZERO); 
-
 
   //--------------------------------------------------------------
 }

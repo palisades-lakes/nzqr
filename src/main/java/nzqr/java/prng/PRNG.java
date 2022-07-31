@@ -5,12 +5,12 @@ import org.apache.commons.rng.simple.RandomSource;
 
 import nzqr.java.Exceptions;
 
-/** Providers for pseduo-random number generators.
+/** Providers for pseudo-random number generators.
  *
  * Static methods only; no state.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2019-03-05
+ * @version 2022-07-31
  */
 
 public final class PRNG {
@@ -24,7 +24,7 @@ public final class PRNG {
   public static final UniformRandomProvider
   well44497b (final int[] seed) {
     assert 1391 == seed.length;
-    return RandomSource.create(RandomSource.WELL_44497_B,seed); }
+    return RandomSource.WELL_44497_B.create(seed); }
 
   public static final UniformRandomProvider
   well44497b (final String seed) {
@@ -44,7 +44,7 @@ public final class PRNG {
   public static final UniformRandomProvider
   mersenneTwister (final int[] seed) {
     assert 624 == seed.length;
-    return RandomSource.create(RandomSource.MT,seed); }
+    return RandomSource.MT.create(seed); }
 
   public static final UniformRandomProvider
   mersenneTwister (final String resource) {

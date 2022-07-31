@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableMap;
 import nzqr.java.algebra.Set;
 import nzqr.java.algebra.Structure;
 import nzqr.java.numbers.BoundedNatural;
-import nzqr.java.numbers.UnboundedNatural;
+import nzqr.java.numbers.NaiveUnboundedNatural;
 import nzqr.java.prng.PRNG;
 import nzqr.java.test.algebra.SetTests;
 
@@ -32,10 +32,10 @@ public final class UnboundedNaturalTests {
   @SuppressWarnings({ "static-method" })
   @Test
   public final void noOverflow () {
-    final UnboundedNatural u =
-      UnboundedNatural.valueOf(BoundedNatural.maxValue());
+    final NaiveUnboundedNatural u =
+      NaiveUnboundedNatural.valueOf(BoundedNatural.maxValue());
     // no overflow from add
-    final UnboundedNatural v = u.add(u);
+    final NaiveUnboundedNatural v = u.add(u);
     final int cmp = u.compareTo(v);
     Assertions.assertTrue(
       (cmp < 0),
@@ -47,7 +47,7 @@ public final class UnboundedNaturalTests {
   @Test
   public final void monoid () {
 
-    final Structure s = UnboundedNatural.MONOID;
+    final Structure s = NaiveUnboundedNatural.MONOID;
     final int n = 2;
     SetTests.tests(s,n);
     final Map<Set,Supplier> generators =

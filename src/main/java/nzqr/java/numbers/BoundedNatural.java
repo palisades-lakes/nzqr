@@ -63,7 +63,7 @@ import nzqr.java.prng.GeneratorBase;
  * <code>Integer.MAX_VALUE-5</code>.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-08
+ * @version 2022-07-31
  */
 
 @SuppressWarnings("unchecked")

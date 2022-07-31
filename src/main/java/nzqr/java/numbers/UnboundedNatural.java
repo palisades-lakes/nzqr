@@ -18,20 +18,20 @@ import nzqr.java.prng.GeneratorBase;
 import nzqr.java.prng.Generators;
 
 /** A proof-of-concept implementation of unbounded natural
- * numbers. Only implementing a commutative monoid 
+ * numbers. Only implementing a commutative monoid
  * (ie just addition) for now.
- * 
+ *
  * This is in contrast to {@link BoundedNatural} and
  * {@link java.math.BigInteger}, which both have bounded ranges,
  * limited, for one thing, by the fact that bits are addressable
  * by <code>int</code>.
- *  
+ *
  * @author palisades dot lakes at gmail dot com
  * @version 2022-07-31
  */
 
 @SuppressWarnings("unchecked")
-public final class UnboundedNatural 
+public final class UnboundedNatural
 implements Comparable<UnboundedNatural> {
 
   //--------------------------------------------------------------
@@ -40,7 +40,7 @@ implements Comparable<UnboundedNatural> {
   // TODO: Any value to implementing Iterator<Integer> or
   // PrimitiveIterator.OfInt?
   //
-  // TODO: What about zero-length sequences? 
+  // TODO: What about zero-length sequences?
   // Is there a better choice than just null?
   //
   // TODO: could do without this class; have the U.N. be the
@@ -48,7 +48,7 @@ implements Comparable<UnboundedNatural> {
 
   private static record Words (int word, Words next) { }
 
-  /** Will return <code>null</code> if <code>s</code> is 
+  /** Will return <code>null</code> if <code>s</code> is
    * <code>null</code>.
    */
   private static final Words reverse (final Words s) {
@@ -69,12 +69,12 @@ implements Comparable<UnboundedNatural> {
   private final Words words;
 
   /** Singleton. */
-  public static final UnboundedNatural ZERO = 
-    new UnboundedNatural(null); 
+  public static final UnboundedNatural ZERO =
+    new UnboundedNatural(null);
 
   /** Singleton. */
-  public static final UnboundedNatural ONE = 
-    new UnboundedNatural(new Words(1,null)); 
+  public static final UnboundedNatural ONE =
+    new UnboundedNatural(new Words(1,null));
 
   //--------------------------------------------------------------
   // monoid operation
@@ -88,19 +88,19 @@ implements Comparable<UnboundedNatural> {
     for (;(null!=tt)&&(null!=uu);
       tt = tt.next,uu = uu.next) {
       sum += unsigned(tt.word) + unsigned(uu.word);
-      vv = new Words((int) sum,vv); 
+      vv = new Words((int) sum,vv);
       sum = hiWord(sum); }
     if (null==tt) {
       for (;null!=uu;uu=uu.next) {
         sum += unsigned(uu.word);
-        vv = new Words((int) sum,vv); 
+        vv = new Words((int) sum,vv);
         sum = hiWord(sum); } }
     else {
       for (;null!=tt;tt=tt.next) {
         sum += unsigned(tt.word);
-        vv = new Words((int) sum,vv); 
+        vv = new Words((int) sum,vv);
         sum = hiWord(sum); } }
-    if (0L!=sum) { vv = new Words(1,vv); } 
+    if (0L!=sum) { vv = new Words(1,vv); }
     return new UnboundedNatural(reverse(vv)); }
 
   //--------------------------------------------------------------
@@ -115,12 +115,12 @@ implements Comparable<UnboundedNatural> {
     for (;(null!=tt)&&(null!=uu); tt=tt.next,uu=uu.next) {
       final int c = Integer.compareUnsigned(tt.word,uu.word);
       if (c<0) { result = -1; }
-      else if (c>0) { result = 1; } } 
+      else if (c>0) { result = 1; } }
     if (null==tt) {
       for (;null!=uu;uu=uu.next) {
         if (0!=uu.word) { return -1; } } }
     else {
-      for (;null!=tt;tt=tt.next) { 
+      for (;null!=tt;tt=tt.next) {
         if (0!=tt.word) { return 1; } } }
     return result; }
 
@@ -129,11 +129,11 @@ implements Comparable<UnboundedNatural> {
   //--------------------------------------------------------------
 
   @Override
-  public final int hashCode () { 
+  public final int hashCode () {
     final int prime = 31;
     int c = 1;
-    Words tt = words;
-    while (null != tt) { 
+    final Words tt = words;
+    while (null != tt) {
       c = (int) ((prime * c) + unsigned(tt.word)); }
     return c; }
 
@@ -168,7 +168,7 @@ implements Comparable<UnboundedNatural> {
    * random <code>int</code> words.
    */
 
-  public static final Generator 
+  public static final Generator
   randomBitsGenerator (final long n,
                        final UniformRandomProvider urp) {
     final Generator ig = Generators.intGenerator(urp);
@@ -179,22 +179,22 @@ implements Comparable<UnboundedNatural> {
         for (long i=0;i<n;i++) { w = new Words(ig.nextInt(),w); }
         return new UnboundedNatural(w); } }; }
 
-  /** Intended primarily for testing. 
+  /** Intended primarily for testing.
    * For now, just a relatively small number of random bits.
-   * Not large enough to test unboundedness compared to 
+   * Not large enough to test unboundedness compared to
    * {@link BoundedNatural}, but large examples take too long to
    * run as unit tests, cause OOM, etc..
    */
 
   public static final Generator
   generator (final UniformRandomProvider urp)  {
-    final Generator g0 = 
+    final Generator g0 =
       randomBitsGenerator (1L,urp);
-    final Generator g1 = 
+    final Generator g1 =
       randomBitsGenerator (2L,urp);
-    final Generator g2 = 
+    final Generator g2 =
       randomBitsGenerator (4L,urp);
-    //    final Generator g3 = 
+    //    final Generator g3 =
     //      randomBitsGenerator (1L+BoundedNatural.MAX_WORDS,urp);
     final CollectionSampler gs =
       new CollectionSampler(urp,List.of(
@@ -214,7 +214,7 @@ implements Comparable<UnboundedNatural> {
 
   private UnboundedNatural (final Words w) { words = w; }
 
-  public static final UnboundedNatural 
+  public static final UnboundedNatural
   valueOf (final BoundedNatural u) {
     final int n = u.hiInt();
     Words r = null;
@@ -224,7 +224,7 @@ implements Comparable<UnboundedNatural> {
   //--------------------------------------------------------------
   // mathematical structures using UnboundedNatural
   //--------------------------------------------------------------
-  /** Contains all instances of {@link UnboundedNatural}. 
+  /** Contains all instances of {@link UnboundedNatural}.
    * Could be extended to include BoundedNatural,
    * all non-negative integer values, etc.,
    * but not necessary for proof of concept.
@@ -234,7 +234,7 @@ implements Comparable<UnboundedNatural> {
     @Override
     @SuppressWarnings("unused")
     public boolean contains (final Object element) {
-      return element instanceof UnboundedNatural; } 
+      return element instanceof UnboundedNatural; }
     @Override
     public final Supplier generator (final Map options) {
       final UniformRandomProvider urp = Set.urp(options);
@@ -248,16 +248,16 @@ implements Comparable<UnboundedNatural> {
   public static final BinaryOperator<UnboundedNatural> adder () {
     return new BinaryOperator<> () {
       @Override
-      public final String toString () { 
+      public final String toString () {
         return "UnboundedNatural.add(UnboundedNatural)"; }
       @Override
-      public final UnboundedNatural 
+      public final UnboundedNatural
       apply (final UnboundedNatural q0,
              final UnboundedNatural q1) {
         return q0.add(q1); } }; }
 
-  public static final OneSetOneOperation MONOID = 
-    OneSetOneOperation.commutativeMonoid(adder(),SET,ZERO); 
+  public static final OneSetOneOperation MONOID =
+    OneSetOneOperation.commutativeMonoid(adder(),SET,ZERO);
 
   //--------------------------------------------------------------
 }

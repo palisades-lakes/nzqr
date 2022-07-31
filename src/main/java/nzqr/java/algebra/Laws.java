@@ -276,8 +276,8 @@ public final class Laws {
 
   public static final ImmutableList<Predicate<Map<Set,Supplier>>>
   commutativemonoid  (final Set elements,
-           final BinaryOperator operation,
-           final Object identity) {
+                      final BinaryOperator operation,
+                      final Object identity) {
     return ImmutableList.of(
       closed(elements,operation),
       associative(elements,operation),
@@ -346,7 +346,7 @@ public final class Laws {
             System.out.println("b=" + b);
             System.out.println("c=" + c);
             System.out.println(
-              Classes.className(left) 
+              Classes.className(left)
               + " != " + Classes.className(right));
             System.out.println("a*(b+c)    =" + left);
             System.out.println("(a*b)+(a*c)=" + right);}

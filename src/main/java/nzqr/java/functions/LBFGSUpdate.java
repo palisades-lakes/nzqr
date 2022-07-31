@@ -17,7 +17,7 @@ import com.carrotsearch.hppc.cursors.DoubleCursor;
  * algorithm 7.4, p 178.
  * <p>
  * <b>WARNING:</b> !!!mutable!!! !!!Not thread safe!!!
- * 
+ *
  * @author palisades dot lakes at gmail dot com
  * @version 2018-09-07
  */
@@ -31,7 +31,7 @@ public final class LBFGSUpdate implements Function {
   private final int _maxHistory;
 
   // Note: dx, dg and dxdg need to be updated together.
-  
+
   /** Changes in sample position. */
   private final Deque<Vektor> _dx;
 
@@ -44,7 +44,7 @@ public final class LBFGSUpdate implements Function {
 
   private final DoubleDeque _dxdg;
 
-  private final double[] _tmp; 
+  private final double[] _tmp;
 
   public double _scale;
 
@@ -66,15 +66,15 @@ public final class LBFGSUpdate implements Function {
                             // dot product often already computed
                             final double dxdgi) {
     assert history() <= _maxHistory;
-    if (history() == _maxHistory) { 
-      _dx.removeFirst(); 
-      _dg.removeFirst(); 
+    if (history() == _maxHistory) {
+      _dx.removeFirst();
+      _dg.removeFirst();
       _dxdg.removeFirst(); }
 
     _dx.addLast(dxi);
     _dg.addLast(dgi);
-    _dxdg.addLast(dxdgi); 
-    
+    _dxdg.addLast(dxdgi);
+
     final double dg2last = _dg.getLast().l2norm2();
     // dg2last == 0 implies no change in gradient?
     if (dg2last > 0.0) { _scale = _dxdg.getLast()/dg2last; } }
@@ -99,7 +99,7 @@ public final class LBFGSUpdate implements Function {
     final double[] dc = g.coordinates();
     final Iterator<Vektor> skDown = _dx.descendingIterator();
     final Iterator<Vektor> ykDown = _dg.descendingIterator();
-    final Iterator<DoubleCursor> skykDown = 
+    final Iterator<DoubleCursor> skykDown =
       _dxdg.descendingIterator();
     for (int j=m-1;j>=0;j--) {
       final Vektor skj = skDown.next();
@@ -109,7 +109,7 @@ public final class LBFGSUpdate implements Function {
       _tmp[j] = t;
       ykj.axpy(-t,dc); }
 
-    Doubles.scale1(-_scale,dc); 
+    Doubles.scale1(-_scale,dc);
 
     final Iterator<Vektor> skUp = _dx.iterator();
     final Iterator<Vektor> ykUp = _dg.iterator();
@@ -132,9 +132,9 @@ public final class LBFGSUpdate implements Function {
                        final int mem) {
     this._domain = Dn.get(dim);
     this._maxHistory = mem;
-    this._dg = new ArrayDeque<Vektor>(mem);
-    this._dx = new ArrayDeque<Vektor>(mem); 
-    this._dxdg = new DoubleArrayDeque(mem); 
+    this._dg = new ArrayDeque<>(mem);
+    this._dx = new ArrayDeque<>(mem);
+    this._dxdg = new DoubleArrayDeque(mem);
     this._scale = 1.0;
     this._tmp = new double[mem]; }
 

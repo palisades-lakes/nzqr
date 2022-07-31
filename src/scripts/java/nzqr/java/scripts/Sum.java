@@ -1,15 +1,8 @@
 package nzqr.java.scripts;
 
-import java.util.Arrays;
-
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.ListSampler;
-
 import nzqr.java.accumulators.Accumulator;
 import nzqr.java.accumulators.RationalFloatAccumulator;
 import nzqr.java.numbers.Doubles;
-import nzqr.java.prng.Generator;
-import nzqr.java.prng.PRNG;
 
 // java -ea --illegal-access=warn -jar target/benchmarks.jar
 
@@ -19,13 +12,13 @@ import nzqr.java.prng.PRNG;
  * jy --source 12 src/scripts/java/xfp/java/scripts/Sum.java
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2021-07-08
+ * @version 2022-07-31
  */
 @SuppressWarnings("unchecked")
 public final class Sum {
 
   //--------------------------------------------------------------
- 
+
   private static final int DIM = 1024*1024;
 
   private static final int TRYS = 32;

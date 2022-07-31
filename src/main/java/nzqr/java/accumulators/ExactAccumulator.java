@@ -2,9 +2,9 @@ package nzqr.java.accumulators;
 
 /** Basre class for some exact accumulators.
  * <p>
- * Use twoAdd and twoMul to convert operations to sequence of 
+ * Use twoAdd and twoMul to convert operations to sequence of
  * adds, so that they are exact if {@link #add(double)} is.
- * 
+ *
  * @author palisades dot lakes at gmail dot com
  * @version 2019-09-06
  */
@@ -19,9 +19,9 @@ implements Accumulator<T> {
 
   @Override
   public T add2 (final double z) {
-    // WARNING: WRONG: only works when 
+    // WARNING: WRONG: only works when
     // 2*exponent(z) >= min exponent + p -1
-    // where 
+    // where
     //assert Double.isFinite(z);
     // preserve exactness using twoMul to convert to 2 adds.
     final double zz = z*z;
@@ -82,7 +82,7 @@ implements Accumulator<T> {
     final double eee = Math.fma(e,e,-ee);
     add(ee);
     add(eee);
-    return (T) this; } 
+    return (T) this; }
 
   //--------------------------------------------------------------
   // construction

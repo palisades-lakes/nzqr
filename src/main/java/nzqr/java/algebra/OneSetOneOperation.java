@@ -46,8 +46,7 @@ public final class OneSetOneOperation extends Structure {
   @Override
   public final boolean equals (final Object obj) {
     if (this == obj) { return true; }
-    if (obj == null) { return false; }
-    if (!(obj instanceof OneSetOneOperation)) { return false; }
+    if ((obj == null) || !(obj instanceof OneSetOneOperation)) { return false; }
     final OneSetOneOperation other = (OneSetOneOperation) obj;
     // WARNING: hard to tell if 2 operations are the same,
     // unless the implementing class has some kind of singleton
@@ -117,8 +116,8 @@ public final class OneSetOneOperation extends Structure {
 
   public static final OneSetOneOperation
   commutativeMonoid (final BinaryOperator operation,
-                    final Set elements,
-                    final Object identity) {
+                     final Set elements,
+                     final Object identity) {
     return
       make(operation,elements,identity,null,
         Laws.commutativemonoid(

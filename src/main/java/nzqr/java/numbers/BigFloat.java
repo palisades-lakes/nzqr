@@ -16,7 +16,7 @@ import nzqr.java.Exceptions;
  */
 
 @SuppressWarnings("unchecked")
-public final class BigFloat 
+public final class BigFloat
 implements Ringlike<BigFloat> {
 
   //--------------------------------------------------------------
@@ -67,9 +67,9 @@ implements Ringlike<BigFloat> {
                                       final int e1) {
     if (e0<e1) { return add6(p1,t1,e1,p0,t0,e0); }
     final int de = e0-e1;
-    if (p0!=p1) { 
+    if (p0!=p1) {
       // different signs
-      final BoundedNatural t0s = (de>0) ? t0.shiftUp(de) : t0; 
+      final BoundedNatural t0s = (de>0) ? t0.shiftUp(de) : t0;
       final int c01 = t0s.compareTo(t1);
       // t1 > t0s
       if (0>c01) { return valueOf(p1,t1.subtract(t0s),e1); }
@@ -135,7 +135,7 @@ implements Ringlike<BigFloat> {
         final int e11) {
     //assert 0L<=t11;
     //if (0L==t11) { return this; }
-    
+
     final boolean p0 = nonNegative();
     final BoundedNatural t0 = significand();
     final int e0 = exponent();
@@ -144,9 +144,9 @@ implements Ringlike<BigFloat> {
     final int shift = Numbers.loBit(t11);
     final long t1 = (t11>>>shift);
     final int e1 = e11+shift;
-   
+
     if (e0<e1) { return add6(p0,t0,p1,t1,e1-e0,e0); }
-    if (e0==e1) { return add5(p0,t0,p1,t1,e0); } 
+    if (e0==e1) { return add5(p0,t0,p1,t1,e0); }
     return add5(p0,t0.shiftUp(e0-e1),p1,t1,e1); }
 
   //--------------------------------------------------------------
@@ -154,7 +154,7 @@ implements Ringlike<BigFloat> {
   public final BigFloat
   add (final double z) {
     //assert Double.isFinite(z);
-    // escape on zero needed for add() 
+    // escape on zero needed for add()
     if (0.0==z) { return this; }
     return add3(
       Doubles.nonNegative(z),
@@ -173,7 +173,7 @@ implements Ringlike<BigFloat> {
   public final BigFloat
   addAbs (final double z) {
     //assert Double.isFinite(z);
-    // escape on zero needed for add() 
+    // escape on zero needed for add()
     if (0.0==z) { return this; }
     return add3(
       true,
@@ -249,7 +249,7 @@ implements Ringlike<BigFloat> {
   public final BigFloat
   multiply (final double z) {
     //assert Double.isFinite(z);
-    // escape on zero needed for add() 
+    // escape on zero needed for add()
     if (0.0==z) { return this; }
     return multiply(
       Doubles.nonNegative(z),
@@ -280,7 +280,7 @@ implements Ringlike<BigFloat> {
     else { t=(tz>>>s); e=ez+s; }
     final BoundedNatural t2 = BoundedNatural.fromSquare(t);
     final int e2 = (e<<1);
-    return add6( 
+    return add6(
       nonNegative(),
       significand(),
       exponent(),
@@ -324,7 +324,7 @@ implements Ringlike<BigFloat> {
         significand(),
         exponent()); }
 
-  public final BigFloat 
+  public final BigFloat
   addProducts (final double[] z0,
                final double[] z1)  {
     final int n = z0.length;
@@ -353,7 +353,7 @@ implements Ringlike<BigFloat> {
     final long t1 = (t11>>>shift1);
     final int e1 = e11+shift1;
 
-    return 
+    return
       valueOf(
         Doubles.nonNegative(a)==Doubles.nonNegative(x),
         BoundedNatural.product(t0,t1),
@@ -526,7 +526,7 @@ implements Ringlike<BigFloat> {
   @Override
   public final float floatValue () {
     return floatValue(nonNegative(),significand(),exponent()); }
-  
+
   //--------------------------------------------------------------
   /** @return closest half-even rounded <code>double</code>
    */
@@ -541,9 +541,9 @@ implements Ringlike<BigFloat> {
         Math.min(
           Doubles.MAXIMUM_EXPONENT_INTEGRAL_SIGNIFICAND-e0-1,
           eh-Doubles.SIGNIFICAND_BITS));
-    if (eh-es>Doubles.SIGNIFICAND_BITS) {
-      return 
-        (p0 ? 
+    if ((eh-es)>Doubles.SIGNIFICAND_BITS) {
+      return
+        (p0 ?
           Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY); }
     if (0==es) {
       return doubleMergeBits(p0,s0.longValue(),e0); }
@@ -598,15 +598,13 @@ implements Ringlike<BigFloat> {
 
   private static final boolean reducedEquals (final BigFloat a,
                                               final BigFloat b) {
-    // assuming a and b have minimum significand and maximum 
+    // assuming a and b have minimum significand and maximum
     // exponent
     if (a==b) { return true; }
-    if (null==a) { return false; }
     // assuming reduced
-    if (! a.significand().equals(b.significand())) { return false; }
+    if ((null==a) || ! a.significand().equals(b.significand())) { return false; }
     if (a.significand().isZero()) { return true; }
-    if (a.nonNegative()!=b.nonNegative()) { return false; }
-    if (a.exponent()!=b.exponent()) { return false; }
+    if ((a.nonNegative()!=b.nonNegative()) || (a.exponent()!=b.exponent())) { return false; }
     return true; }
 
   public final boolean equals (final BigFloat q) {
@@ -643,7 +641,7 @@ implements Ringlike<BigFloat> {
     //assert null!=t0;
     _nonNegative = p;
     _significand = t;
-    _exponent = e; } 
+    _exponent = e; }
 
   //--------------------------------------------------------------
 

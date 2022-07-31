@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import nzqr.java.Classes;
 import nzqr.java.numbers.BoundedNatural;
-import nzqr.java.numbers.UnboundedNatural;
 
 //----------------------------------------------------------------
 /** Test bounded ranges for various number implementations.
@@ -39,7 +38,7 @@ public final class BoundsTest {
         BigInteger n = n1;
         for (long i=1L;i<=Integer.MAX_VALUE;i++) {
           n = n.add(BigInteger.ONE); } },
-      Classes.className(n0)); } 
+      Classes.className(n0)); }
 
   @SuppressWarnings({ "static-method" })
   @Test
@@ -48,9 +47,9 @@ public final class BoundsTest {
       ArithmeticException.class,
       () -> {
         // overflow at 2nd add
-        BoundedNatural n = BoundedNatural.maxValue().add(1); 
+        final BoundedNatural n = BoundedNatural.maxValue().add(1);
         System.out.println(n.hiBit()); },
-      "Overflow BoundedNatural"); } 
+      "Overflow BoundedNatural"); }
 
   //  @SuppressWarnings({ "static-method" })
   //  @Test
@@ -59,28 +58,28 @@ public final class BoundsTest {
   //
   //    final long t0 = System.nanoTime();
   //    try {
-  //      BoundedNatural n = 
+  //      BoundedNatural n =
   ////      BoundedNatural.valueOf(0);
   //      BoundedNatural.valueOf(1)
   //        .shiftUp(BoundedNatural.MAX_BITS-1);
   //      n = n.add(n.subtract(10));
   //      for (long i=1L;i<=Long.MAX_VALUE;i++) {
   //        System.out.print("BoundedNatural: " + i + ": " +
-  //          Integer.toUnsignedString(n.hiBit(),16)); 
+  //          Integer.toUnsignedString(n.hiBit(),16));
   //        final long t = System.nanoTime();
   //        final BoundedNatural n1 = n.add(1L);
-  //        assert n1.compareTo(n) > 0 : 
+  //        assert n1.compareTo(n) > 0 :
   //          n1.compareTo(n) + "\n" +
   //        Integer.toUnsignedString(n1.hiBit(),16) + " " +
   //        Integer.toUnsignedString(Integer.MAX_VALUE,16);
-  //        n = n1; 
+  //        n = n1;
   //        System.out.printf(" [%4.3f]\n",
-  //          Double.valueOf((System.nanoTime()-t)*1.0e-9)); 
+  //          Double.valueOf((System.nanoTime()-t)*1.0e-9));
   //        } }
   //    finally {
   //      System.out.printf("Total seconds: %4.3f\n",
-  //        Double.valueOf((System.nanoTime()-t0)*1.0e-9)); } 
-  //    
+  //        Double.valueOf((System.nanoTime()-t0)*1.0e-9)); }
+  //
   //    //Debug.DEBUG=false;
   //  }
 

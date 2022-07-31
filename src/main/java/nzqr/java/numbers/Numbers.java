@@ -90,24 +90,24 @@ public final class Numbers implements Set {
   // Useful for passing as a Function method reference
 
   public static final double doubleValue (final Object x) {
-    if (x instanceof BigFloat) { 
+    if (x instanceof BigFloat) {
       return ((BigFloat) x).doubleValue(); }
-    if (x instanceof RationalFloat) { 
+    if (x instanceof RationalFloat) {
       return ((RationalFloat) x).doubleValue(); }
-    if (x instanceof BoundedNatural) { 
+    if (x instanceof BoundedNatural) {
       return ((BoundedNatural) x).doubleValue(); }
-    if (x instanceof Number) { 
+    if (x instanceof Number) {
       return ((Number) x).doubleValue(); }
     throw Exceptions.unsupportedOperation(null,"doubleValue",x); }
 
   public static float floatValue (final Object x) {
-    if (x instanceof BigFloat) { 
+    if (x instanceof BigFloat) {
       return ((BigFloat) x).floatValue(); }
-    if (x instanceof RationalFloat) { 
+    if (x instanceof RationalFloat) {
       return ((RationalFloat) x).floatValue(); }
-    if (x instanceof BoundedNatural) { 
+    if (x instanceof BoundedNatural) {
       return ((BoundedNatural) x).floatValue(); }
-    if (x instanceof Number) { 
+    if (x instanceof Number) {
       return ((Number) x).floatValue(); }
     throw Exceptions.unsupportedOperation(null,"floatValue",x); }
 
@@ -127,7 +127,7 @@ public final class Numbers implements Set {
 
   /** exclusive */
   public static final int hiBit (final BoundedNatural i) {
-     return i.hiBit(); }
+    return i.hiBit(); }
 
   /** inclusive */
   public static final int loBit (final int i) {
@@ -145,7 +145,7 @@ public final class Numbers implements Set {
   public static final int hiBit (final long i) {
     return Long.SIZE-Long.numberOfLeadingZeros(i); }
 
-   //--------------------------------------------------------------
+  //--------------------------------------------------------------
 
   public static final boolean isZero (final double x) {
     return 0.0 == x; }
@@ -193,7 +193,7 @@ public final class Numbers implements Set {
     if (x instanceof Number) { return isZero((Number) x); }
     throw Exceptions.unsupportedOperation(x,"valueOf",x); }
 
-    //--------------------------------------------------------------
+  //--------------------------------------------------------------
 
   public static final String description (final String name,
                                           final BigInteger i) {

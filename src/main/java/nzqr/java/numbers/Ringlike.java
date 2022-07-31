@@ -77,7 +77,7 @@ extends Comparable<T> {
     throw Exceptions.unsupportedOperation(this,"gcd",x); }
 
   /** Return a list of <code>this/f,u/f</code>
-   * where <code>f</code> is the {@link #gcd} of this and 
+   * where <code>f</code> is the {@link #gcd} of this and
    * <code>u</code>>
    */
   default List<T> reduce (final T u) {

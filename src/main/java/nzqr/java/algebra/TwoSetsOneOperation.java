@@ -86,18 +86,11 @@ public final class TwoSetsOneOperation extends Structure {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     final TwoSetsOneOperation other = (TwoSetsOneOperation) obj;
-    if (! Objects.equals(scale(),other.scale())) {
-      return false; }
-    if (! Objects.equals(elements(),other.elements())) {
-      return false; }
-    if (! Objects.equals(scalars(),other.scalars())) {
+    if (! Objects.equals(scale(),other.scale()) || ! Objects.equals(elements(),other.elements()) || ! Objects.equals(scalars(),other.scalars())) {
       return false; }
     return true; }
 

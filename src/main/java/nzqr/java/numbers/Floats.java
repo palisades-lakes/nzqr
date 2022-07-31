@@ -225,26 +225,26 @@ public final class Floats implements Set {
     //  "Exponent too large:" + Integer.toHexString(be) +
     //  ">" + Integer.toHexString(MAXIMUM_BIASED_EXPONENT);
 
-//    if (SUBNORMAL_EXPONENT == exponent) {
-//      assert (0 <= significand) :
-//        "subnormal significand too small:" + Integer.toHexString(significand);
-//      assert significand <= MAX_SUBNORMAL_SIGNIFICAND :
-//        "subnormal significand too large:" + Integer.toHexString(significand); }
-//    else if (INFINITE_OR_NAN_EXPONENT == exponent) {
-//      // no leading 1 bit for infinity or NaN
-//      assert (0 <= significand) :
-//        "infinite or NaN significand too small:"
-//        + Integer.toHexString(significand);
-//      assert significand <= MAX_SUBNORMAL_SIGNIFICAND :
-//        "infinite or NaN significand too large:"
-//        + Integer.toHexString(significand); }
-//    else { // normal numbers
-//      assert (MIN_NORMAL_SIGNIFICAND <= significand) :
-//        "Normal significand too small:"
-//        + Integer.toHexString(significand);
-//      assert (significand <= MAX_NORMAL_SIGNIFICAND) :
-//        "Normal significand too large:"
-//        + Integer.toHexString(significand); }
+    //    if (SUBNORMAL_EXPONENT == exponent) {
+    //      assert (0 <= significand) :
+    //        "subnormal significand too small:" + Integer.toHexString(significand);
+    //      assert significand <= MAX_SUBNORMAL_SIGNIFICAND :
+    //        "subnormal significand too large:" + Integer.toHexString(significand); }
+    //    else if (INFINITE_OR_NAN_EXPONENT == exponent) {
+    //      // no leading 1 bit for infinity or NaN
+    //      assert (0 <= significand) :
+    //        "infinite or NaN significand too small:"
+    //        + Integer.toHexString(significand);
+    //      assert significand <= MAX_SUBNORMAL_SIGNIFICAND :
+    //        "infinite or NaN significand too large:"
+    //        + Integer.toHexString(significand); }
+    //    else { // normal numbers
+    //      assert (MIN_NORMAL_SIGNIFICAND <= significand) :
+    //        "Normal significand too small:"
+    //        + Integer.toHexString(significand);
+    //      assert (significand <= MAX_NORMAL_SIGNIFICAND) :
+    //        "Normal significand too large:"
+    //        + Integer.toHexString(significand); }
 
     final int s = (sign) << (EXPONENT_BITS + STORED_SIGNIFICAND_BITS);
     final int e = (be) << STORED_SIGNIFICAND_BITS;
@@ -292,8 +292,8 @@ public final class Floats implements Set {
    */
 
   public static final float floatMergeBits (final boolean nonNegative,
-                                             final int significand,
-                                             final int exponent) {
+                                            final int significand,
+                                            final int exponent) {
     final int sh = Numbers.hiBit(significand);
     if (sh > SIGNIFICAND_BITS) {
       return (nonNegative
@@ -489,9 +489,9 @@ public final class Floats implements Set {
    * sum of <code>dim</code> <code>double</code>s will be finite
    * (with high enough probability).
    */
-    public static final int feMax (final int dim) {
-      final int d = Float.MAX_EXPONENT - Ints.ceilLog2(dim);
-      return d; }
+  public static final int feMax (final int dim) {
+    final int d = Float.MAX_EXPONENT - Ints.ceilLog2(dim);
+    return d; }
 
   //--------------------------------------------------------------
   /** From apache commons math4 BigFraction.

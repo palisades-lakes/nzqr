@@ -669,7 +669,7 @@ public final class Doubles implements Set {
       private final ContinuousSampler s =
         new ContinuousUniformSampler(urp,zmin,zmax);
       @Override
-      public final double nextDouble () { 
+      public final double nextDouble () {
         return s.sample(); } }; }
 
   /** Conventional 'uniform' distribution sampler, as 'uniform'
@@ -839,7 +839,7 @@ public final class Doubles implements Set {
 
   //--------------------------------------------------------------
   /** Discretely uniform over 'normal' doubles,
-   *  as opposed to 'subnormal' doubles. 
+   *  as opposed to 'subnormal' doubles.
    *  em>Not gaussian!</em>
    * @param urp
    * @param eMax
@@ -986,7 +986,7 @@ public final class Doubles implements Set {
   //--------------------------------------------------------------
   // array utilities
   //--------------------------------------------------------------
-  
+
   public static final double maxAbs (final double[] x) {
     double m = NEGATIVE_INFINITY;
     for (final double element : x) {
@@ -1014,14 +1014,14 @@ public final class Doubles implements Set {
 
   // exact sum is 0.0
   public static double[] sampleDoubles (final Generator g,
-                                         final UniformRandomProvider urp) {
+                                        final UniformRandomProvider urp) {
     final double[] x = zeroSum((double[]) g.next());
     ListSampler.shuffle(urp,Arrays.asList(x));
     return x; }
 
 
   public static double[][] sampleDoubles (final int dim,
-                                           final int n) {
+                                          final int n) {
     assert isEven(dim);
     final UniformRandomProvider urp =
       PRNG.well44497b("seeds/Well44497b-2019-01-05.txt");

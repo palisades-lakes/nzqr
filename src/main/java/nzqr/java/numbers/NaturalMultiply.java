@@ -3,7 +3,7 @@ package nzqr.java.numbers;
 import static nzqr.java.numbers.Numbers.loWord;
 
 /** Multiplication of natural numbers.
- * 
+ *
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
@@ -31,7 +31,7 @@ public final class NaturalMultiply {
     final BoundedNatural xls = xl.square();
     // (xh^2<<64) + (((xl+xh)^2-(xh^2+xl^2))<<32) + xl^2
     final int h32 = half*32;
-    return 
+    return
       xhs.shiftUp(h32)
       .add(
         xl.add(xh).square()
@@ -63,8 +63,8 @@ public final class NaturalMultiply {
 
     // The algorithm requires two divisions by 2 and one by 3.
     // All divisions are known to be exact, that is, they do not
-    // produce remainders, and all results are positive. The 
-    // divisions by 2 are implemented as right shifts which are 
+    // produce remainders, and all results are positive. The
+    // divisions by 2 are implemented as right shifts which are
     // relatively efficient, leaving only a division by 3.
     // The division by 3 is done by an optimized algorithm for
     // this case.
@@ -77,7 +77,7 @@ public final class NaturalMultiply {
     t2 = t2.subtract(vinf.shiftUp(1));
     tm1 = tm1.subtract(t2);
     final int k32 = k*32;
-    return 
+    return
       vinf.shiftUp(k32)
       .add(t2).shiftUp(k32)
       .add(t1).shiftUp(k32)
@@ -93,7 +93,7 @@ public final class NaturalMultiply {
   //--------------------------------------------------------------
 
   private static final BoundedNatural multiplySimple (final BoundedNatural u,
-                                               final BoundedNatural v) {
+                                                      final BoundedNatural v) {
     final int n0 = u.hiInt();
     final int n1 = v.hiInt();
     BoundedNatural w = u.zero();
@@ -113,7 +113,7 @@ public final class NaturalMultiply {
   //--------------------------------------------------------------
 
   private static final BoundedNatural multiplyKaratsuba (final BoundedNatural u,
-                                                  final BoundedNatural v) {
+                                                         final BoundedNatural v) {
     final int n0 = u.hiInt();
     final int n1 = v.hiInt();
     final int half = (Math.max(n0,n1)+1) / 2;
@@ -133,25 +133,25 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-//  private static final BoundedNatural exactDivideBy3 (final BoundedNatural u) {
-//    final int n = u.hiInt();
-//    BoundedNatural t = u;
-//    long borrow = 0L;
-//    for (int i=0;i<n;i++) {
-//      final long x = u.uword(i);
-//      final long w = x-borrow;
-//      if (x<borrow) { borrow = 1L; }
-//      else { borrow = 0L; }
-//      // 0xAAAAAAAB is the modular inverse of 3 (mod 2^32). Thus,
-//      // the effect of this is to divide by 3 (mod 2^32).
-//      // This is much faster than division on most architectures.
-//      final long q = loWord(w*0xAAAAAAABL);
-//      t = t.setWord(i,(int) q);
-//      // Check the borrow. 
-//      if (q>=0x55555556L) {
-//        borrow++;
-//        if (q>=0xAAAAAAABL) { borrow++; } } }
-//    return t; }
+  //  private static final BoundedNatural exactDivideBy3 (final BoundedNatural u) {
+  //    final int n = u.hiInt();
+  //    BoundedNatural t = u;
+  //    long borrow = 0L;
+  //    for (int i=0;i<n;i++) {
+  //      final long x = u.uword(i);
+  //      final long w = x-borrow;
+  //      if (x<borrow) { borrow = 1L; }
+  //      else { borrow = 0L; }
+  //      // 0xAAAAAAAB is the modular inverse of 3 (mod 2^32). Thus,
+  //      // the effect of this is to divide by 3 (mod 2^32).
+  //      // This is much faster than division on most architectures.
+  //      final long q = loWord(w*0xAAAAAAABL);
+  //      t = t.setWord(i,(int) q);
+  //      // Check the borrow.
+  //      if (q>=0x55555556L) {
+  //        borrow++;
+  //        if (q>=0xAAAAAAABL) { borrow++; } } }
+  //    return t; }
 
   private static final BoundedNatural exactDivideBy3 (final BoundedNatural u) {
     final int n = u.hiInt();
@@ -167,7 +167,7 @@ public final class NaturalMultiply {
       // This is much faster than division on most architectures.
       final long q = loWord(w*0xAAAAAAABL);
       t[i] = (int) q;
-      // Check the borrow. 
+      // Check the borrow.
       if (q>=0x55555556L) {
         borrow++;
         if (q>=0xAAAAAAABL) { borrow++; } } }
@@ -176,18 +176,18 @@ public final class NaturalMultiply {
   //--------------------------------------------------------------
 
   private static final BoundedNatural getToomSlice (final BoundedNatural u,
-                                             final int lowerSize,
-                                             final int upperSize,
-                                             final int slice,
-                                             final int fullsize) {
+                                                    final int lowerSize,
+                                                    final int upperSize,
+                                                    final int slice,
+                                                    final int fullsize) {
     final int n = u.hiInt();
     final int offset = fullsize-n;
     int start;
     final int end;
     if (0==slice) { start = -offset; end = upperSize-1-offset; }
     else {
-      start = upperSize+((slice-1)*lowerSize)-offset;
-      end = start+lowerSize-1; }
+      start = (upperSize+((slice-1)*lowerSize))-offset;
+      end = (start+lowerSize)-1; }
     if (start < 0) { start = 0; }
     if (end < 0) { return u.zero(); }
     final int sliceSize = (end-start) + 1;
@@ -202,7 +202,7 @@ public final class NaturalMultiply {
   //--------------------------------------------------------------
 
   private static final BoundedNatural multiplyToomCook3 (final BoundedNatural u,
-                                                  final BoundedNatural v) {
+                                                         final BoundedNatural v) {
     final int n0 = u.hiInt();
     final int n1 = v.hiInt();
     final int largest = Math.max(n0,n1);
@@ -284,7 +284,7 @@ public final class NaturalMultiply {
   //--------------------------------------------------------------
 
   public static final BoundedNatural multiply (final BoundedNatural u,
-                                        final BoundedNatural v) {
+                                               final BoundedNatural v) {
     if ((u.isZero()) || (v.isZero())) { return u.zero(); }
     final int n0 = u.hiInt();
     if (u.equals(v) && (n0>MULTIPLY_SQUARE_THRESHOLD)) {
@@ -298,36 +298,36 @@ public final class NaturalMultiply {
       return multiplyKaratsuba(u,v); }
     return multiplyToomCook3(u,v); }
 
-//  public static final BoundedNatural multiply (final BoundedNatural t,
-//                                        final long u) {
-//    if (0L==u) { return BoundedNatural.ZERO; }
-//    if (t.isZero()) { return BoundedNatural.ZERO; }
-//    if (1L==u) { return t; }
-//    //assert 0L < v;
-//    final long hi = Numbers.hiWord(u);
-//    final long lo = Numbers.loWord(u);
-//    final int n0 = t.hiInt();
-//    // TODO: assume minimal carry and allocate smaller array;
-//    // then fix when needed
-//    final int[] vv = new int[n0+2];
-//    long carry = 0;
-//    int i=0;
-//    for (;i<n0;i++) {
-//      final long product = (t.uword(i)*lo) + carry;
-//      vv[i] = (int) product;
-//      carry = (product>>>32); }
-//    vv[i] = (int) carry;
-//    if (hi != 0L) {
-//      carry = 0;
-//      i=0;
-//      for (;i<n0;i++) {
-//        final int i1 = i+1;
-//        final long product = (t.uword(i)*hi) 
-//          + unsigned(vv[i1]) + carry;
-//        vv[i1] = (int) product;
-//        carry = (product>>>32); }
-//      vv[i+1]= (int) carry; }
-//    return BoundedNatural.unsafe(vv); }
+  //  public static final BoundedNatural multiply (final BoundedNatural t,
+  //                                        final long u) {
+  //    if (0L==u) { return BoundedNatural.ZERO; }
+  //    if (t.isZero()) { return BoundedNatural.ZERO; }
+  //    if (1L==u) { return t; }
+  //    //assert 0L < v;
+  //    final long hi = Numbers.hiWord(u);
+  //    final long lo = Numbers.loWord(u);
+  //    final int n0 = t.hiInt();
+  //    // TODO: assume minimal carry and allocate smaller array;
+  //    // then fix when needed
+  //    final int[] vv = new int[n0+2];
+  //    long carry = 0;
+  //    int i=0;
+  //    for (;i<n0;i++) {
+  //      final long product = (t.uword(i)*lo) + carry;
+  //      vv[i] = (int) product;
+  //      carry = (product>>>32); }
+  //    vv[i] = (int) carry;
+  //    if (hi != 0L) {
+  //      carry = 0;
+  //      i=0;
+  //      for (;i<n0;i++) {
+  //        final int i1 = i+1;
+  //        final long product = (t.uword(i)*hi)
+  //          + unsigned(vv[i1]) + carry;
+  //        vv[i1] = (int) product;
+  //        carry = (product>>>32); }
+  //      vv[i+1]= (int) carry; }
+  //    return BoundedNatural.unsafe(vv); }
 
   //--------------------------------------------------------------
   // disable constructor

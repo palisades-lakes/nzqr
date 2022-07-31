@@ -37,7 +37,7 @@ import nzqr.java.prng.PRNG;
 @SuppressWarnings("unchecked")
 public final class Common {
 
-  public static final int TRYS = 131; 
+  public static final int TRYS = 131;
 
   //--------------------------------------------------------------
 
@@ -123,8 +123,8 @@ public final class Common {
 
     final T r1 = valueOf.apply(rs);
     Assertions.assertEquals(r0,r1,() ->
-    "\n" + rs + "\n" 
-    + r0.toString() 
+    "\n" + rs + "\n"
+    + r0.toString()
     + "\n" + r1.toString() + "\n");  }
 
   public static final <T extends Ringlike<T>> void
@@ -151,20 +151,20 @@ public final class Common {
     Assertions.assertEquals(c0,c1, ()->
     "\n" + x0.toString(0x10)
     + "\n compareTo "
-    + "\n" +  x1.toString(0x10) 
+    + "\n" +  x1.toString(0x10)
     + "\n -> " + c0
     + "\n\n" + y0.toString()
     + "\n compareTo "
     + "\n" +  y1.toString()
     + "\n -> " + c1
-    + "\n\n"); 
-    final int shift = 3*32 + 17;
+    + "\n\n");
+    final int shift = (3*32) + 17;
     final int c2 = x0.compareTo(x1.shiftLeft(shift));
     final int c3 = y0.compareTo(y1.shiftUp(shift));
     Assertions.assertEquals(c2,c3, ()->
     "\n" + x0.toString(0x10)
     + "\n compareTo "
-    + "\n" +  x1.toString(0x10)  
+    + "\n" +  x1.toString(0x10)
     + "\nshiftUp " + shift
     + "\n -> " + c2
     + "\n\n" + y0.toString()
@@ -172,7 +172,7 @@ public final class Common {
     + "\n" +  y1.toString()
     + "\nshiftUp " + shift
     + "\n -> " + c3
-    + "\n\n"); 
+    + "\n\n");
     final int c4 = y0.compareTo(y1.shiftUp(shift));
     Assertions.assertEquals(c3,c4, ()->
     "\n\n" + y0.toString()
@@ -182,10 +182,10 @@ public final class Common {
     + "\n -> " + c3
     + "\n\n" + y0.toString()
     + "\n compareTo "
-    + "\n" +  y1.toString() 
+    + "\n" +  y1.toString()
     + "\n, " + shift
     + "\n -> " + c4
-    + "\n\n"); 
+    + "\n\n");
   }
 
   public static final <T extends Ringlike<T>> void
@@ -340,7 +340,7 @@ public final class Common {
       final Ringlike y1 = fromBI.apply(x1);
       final BigInteger[] x2 = x0.divideAndRemainder(x1);
       final List<T> y2 = y0.divideAndRemainder(y1);
-      final BigInteger[] x3 = { toBI.apply(y2.get(0)), 
+      final BigInteger[] x3 = { toBI.apply(y2.get(0)),
                                 toBI.apply(y2.get(1)),};
 
       Assertions.assertEquals(x2[0],x3[0],() ->
@@ -369,7 +369,7 @@ public final class Common {
       + "\n" + y2.get(1).toString()
       + "\n" + x3[1].toString(0x10)); } }
 
-  public static final void 
+  public static final void
   divideAndRemainderKnuth (final Function<BigInteger,BoundedNatural> fromBI,
                            final Function<BoundedNatural,BigInteger> toBI,
                            final BigInteger x0,
@@ -379,7 +379,7 @@ public final class Common {
       final BoundedNatural y1 = fromBI.apply(x1);
       final BigInteger[] x2 = x0.divideAndRemainder(x1);
       final List<BoundedNatural> y2 = y0.divideAndRemainderKnuth(y1);
-      final BigInteger[] x3 = { toBI.apply(y2.get(0)), 
+      final BigInteger[] x3 = { toBI.apply(y2.get(0)),
                                 toBI.apply(y2.get(1)),};
 
       Assertions.assertEquals(x2[0],x3[0],() ->
@@ -510,9 +510,9 @@ public final class Common {
       final Ringlike y1 = fromBI.apply(x1);
       final List<BigInteger> x2 = NaturalDivide.reduce(x0,x1);
       final List<T> y2 = y0.reduce(y1);
-      final List<BigInteger> x3 = 
+      final List<BigInteger> x3 =
         List.of (
-          toBI.apply(y2.get(0)), 
+          toBI.apply(y2.get(0)),
           toBI.apply(y2.get(1)));
 
       Assertions.assertEquals(x2.get(0),x3.get(0),() ->
@@ -700,32 +700,32 @@ public final class Common {
                      final ToFloatFunction toFloat,
                      final BinaryOperator dist,
                      @SuppressWarnings("unused") final Function<Object,String> toString,
-                     final Object f, 
-                     final ToIntBiFunction compareValues, 
+                     final Object f,
+                     final ToIntBiFunction compareValues,
                      final ToIntBiFunction compareDists) {
 
-     final float x = toFloat.applyAsFloat(f);
- 
+    final float x = toFloat.applyAsFloat(f);
+
     // only check finite numbers for now
     if (Float.isFinite(x)) {
       final Object fx = fromFloat.apply(x);
- 
+
       final float x1o = Math.nextDown(x);
       final Object flo = fromFloat.apply(x1o);
       Assertions.assertTrue(compareValues.applyAsInt(flo,f) < 0,
         "\nf=" + f + " > flo=" + flo);
       Assertions.assertTrue(compareValues.applyAsInt(flo,fx) <= 0);
-      
+
       final float xhi = Math.nextUp(x);
       final Object fhi = fromFloat.apply(xhi);
       Assertions.assertTrue(compareValues.applyAsInt(f,fhi) < 0,
         "\nf=" + f + " < fhi=" + fhi);
       Assertions.assertTrue(compareValues.applyAsInt(fx,fhi) <= 0);
-      
+
       final Object dlo = dist.apply(f,flo);
       final Object dx = dist.apply(f,fx);
       final Object dhi = dist.apply(f,fhi);
- 
+
       Assertions.assertTrue(compareDists.applyAsInt(dx,dlo) <= 0,
         () ->
       "not nearest float!"
@@ -782,29 +782,29 @@ public final class Common {
                      final FloatFunction fromFloat,
                      final ToFloatFunction toFloat,
                      final BinaryOperator dist,
-                     final Function<Object,String> string, 
-                     final ToIntBiFunction compareValues, 
+                     final Function<Object,String> string,
+                     final ToIntBiFunction compareValues,
                      final ToIntBiFunction compareDists) {
 
     floatRoundingTest(fromFloat,toFloat,dist,string,
       fromBigIntegers.apply(
         BigInteger.valueOf(2976417899971621L),
-        BigInteger.valueOf(67108864L)), 
-      compareValues, 
+        BigInteger.valueOf(67108864L)),
+      compareValues,
       compareDists);
 
     floatRoundingTest(fromFloat,toFloat,dist,string,
       fromBigIntegers.apply(
         BigInteger.valueOf(13997867686541385L),
-        BigInteger.valueOf(1073741824L)), 
-      compareValues, 
+        BigInteger.valueOf(1073741824L)),
+      compareValues,
       compareDists);
 
     floatRoundingTest(fromFloat,toFloat,dist,string,
       fromBigIntegers.apply(
         BigInteger.valueOf(13),
-        BigInteger.valueOf(11)), 
-      compareValues, 
+        BigInteger.valueOf(11)),
+      compareValues,
       compareDists);
 
     //Debug.DEBUG=false;
@@ -812,15 +812,15 @@ public final class Common {
     floatRoundingTest(fromFloat,toFloat,dist,string,
       fromBigIntegers.apply(
         BigInteger.valueOf(-0x331c0c32d0072fL),
-        BigInteger.valueOf(0x1000000L)), 
-      compareValues, 
+        BigInteger.valueOf(0x1000000L)),
+      compareValues,
       compareDists);
 
     floatRoundingTest(fromFloat,toFloat,dist,string,
       fromBigIntegers.apply(
         BigInteger.valueOf(0x331c0c32d0072fL),
-        BigInteger.valueOf(0x1000000L)), 
-      compareValues, 
+        BigInteger.valueOf(0x1000000L)),
+      compareValues,
       compareDists);
 
     //Debug.DEBUG=false;
@@ -828,8 +828,8 @@ public final class Common {
     floatRoundingTest(fromFloat,toFloat,dist,string,
       fromBigIntegers.apply(
         BigInteger.valueOf(0x789f09858446ad92L),
-        BigInteger.valueOf(0x19513ea5d70c32eL)), 
-      compareValues, 
+        BigInteger.valueOf(0x19513ea5d70c32eL)),
+      compareValues,
       compareDists); }
 
   private static final void
@@ -837,8 +837,8 @@ public final class Common {
                                final FloatFunction fromFloat,
                                final ToFloatFunction toFloat,
                                final BinaryOperator dist,
-                               final Function<Object,String> string, 
-                               final ToIntBiFunction compareValues, 
+                               final Function<Object,String> string,
+                               final ToIntBiFunction compareValues,
                                final ToIntBiFunction compareDists) {
     final Generator gn =
       Generators.bigIntegerGenerator(
@@ -852,8 +852,8 @@ public final class Common {
       final BigInteger n = (BigInteger) gn.next();
       final BigInteger d = (BigInteger) gd.next();
       floatRoundingTest(fromFloat,toFloat,dist,string,
-        fromBigIntegers.apply(n,d), 
-        compareValues, 
+        fromBigIntegers.apply(n,d),
+        compareValues,
         compareDists); }
     //Debug.DEBUG=false;
   }
@@ -863,8 +863,8 @@ public final class Common {
                          final FloatFunction fromFloat,
                          final ToFloatFunction toFloat,
                          final BinaryOperator dist,
-                         final Function<Object,String> string, 
-                         final ToIntBiFunction compareValues, 
+                         final Function<Object,String> string,
+                         final ToIntBiFunction compareValues,
                          final ToIntBiFunction compareDists) {
     final Generator g0 =
       Generators.longGenerator(
@@ -886,8 +886,8 @@ public final class Common {
   finiteFloatRoundingTest (final FloatFunction fromFloat,
                            final ToFloatFunction toFloat,
                            final BinaryOperator dist,
-                           final Function<Object,String> string, 
-                           final ToIntBiFunction compareValues, 
+                           final Function<Object,String> string,
+                           final ToIntBiFunction compareValues,
                            final ToIntBiFunction compareDists) {
     final Generator g =
       Floats.finiteGenerator(
@@ -903,8 +903,8 @@ public final class Common {
   subnormalFloatRoundingTest (final FloatFunction fromFloat,
                               final ToFloatFunction toFloat,
                               final BinaryOperator dist,
-                              final Function<Object,String> string, 
-                              final ToIntBiFunction compareValues, 
+                              final Function<Object,String> string,
+                              final ToIntBiFunction compareValues,
                               final ToIntBiFunction compareDists) {
     final Generator g =
       Floats.subnormalGenerator(
@@ -921,8 +921,8 @@ public final class Common {
                       final FloatFunction fromFloat,
                       final ToFloatFunction toFloat,
                       final BinaryOperator dist,
-                      final Function<Object,String> string, 
-                      final ToIntBiFunction compareValues, 
+                      final Function<Object,String> string,
+                      final ToIntBiFunction compareValues,
                       final ToIntBiFunction compareDists) {
 
     if (null != fromBigIntegers) {
@@ -969,8 +969,8 @@ public final class Common {
                       final ToDoubleFunction toDouble,
                       final BinaryOperator dist,
                       final Function<Object,String> toString,
-                      final Object f, 
-                      final ToIntBiFunction compareValues, 
+                      final Object f,
+                      final ToIntBiFunction compareValues,
                       final ToIntBiFunction compareDists) {
 
     final double x = toDouble.applyAsDouble(f);
@@ -1051,15 +1051,15 @@ public final class Common {
                       final DoubleFunction fromDouble,
                       final ToDoubleFunction toDouble,
                       final BinaryOperator dist,
-                      final Function<Object,String> string, 
-                      final ToIntBiFunction compareValues, 
+                      final Function<Object,String> string,
+                      final ToIntBiFunction compareValues,
                       final ToIntBiFunction compareDists) {
 
     doubleRoundingTest(fromDouble,toDouble,dist,string,
       fromBigIntegers.apply(
         BigInteger.valueOf(2976417899971621L),
-        BigInteger.valueOf(67108864L)), 
-      compareValues, 
+        BigInteger.valueOf(67108864L)),
+      compareValues,
       compareDists);
 
     doubleRoundingTest(fromDouble,toDouble,dist,string,
@@ -1101,8 +1101,8 @@ public final class Common {
                                final DoubleFunction fromDouble,
                                final ToDoubleFunction toDouble,
                                final BinaryOperator dist,
-                               final Function<Object,String> string, 
-                               final ToIntBiFunction compareValues, 
+                               final Function<Object,String> string,
+                               final ToIntBiFunction compareValues,
                                final ToIntBiFunction compareDists) {
     final Generator gn =
       Generators.bigIntegerGenerator(
@@ -1123,8 +1123,8 @@ public final class Common {
                          final DoubleFunction fromDouble,
                          final ToDoubleFunction toDouble,
                          final BinaryOperator dist,
-                         final Function<Object,String> string, 
-                         final ToIntBiFunction compareValues, 
+                         final Function<Object,String> string,
+                         final ToIntBiFunction compareValues,
                          final ToIntBiFunction compareDists) {
     final Generator g0 =
       Generators.longGenerator(
@@ -1146,8 +1146,8 @@ public final class Common {
   finiteDoubleRoundingTest (final DoubleFunction fromDouble,
                             final ToDoubleFunction toDouble,
                             final BinaryOperator dist,
-                            final Function<Object,String> string, 
-                            final ToIntBiFunction compareValues, 
+                            final Function<Object,String> string,
+                            final ToIntBiFunction compareValues,
                             final ToIntBiFunction compareDists) {
     final Generator g =
       Doubles.finiteGenerator(
@@ -1163,8 +1163,8 @@ public final class Common {
   subnormalDoubleRoundingTest (final DoubleFunction fromDouble,
                                final ToDoubleFunction toDouble,
                                final BinaryOperator dist,
-                               final Function<Object,String> string, 
-                               final ToIntBiFunction compareValues, 
+                               final Function<Object,String> string,
+                               final ToIntBiFunction compareValues,
                                final ToIntBiFunction compareDists) {
     final Generator g =
       Doubles.subnormalGenerator(
@@ -1181,8 +1181,8 @@ public final class Common {
                        final DoubleFunction fromDouble,
                        final ToDoubleFunction toDouble,
                        final BinaryOperator dist,
-                       final Function<Object,String> string, 
-                       final ToIntBiFunction compareValues, 
+                       final Function<Object,String> string,
+                       final ToIntBiFunction compareValues,
                        final ToIntBiFunction compareDists) {
 
     if (null != fromBigIntegers) {
@@ -1500,7 +1500,7 @@ public final class Common {
           + "\npred: " + Classes.className(a)
           + "\n= " + Double.toHexString(pred)
           + "\n= " + a.value()
-          + "\n"); } } 
+          + "\n"); } }
     //Debug.DEBUG=false;
   }
 
@@ -1530,7 +1530,7 @@ public final class Common {
         + "\npred: " + Classes.className(a)
         + " = " + Double.toHexString(pred)
         + "\n= " + a.value()
-        + "\n"); 
+        + "\n");
       //final double l1d = Math.abs(truth-pred);
       //final double l1n = Math.max(1.0,Math.abs(truth));
       //      //Debug.println(
@@ -1564,7 +1564,7 @@ public final class Common {
       for (int i=0; i<x.length;i++) {
         final int ii = i;
         final double xi = x[i];
-        e = e.add2(xi); 
+        e = e.add2(xi);
         final double truth = e.doubleValue();
         a = a.add2(xi);
         final double pred = a.doubleValue();
@@ -1580,7 +1580,7 @@ public final class Common {
       Assertions.assertEquals(truth,pred,
         () ->
       "\ntrue=" + Double.toHexString(truth)
-      + "\npred=" +  Double.toHexString(pred) + "\n"); } } 
+      + "\npred=" +  Double.toHexString(pred) + "\n"); } }
 
   public static final void l2Tests (final List<Generator> generators,
                                     final List<Accumulator> accumulators,
@@ -1612,7 +1612,7 @@ public final class Common {
       Assertions.assertEquals(truth,pred,
         () ->
       "\n" + Double.toHexString(truth)
-      + "\n" +  Double.toHexString(pred) + "\n"); } } 
+      + "\n" +  Double.toHexString(pred) + "\n"); } }
 
   private static final void
   l2DistanceTest (final Generator g,
@@ -1633,7 +1633,7 @@ public final class Common {
       Assertions.assertEquals(truth,pred,
         () ->
       "\n" + Double.toHexString(truth)
-      + "\n" +  Double.toHexString(pred) + "\n"); } } 
+      + "\n" +  Double.toHexString(pred) + "\n"); } }
 
   public static final void
   l2DistanceTests (final List<Generator> generators,
@@ -1651,11 +1651,11 @@ public final class Common {
                   final Accumulator base) {
     final double[] x0 = (double[]) g.next();
     final double[] x1 = (double[]) g.next();
-    final double truth = 
+    final double truth =
       base.clear().addL1Distance(x0,x1).doubleValue();
     for (final Accumulator a : accumulators) {
       //System.out.println(Classes.className(a));
-      final double pred = 
+      final double pred =
         a.clear().addL1Distance(x0,x1).doubleValue();
       Assertions.assertEquals(truth,pred,
         ()->
@@ -1690,7 +1690,7 @@ public final class Common {
       //final long t1 = (System.nanoTime()-t0);
       Assertions.assertEquals(truth,pred,
         "\ntrue=" + Double.toHexString(truth)
-        + "\npred" + Double.toHexString(pred)); 
+        + "\npred" + Double.toHexString(pred));
       //final double l1d = Math.abs(truth - pred);
       //final double l1n = Math.max(1.0,Math.abs(truth));
       //Debug.println(

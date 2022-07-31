@@ -32,15 +32,15 @@ public final class UnboundedNaturalTests {
   @SuppressWarnings({ "static-method" })
   @Test
   public final void noOverflow () {
-    final UnboundedNatural u = 
+    final UnboundedNatural u =
       UnboundedNatural.valueOf(BoundedNatural.maxValue());
-    // no overflow from add 
-    final UnboundedNatural v = u.add(u); 
+    // no overflow from add
+    final UnboundedNatural v = u.add(u);
     final int cmp = u.compareTo(v);
     Assertions.assertTrue(
       (cmp < 0),
-      () -> { 
-        return "\nadd one doesn't increase value\n" 
+      () -> {
+        return "\nadd one doesn't increase value\n"
           + "compareTo -> " + cmp; }); }
 
   @SuppressWarnings({ "static-method" })

@@ -206,7 +206,7 @@ public final class RationalFloats implements Set {
 
   //--------------------------------------------------------------
 
-  /** Intended primarily for testing. 
+  /** Intended primarily for testing.
    * Mostly sample a random
    * <code>BigInteger</code>
    * and convert to <code>RationalFloat</code>,

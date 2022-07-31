@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 /** Division, gcd, etc., of natural numbers.
- * 
+ *
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
@@ -39,7 +39,7 @@ public final class NaturalDivide {
   //--------------------------------------------------------------
   /** Interpret {@code d} as unsigned. */
 
-  private static final List<BoundedNatural> 
+  private static final List<BoundedNatural>
   divideAndRemainder (final BoundedNatural u,
                       final int d) {
     if (1==d) { return List.of(u,u.zero()); }
@@ -57,7 +57,7 @@ public final class NaturalDivide {
     final int shift = Integer.numberOfLeadingZeros(d);
     int r = u.word(u.hiInt()-1);
     long rr = unsigned(r);
-    if (rr < dd) { 
+    if (rr < dd) {
       qq = qq.setWord(qq.hiInt()-1,0); }
     else {
       final int rrdd = (int) (rr / dd);
@@ -82,7 +82,7 @@ public final class NaturalDivide {
     return List.of(qq,BoundedNatural.valueOf(r)); }
 
   //--------------------------------------------------------------
-  /** Special shifted fused multiply-subtract 
+  /** Special shifted fused multiply-subtract
    */
 
   private static List fms (final BoundedNatural u,
@@ -97,10 +97,10 @@ public final class NaturalDivide {
     long carry = 0;
     int i = n0-1-n1-i0;
     //assert 0<=i :
-//      "\nu=" + Classes.className(w) + "\n" + w + 
-//      "\nv=" + Classes.className(v) + "\n" + v
-//      + "\nx= " + x 
-//      + "\nn0= " + n0 + "\nn1= " + n1 + "\ni0= " + i0; 
+    //      "\nu=" + Classes.className(w) + "\n" + w +
+    //      "\nv=" + Classes.className(v) + "\n" + v
+    //      + "\nx= " + x
+    //      + "\nn0= " + n0 + "\nn1= " + n1 + "\ni0= " + i0;
     for (int j=0;j<n1;j++,i++) {
       final long prod = (v.uword(j)*x) + carry;
       final long diff = w.uword(i)-prod;
@@ -122,14 +122,14 @@ public final class NaturalDivide {
    */
 
   private static final BoundedNatural divadd (final BoundedNatural u,
-                                       final int n0,
-                                       final BoundedNatural v,
-                                       final int n1,
-                                       final int i0) {
+                                              final int n0,
+                                              final BoundedNatural v,
+                                              final int n1,
+                                              final int i0) {
     //assert 0<=i0;
     BoundedNatural w = u;
     final int off = n0 - n1 - 1 - i0;
-    long carry = 0;   
+    long carry = 0;
     for (int j=0;j<n1;j++) {
       final int i = off + j;
       final long sum = v.uword(j) + w.uword(i) + carry;
@@ -139,7 +139,7 @@ public final class NaturalDivide {
 
   //--------------------------------------------------------------
 
-  private static final List<BoundedNatural> 
+  private static final List<BoundedNatural>
   knuthDivision (final BoundedNatural u,
                  final BoundedNatural v) {
     //assert u.isValid();
@@ -148,16 +148,16 @@ public final class NaturalDivide {
     // D1 compact the divisor
     final int nv = v.hiInt();
     final int lShift = Integer.numberOfLeadingZeros(v.word(nv-1));
-    BoundedNatural d = v.shiftUp(lShift);
+    final BoundedNatural d = v.shiftUp(lShift);
     //assert v.isValid();
     final int nd = d.hiInt();
     //assert nv==nd;
     BoundedNatural r = u.shiftUp(lShift);
     //assert u.isValid();
     final int nr0 = r.hiInt();
-//    final int nu = u.hiInt();
+    //    final int nu = u.hiInt();
     //assert (nu==nr0)||(nu+1==nr0) :
-//      "\nnu=" + nu + "\nnr=" + nr0;
+    //      "\nnu=" + nu + "\nnr=" + nr0;
     r = r.setWord(nr0,0);
     //assert u.isValid();
     final int nr = nr0+1;
@@ -184,13 +184,13 @@ public final class NaturalDivide {
           final long tmp = Ints.divWord(nChunk,dh);
           qhat = loWord(tmp); qrem = hiWord(tmp); } }
       if (0L==qhat) { continue; }
-      if (correctQhat) { 
+      if (correctQhat) {
         final long nl = r.uword(i-2);
         long rs = (qrem << 32) | nl;
         long estProduct = dl*qhat;
         if (Long.compareUnsigned(estProduct, rs)>0) {
           qhat--;
-          qrem = loWord(qrem+dh); 
+          qrem = loWord(qrem+dh);
           if (qrem>=dh) {
             estProduct -= (dl);
             rs = (qrem << 32) | nl;
@@ -249,7 +249,7 @@ public final class NaturalDivide {
 
     // D8 decompact
     if (0<lShift) { r = r.shiftDown(lShift); }
-    //r.compact(); 
+    //r.compact();
     //q.compact();
     return List.of(q,r); }
 
@@ -260,7 +260,7 @@ public final class NaturalDivide {
 
   //--------------------------------------------------------------
 
-  public static final List<BoundedNatural> 
+  public static final List<BoundedNatural>
   divideAndRemainderKnuth (final BoundedNatural u,
                            final BoundedNatural v) {
     //assert ! v.isZero();
@@ -273,7 +273,7 @@ public final class NaturalDivide {
 
     //assert u.isValid();
     //assert v.isValid();
-    if (1==v.hiInt()) { return divideAndRemainder(u,v.word(0)); } 
+    if (1==v.hiInt()) { return divideAndRemainder(u,v.word(0)); }
 
     // Cancel common powers of 2 if above KNUTH_POW2_* thresholds
     if (u.hiInt() >= KNUTH_POW2_THRESH_LEN) {
@@ -297,7 +297,7 @@ public final class NaturalDivide {
    * {@code 2*this.hiBit() <= 3*b.hiBit()}
    */
 
-  private static final List<BoundedNatural> 
+  private static final List<BoundedNatural>
   divide3n2n (final BoundedNatural a,
               final BoundedNatural b) {
     final int n = b.hiInt() / 2;   // half the length of b in ints
@@ -330,7 +330,7 @@ public final class NaturalDivide {
       r = a12.subtract(b1);
       // step 4: d=quotient*b2=(b2 << 32*n) - b2
       d = b2.shiftUp(32*n).subtract(b2); }
-     // step 5: r = r*beta^n + a3 - d (paper says a4)
+    // step 5: r = r*beta^n + a3 - d (paper says a4)
     // However, don't subtract d until after the while loop
     // so r doesn't become negative
     r = r.shiftUp(n<<5).add(a.words(0,n));
@@ -351,7 +351,7 @@ public final class NaturalDivide {
    * @param b a positive number such that {@code b.hiBit()} is even
    */
 
-  private static final List<BoundedNatural> 
+  private static final List<BoundedNatural>
   divide2n1n (final BoundedNatural a,
               final BoundedNatural b) {
     final int n = b.hiInt();
@@ -396,9 +396,9 @@ public final class NaturalDivide {
    */
 
   private static final BoundedNatural getBlock (final BoundedNatural u,
-                                         final int index,
-                                         final int numBlocks,
-                                         final int blockLength) {
+                                                final int index,
+                                                final int numBlocks,
+                                                final int blockLength) {
     final int blockStart = index * blockLength;
     if (blockStart >= u.hiInt()) { return u.zero(); }
     final int blockEnd;
@@ -421,7 +421,7 @@ public final class NaturalDivide {
     final int s0 = s/BURNIKEL_ZIEGLER_THRESHOLD;
     final int m = 1 << (32-Integer.numberOfLeadingZeros(s0));
 
-    final int j = (s+m-1) / m; // step 2a: j = ceil(s/m)
+    final int j = ((s+m)-1) / m; // step 2a: j = ceil(s/m)
     final int n = j * m; // step 2b: block length in 32-bit units
     final long n32 = 32L * n; // block length in bits
     // step 3: sigma = max{T | (2^T)*B < beta^n}
@@ -470,11 +470,11 @@ public final class NaturalDivide {
 
   //--------------------------------------------------------------
 
-  public static final List<BoundedNatural> 
+  public static final List<BoundedNatural>
   divideAndRemainder (final BoundedNatural u,
                       final BoundedNatural v) {
     //assert (! v.isZero());
-    if (useKnuthDivision(u,v)) { 
+    if (useKnuthDivision(u,v)) {
       return NaturalDivide.divideAndRemainderKnuth(u,v); }
     return NaturalDivide.divideAndRemainderBurnikelZiegler(u,v); }
 
@@ -484,9 +484,9 @@ public final class NaturalDivide {
   /** Algorithm B from Knuth section 4.5.2 */
 
   private static final BoundedNatural gcdKnuth (final BoundedNatural u,
-                                         final BoundedNatural v) {
-//    BoundedNatural a = u.copy();
-//    BoundedNatural b = v.copy();
+                                                final BoundedNatural v) {
+    //    BoundedNatural a = u.copy();
+    //    BoundedNatural b = v.copy();
     BoundedNatural a = u;
     BoundedNatural b = v;
     //assert a.isValid();
@@ -533,14 +533,14 @@ public final class NaturalDivide {
         return r; }
       // B6
       tsign = a.compareTo(b);
-      if (0==tsign) { 
+      if (0==tsign) {
         //assert a.isValid();
         //assert b.isValid();
         //assert u.isValid();
         //assert v.isValid();
         break; }
       else if (0<tsign) { a = a.subtract(b); t = a;  }
-      else { b = b.subtract(a); t = b; } 
+      else { b = b.subtract(a); t = b; }
       //assert a.isValid();
       //assert b.isValid();
       //assert u.isValid();
@@ -563,14 +563,14 @@ public final class NaturalDivide {
    */
 
   public static final BoundedNatural gcd (final BoundedNatural u,
-                                   final BoundedNatural v) {
+                                          final BoundedNatural v) {
     BoundedNatural a = u;
     BoundedNatural b = v;
     //assert a.isValid();
     //assert b.isValid();
     while (!b.isZero()) {
-      if (Math.abs(a.hiInt()-b.hiInt()) < 2) { 
-        final BoundedNatural g = gcdKnuth(a,b); 
+      if (Math.abs(a.hiInt()-b.hiInt()) < 2) {
+        final BoundedNatural g = gcdKnuth(a,b);
         //assert a.isValid();
         //assert b.isValid();
         return g; }
@@ -582,7 +582,7 @@ public final class NaturalDivide {
     return a; }
 
   public static final List<BoundedNatural> reduce (final BoundedNatural n0,
-                                            final BoundedNatural d0) {
+                                                   final BoundedNatural d0) {
     //assert n0.isValid();
     //assert d0.isValid();
     final int shift = Math.min(n0.loBit(),d0.loBit());
@@ -605,20 +605,20 @@ public final class NaturalDivide {
       return List.of(ng,dg); }
     return List.of(n,d); }
 
-  public static final List<BigInteger> 
+  public static final List<BigInteger>
   reduce (final BigInteger n0,
           final BigInteger d0) {
-    final int shift = 
+    final int shift =
       Math.min(Numbers.loBit(n0),Numbers.loBit(d0));
-    final BigInteger n = 
+    final BigInteger n =
       ((shift != 0) ? n0.shiftRight(shift) : n0);
-    final BigInteger d = 
+    final BigInteger d =
       ((shift != 0) ? d0.shiftRight(shift) : d0);
-    if (n.equals(d)) { 
+    if (n.equals(d)) {
       return List.of(BigInteger.ONE,BigInteger.ONE); }
     if (d.equals(BigInteger.ONE)) {
       return List.of(n,BigInteger.ONE); }
-    if (n.equals(BigInteger.ONE)) { 
+    if (n.equals(BigInteger.ONE)) {
       return List.of(BigInteger.ONE,d); }
     final BigInteger g = n.gcd(d);
     if (g.compareTo(BigInteger.ONE) > 0) {

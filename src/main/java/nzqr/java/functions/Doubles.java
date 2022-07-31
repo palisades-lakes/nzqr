@@ -1,7 +1,7 @@
 package nzqr.java.functions;
 
-import static java.lang.Double.*;
-
+import static java.lang.Double.NEGATIVE_INFINITY;
+import static java.lang.Double.POSITIVE_INFINITY;
 import static java.lang.Math.abs;
 import static java.lang.Math.fma;
 import static java.lang.Math.ulp;
@@ -51,51 +51,51 @@ public final class Doubles {
   //--------------------------------------------------------------
   // 'vector' or 'list'  ops
   //--------------------------------------------------------------
-  
+
   public static final double min (final double[] x) {
     final int n = x.length;
     double xmin = POSITIVE_INFINITY;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       // NaN elements will be ignored.
       if (x[i] < xmin) { xmin=x[i]; } }
     return xmin; }
-  
+
   //--------------------------------------------------------------
-  
+
   public static final double min (final double[][] x) {
     double xmin = POSITIVE_INFINITY;
-    for (final double[] xi : x) { 
+    for (final double[] xi : x) {
       final double ximin = min(xi);
       if (ximin < xmin) { xmin=ximin; } }
     return xmin; }
-  
+
   //--------------------------------------------------------------
 
   public static final double max (final double[] x) {
     final int n = x.length;
     double xmax = NEGATIVE_INFINITY;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       // NaN elements will be ignored.
       if (x[i] > xmax) { xmax=x[i]; } }
     return xmax; }
-  
+
   //--------------------------------------------------------------
-  
+
   public static final double max (final double[][] x) {
     double xmax = NEGATIVE_INFINITY;
-    for (final double[] xi : x) { 
+    for (final double[] xi : x) {
       final double ximax = max(xi);
       if (ximax > xmax) { xmax=ximax; } }
     return xmax; }
-  
+
   //--------------------------------------------------------------
-  
+
   public static final boolean strictlyIncreasing (final double[] x) {
     final int n = x.length;
-    for (int i=1;i<n;i++) { 
+    for (int i=1;i<n;i++) {
       if (x[i-1] >= x[i]) { return false; } }
     return true; }
-  
+
   //--------------------------------------------------------------
   /** Are corresponding elements within <code>ulps</code> ulps
    * of each other?
@@ -124,29 +124,29 @@ public final class Doubles {
     for (int i=0;i<n;i++) { z[i] = fma(a,x[i],b*y[i]); } }
 
   //--------------------------------------------------------------
-//  /** z = a*x+b*y */
-//
-//  public static final double[] 
-//    linearCombination (final double a,
-//                       final double[] x,
-//                       final double b,
-//                       final double[] y) {
-//    final int n = x.length;
-//    final double[] z = new double[n]; 
-//    linearCombination(a,x,b,y,z,n);
-//    return z; }
+  //  /** z = a*x+b*y */
+  //
+  //  public static final double[]
+  //    linearCombination (final double a,
+  //                       final double[] x,
+  //                       final double b,
+  //                       final double[] y) {
+  //    final int n = x.length;
+  //    final double[] z = new double[n];
+  //    linearCombination(a,x,b,y,z,n);
+  //    return z; }
 
   //--------------------------------------------------------------
-//  /** z = a*x+b*y+z */
-//
-//  public static final void axbypz (final double a,
-//                                 final double[] x,
-//                                 final double b,
-//                                 final double[] y,
-//                                 final double[] z) {
-//    final int n = x.length;
-//    for (int i=0;i<n;i++) {
-//      z[i] = fma(a,x[i],fma(b,y[i],z[i])); } }
+  //  /** z = a*x+b*y+z */
+  //
+  //  public static final void axbypz (final double a,
+  //                                 final double[] x,
+  //                                 final double b,
+  //                                 final double[] y,
+  //                                 final double[] z) {
+  //    final int n = x.length;
+  //    for (int i=0;i<n;i++) {
+  //      z[i] = fma(a,x[i],fma(b,y[i],z[i])); } }
 
   //--------------------------------------------------------------
   /** y = a*x+y */
@@ -184,21 +184,21 @@ public final class Doubles {
   //--------------------------------------------------------------
   /** x = ax-y NOTE: difference from  axpy*/
 
-//  public static final void axmy (final double a,
-//                                 final double[] x,
-//                                 final double[] y) {
-//    final int n = x.length;
-//    for (int i=0;i<n;i++) { x[i] = fma(a,x[i],-y[i]); } }
+  //  public static final void axmy (final double a,
+  //                                 final double[] x,
+  //                                 final double[] y) {
+  //    final int n = x.length;
+  //    for (int i=0;i<n;i++) { x[i] = fma(a,x[i],-y[i]); } }
 
-//  /** return z = ax-y NOTE: difference from  axpy*/
-//
-//  public static final double[] safeAxmy (final double a,
-//                                         final double[] x,
-//                                         final double[] y) {
-//    final int n = x.length;
-//    final double[] z = new double[n];
-//    for (int i=0;i<n;i++) { z[i] = fma(a,x[i],-y[i]); } 
-//    return z; }
+  //  /** return z = ax-y NOTE: difference from  axpy*/
+  //
+  //  public static final double[] safeAxmy (final double a,
+  //                                         final double[] x,
+  //                                         final double[] y) {
+  //    final int n = x.length;
+  //    final double[] z = new double[n];
+  //    for (int i=0;i<n;i++) { z[i] = fma(a,x[i],-y[i]); }
+  //    return z; }
 
   //--------------------------------------------------------------
   /** Overwrite </code>dst</code>.
@@ -220,21 +220,21 @@ public final class Doubles {
     //assert n == dst.length;
     for (int i=0;i<n;i++) { dst[i] = -src[i]; } }
 
-//  /** Overwrite </code>Z</code>.
-//   */
-//
-//  public static final void negate1 (final double[] z) {
-//    final int n = z.length;
-//    for (int i=0;i<n;i++) { z[i] = -z[i]; } }
+  //  /** Overwrite </code>Z</code>.
+  //   */
+  //
+  //  public static final void negate1 (final double[] z) {
+  //    final int n = z.length;
+  //    for (int i=0;i<n;i++) { z[i] = -z[i]; } }
 
-//  /** Return </code>-x</code>.
-//   */
-//
-//  public static final double[] negate (final double[] x) {
-//    final int n = x.length;
-//    final double[] y = new double[n];
-//    negate(x,y);
-//    return y; }
+  //  /** Return </code>-x</code>.
+  //   */
+  //
+  //  public static final double[] negate (final double[] x) {
+  //    final int n = x.length;
+  //    final double[] y = new double[n];
+  //    negate(x,y);
+  //    return y; }
 
   //--------------------------------------------------------------
   /** <b>Destructive(!!!)</b> <code>z[i] = a*z[i]</code>.
@@ -287,23 +287,23 @@ public final class Doubles {
     for (int i=0;i<n;i++) { dst[i+dStart] = a*src[i+sStart]; } }
 
   //--------------------------------------------------------------
-//  /** Destructive!  ok if z is x and/or y.*/
-//
-//  public static final void subtract (final double[] x,
-//                                     final double[] y,
-//                                     final double[] z) {
-//    final int n = z.length;
-//    for (int i=0;i<n;i++) { z[i] = x[i]-y[i]; } }
-//
+  //  /** Destructive!  ok if z is x and/or y.*/
+  //
+  //  public static final void subtract (final double[] x,
+  //                                     final double[] y,
+  //                                     final double[] z) {
+  //    final int n = z.length;
+  //    for (int i=0;i<n;i++) { z[i] = x[i]-y[i]; } }
+  //
   //--------------------------------------------------------------
-//  /** return x-y */
-//
-//  public static final double[] subtract (final double[] x,
-//                                         final double[] y) {
-//    final int n = x.length;
-//    final double[] z = new double[n];
-//    for (int i=0;i<n;i++) { z[i] = x[i]-y[i]; }
-//    return z; }
+  //  /** return x-y */
+  //
+  //  public static final double[] subtract (final double[] x,
+  //                                         final double[] y) {
+  //    final int n = x.length;
+  //    final double[] z = new double[n];
+  //    for (int i=0;i<n;i++) { z[i] = x[i]-y[i]; }
+  //    return z; }
 
   //--------------------------------------------------------------
   /** z = x-y, with an offset into z.
@@ -330,23 +330,23 @@ public final class Doubles {
 
   //--------------------------------------------------------------
 
-//  public static final double dot (final double[] x,
-//                                  final double[] y) {
-//    final int n = x.length;
-//    double s = 0.0;
-//    final int n5 = (n%5);
-//    int i=0;
-//    while (i<n5) { s = fma(x[i],y[i++],s); }
-//    while (i<n) {
-//      final int i1 = i+1;
-//      final double z1 = fma(x[i1],y[i1],x[i]*y[i]);
-//      final int i2 = i+2;
-//      final int i3 = i+3;
-//      final double z3 = fma(x[i3],y[i3],x[i2]*y[i2]);
-//      final int i4 = i+4;
-//      s += fma(x[i4],y[i4],z1+z3); 
-//      i += 5; }
-//    return s; }
+  //  public static final double dot (final double[] x,
+  //                                  final double[] y) {
+  //    final int n = x.length;
+  //    double s = 0.0;
+  //    final int n5 = (n%5);
+  //    int i=0;
+  //    while (i<n5) { s = fma(x[i],y[i++],s); }
+  //    while (i<n) {
+  //      final int i1 = i+1;
+  //      final double z1 = fma(x[i1],y[i1],x[i]*y[i]);
+  //      final int i2 = i+2;
+  //      final int i3 = i+3;
+  //      final double z3 = fma(x[i3],y[i3],x[i2]*y[i2]);
+  //      final int i4 = i+4;
+  //      s += fma(x[i4],y[i4],z1+z3);
+  //      i += 5; }
+  //    return s; }
 
   public static final double dot (final double[] x,
                                   final double[] y,
@@ -362,29 +362,29 @@ public final class Doubles {
       final int i3 = i+3;
       final double z3 = fma(x[i3],y[i3],x[i2]*y[i2]);
       final int i4 = i+4;
-      s += fma(x[i4],y[i4],z1+z3); 
+      s += fma(x[i4],y[i4],z1+z3);
       i += 5; }
     return s; }
 
   //--------------------------------------------------------------
 
-//  public static final double l2norm2 (final double[] x) {
-//    final int n = x.length;
-//    final int n5 = n % 5;
-//    double s = 0.0;
-//    int i=0;
-//    while (i<n5) { final double xi = x[i++]; s = fma(xi,xi,s); }
-//    while (i<n) {
-//      final double x0 = x[i];
-//      final double x1 = x[i+1]; 
-//      final double s1 = fma(x1,x1,x0*x0);
-//      final double x2 = x[i+2]; 
-//      final double x3 = x[i+3]; 
-//      final double s3 = fma(x3,x3,x2*x2);
-//      final double x4 = x[i+4]; 
-//      s += fma(x4,x4,s3+s1); 
-//      i += 5; }
-//    return s; }
+  //  public static final double l2norm2 (final double[] x) {
+  //    final int n = x.length;
+  //    final int n5 = n % 5;
+  //    double s = 0.0;
+  //    int i=0;
+  //    while (i<n5) { final double xi = x[i++]; s = fma(xi,xi,s); }
+  //    while (i<n) {
+  //      final double x0 = x[i];
+  //      final double x1 = x[i+1];
+  //      final double s1 = fma(x1,x1,x0*x0);
+  //      final double x2 = x[i+2];
+  //      final double x3 = x[i+3];
+  //      final double s3 = fma(x3,x3,x2*x2);
+  //      final double x4 = x[i+4];
+  //      s += fma(x4,x4,s3+s1);
+  //      i += 5; }
+  //    return s; }
 
   public static final double l2norm2 (final double[] x,
                                       final int n) {
@@ -394,27 +394,27 @@ public final class Doubles {
     while (i<n5) { final double xi = x[i++]; s = fma(xi,xi,s); }
     while (i<n) {
       final double x0 = x[i];
-      final double x1 = x[i+1]; 
+      final double x1 = x[i+1];
       final double s1 = fma(x1,x1,x0*x0);
-      final double x2 = x[i+2]; 
-      final double x3 = x[i+3]; 
+      final double x2 = x[i+2];
+      final double x3 = x[i+3];
       final double s3 = fma(x3,x3,x2*x2);
-      final double x4 = x[i+4]; 
-      s += fma(x4,x4,s3+s1); 
+      final double x4 = x[i+4];
+      s += fma(x4,x4,s3+s1);
       i += 5; }
     return s; }
 
   //--------------------------------------------------------------
-//  /** maximum absolute value over the elements.
-//   */
-//
-//  public static final double maxabs (final double[] x) {
-//    final int n = x.length;
-//    double xmax = abs(x[0]);
-//    for (int i=1;i<n; i++) {
-//      final double axi = abs(x[i]);
-//      if (xmax < axi) { xmax = axi; } }
-//    return xmax; }
+  //  /** maximum absolute value over the elements.
+  //   */
+  //
+  //  public static final double maxabs (final double[] x) {
+  //    final int n = x.length;
+  //    double xmax = abs(x[0]);
+  //    for (int i=1;i<n; i++) {
+  //      final double axi = abs(x[i]);
+  //      if (xmax < axi) { xmax = axi; } }
+  //    return xmax; }
 
   //--------------------------------------------------------------
 
@@ -432,15 +432,15 @@ public final class Doubles {
   public static final void shiftLeft (final double[] z,
                                       final int n,
                                       final double newZ) {
-    for (int k=0;k<n;k++) { z[k] = z[k+1]; } 
+    for (int k=0;k<n;k++) { z[k] = z[k+1]; }
     z[n] = newZ; }
 
   //--------------------------------------------------------------
-//  /** <code>x1[i] = x0[i]</code> */
-//
-//  public static final void copy (final double[] x0,
-//                                 final double[] x1) {
-//    System.arraycopy(x0,0,x1,0,x0.length); }
+  //  /** <code>x1[i] = x0[i]</code> */
+  //
+  //  public static final void copy (final double[] x0,
+  //                                 final double[] x1) {
+  //    System.arraycopy(x0,0,x1,0,x0.length); }
 
   /** <code>x1[i] = x0[i]</code> */
 

@@ -30,7 +30,7 @@ public final class Accuracy {
         final double truth = exact.clear().addProducts(x0,x1).doubleValue();
         final double pred = a.clear().addProducts(x0,x1).doubleValue();
         System.out.println(
-          2.0*Math.abs(truth-pred) 
+          (2.0*Math.abs(truth-pred))
           / (Math.abs(truth)+Math.abs(pred))); } } }
 
   //--------------------------------------------------------------

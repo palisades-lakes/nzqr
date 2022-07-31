@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import nzqr.java.numbers.BigFractions;
 import nzqr.java.test.algebra.SetTests;
 //----------------------------------------------------------------
-/** Test <code>BigFractions</code> set. 
+/** Test <code>BigFractions</code> set.
  * <p>
  * <pre>
  * mvn -q -Dtest=nzqr/java/test/sets/BigFractionsTest test > BigFractionsTest.txt

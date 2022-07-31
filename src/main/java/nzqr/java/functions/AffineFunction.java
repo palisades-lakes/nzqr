@@ -1,6 +1,6 @@
 package nzqr.java.functions;
 
-/** An affine function from <b>R</b><sup>n</sup> to 
+/** An affine function from <b>R</b><sup>n</sup> to
  * <b>R</b><sup>m</sup>.
  *
  * @author palisades dot lakes at gmail dot com
@@ -26,11 +26,11 @@ public final class AffineFunction implements Function {
   //--------------------------------------------------------------
 
   @Override
-  public final Domain domain () { 
+  public final Domain domain () {
     return _linear.domain(); }
 
   @Override
-  public final Domain codomain () { 
+  public final Domain codomain () {
     return _linear.codomain(); }
 
   //--------------------------------------------------------------
@@ -70,10 +70,10 @@ public final class AffineFunction implements Function {
 
   private AffineFunction (final Function linear,
                           final Vektor translation) {
-    _linear =  linear; 
+    _linear =  linear;
     _translation = translation; }
 
-  public static final AffineFunction 
+  public static final AffineFunction
   make (final Function linear,
         final Vektor translation) {
     return new AffineFunction(linear,translation); }

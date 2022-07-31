@@ -23,7 +23,7 @@ public final class PartialSums {
     //final Generator g = Generators.make("gaussian",dim);
     //final Generator g = Generators.make("laplace",dim);
     final Generator g = Generators.make("uniform",dim);
-    final Accumulator a = 
+    final Accumulator a =
       nzqr.java.accumulators.RationalFloatAccumulator.make();
     //nzqr.java.accumulators.BigFloatAccumulator.make();
     assert a.isExact();

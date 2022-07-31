@@ -2,7 +2,7 @@ package nzqr.java.functions;
 
 /** Wrapper that counts function and gradient evaluations,
  * and caches last position, value, and gradient.
- * 
+ *
  * <em>WARNING:</em> not `thread safe!
  *
  * @author palisades dot lakes at gmail dot com
@@ -54,7 +54,7 @@ public final class FunctionalCounter implements Function {
     super();
     _inner = inner; }
 
-  public static final FunctionalCounter 
+  public static final FunctionalCounter
   wrap (final Function inner) {
     // assert 1 == inner.domain().dimension();
     return new FunctionalCounter(inner); }

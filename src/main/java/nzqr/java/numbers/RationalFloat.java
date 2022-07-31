@@ -21,7 +21,7 @@ import nzqr.java.Exceptions;
  */
 
 @SuppressWarnings("unchecked")
-public final class RationalFloat 
+public final class RationalFloat
 implements Ringlike<RationalFloat> {
 
   //--------------------------------------------------------------
@@ -85,9 +85,9 @@ implements Ringlike<RationalFloat> {
                                            final int e1) {
     if (e0<e1) { return add6(p1,t1,e1,p0,t0,e0); }
     final int de = e0-e1;
-    if (p0!=p1) { 
+    if (p0!=p1) {
       // different signs
-      final BoundedNatural t0s = (de>0) ? t0.shiftUp(de) : t0; 
+      final BoundedNatural t0s = (de>0) ? t0.shiftUp(de) : t0;
       final int c01 = t0s.compareTo(t1);
       // t1 > t0s
       if (0>c01) { return valueOf(p1,t1.subtract(t0s),e1); }
@@ -329,7 +329,7 @@ implements Ringlike<RationalFloat> {
 
     if (d0.isOne()) {
       if (e0<e1) { return add6(p0,n0,p1,t1,e1-e0,e0); }
-      if (e0==e1) { return add5(p0,n0,p1,t1,e0); } 
+      if (e0==e1) { return add5(p0,n0,p1,t1,e0); }
       return add5(p0,n0.shiftUp(e0-e1),p1,t1,e1); }
 
     return add7(p0,n0,d0,e0,p1,t1,e1); }
@@ -338,7 +338,7 @@ implements Ringlike<RationalFloat> {
 
   public final RationalFloat add (final double z) {
     //assert Double.isFinite(z);
-    // escape on zero needed for add() 
+    // escape on zero needed for add()
     if (0.0==z) { return this; }
     return add3(
       Doubles.nonNegative(z),
@@ -437,7 +437,7 @@ implements Ringlike<RationalFloat> {
   public final RationalFloat
   multiply (final double z) {
     //assert Double.isFinite(z);
-    // escape on zero needed for add() 
+    // escape on zero needed for add()
     if (0.0==z) { return this; }
     return multiply(
       Doubles.nonNegative(z),
@@ -512,7 +512,7 @@ implements Ringlike<RationalFloat> {
     if (d0.isOne()) { return add6(p0,n0,e0,p,n,e); }
     return add7(p0,n0,d0,e0,p,n,e); }
 
-  public final RationalFloat 
+  public final RationalFloat
   addProducts (final double[] z0,
                final double[] z1)  {
     final int n = z0.length;
@@ -541,7 +541,7 @@ implements Ringlike<RationalFloat> {
     final long t1 = (t11>>>shift1);
     final int e1 = e11+shift1;
 
-    return 
+    return
       valueOf(
         Doubles.nonNegative(a)==Doubles.nonNegative(x),
         BoundedNatural.product(t0,t1),
@@ -627,7 +627,7 @@ implements Ringlike<RationalFloat> {
     final BoundedNatural d = denominator();
     final int e = exponent();
 
-    final boolean p3 = 
+    final boolean p3 =
       Doubles.nonNegative(z0)==Doubles.nonNegative(z1);
     final BoundedNatural n3 = BoundedNatural.product(t0,t1);
     final int e3 = e0+e1+1;
@@ -817,7 +817,7 @@ implements Ringlike<RationalFloat> {
     final BoundedNatural qr1 = qr.get(1);
 
     // round down or up?
-    // want to know if remainder/denominator is 
+    // want to know if remainder/denominator is
     // more or less than 1/2
     // comparing 2*remainder to denominator
     // TODO: faster way to do this?
@@ -942,8 +942,8 @@ implements Ringlike<RationalFloat> {
     final int en = n.loBit();
     final BoundedNatural n0 =
       (en != 0) ? n.shiftDown(en) : n;
-      final int e0 = (e + en);
-      return new RationalFloat(p,n0,BoundedNatural.ONE,e0); }
+    final int e0 = (e + en);
+    return new RationalFloat(p,n0,BoundedNatural.ONE,e0); }
 
   private static final RationalFloat
   reduce (final boolean p,
@@ -959,33 +959,33 @@ implements Ringlike<RationalFloat> {
       final int ed = d.loBit();
       final BoundedNatural d0 =
         (ed != 0) ? d.shiftDown(ed) : d;
-        final int e0 = e - ed;
-        return new RationalFloat(p,BoundedNatural.ONE,d0,e0); }
+      final int e0 = e - ed;
+      return new RationalFloat(p,BoundedNatural.ONE,d0,e0); }
 
     final int en = n.loBit();
     final int ed = d.loBit();
     final BoundedNatural n0 =
       (en != 0) ? n.shiftDown(en) : n;
-      final BoundedNatural d0 =
-        (ed != 0) ? d.shiftDown(ed) : d;
-        final int e0 = (e + en) - ed;
+    final BoundedNatural d0 =
+      (ed != 0) ? d.shiftDown(ed) : d;
+    final int e0 = (e + en) - ed;
 
-        // might have numerator or denominator 1 after shift
-        if (d0.isOne()) {
-          if (n0.isOne()) {
-            return new RationalFloat(
-              p,BoundedNatural.ONE,BoundedNatural.ONE,e0); }
-          return new RationalFloat(p,n0,BoundedNatural.ONE,e0); }
-        if (n0.isOne()) {
-          return new RationalFloat(p,BoundedNatural.ONE,d0,e0); }
+    // might have numerator or denominator 1 after shift
+    if (d0.isOne()) {
+      if (n0.isOne()) {
+        return new RationalFloat(
+          p,BoundedNatural.ONE,BoundedNatural.ONE,e0); }
+      return new RationalFloat(p,n0,BoundedNatural.ONE,e0); }
+    if (n0.isOne()) {
+      return new RationalFloat(p,BoundedNatural.ONE,d0,e0); }
 
-        final BoundedNatural gcd = n0.gcd(d0);
-        final BoundedNatural n1 = n0.divide(gcd);
-        final BoundedNatural d1 = d0.divide(gcd);
-        return new RationalFloat(p,n1,d1,e0); }
+    final BoundedNatural gcd = n0.gcd(d0);
+    final BoundedNatural n1 = n0.divide(gcd);
+    final BoundedNatural d1 = d0.divide(gcd);
+    return new RationalFloat(p,n1,d1,e0); }
 
   private final RationalFloat reduce () {
-    return 
+    return
       reduce(
         nonNegative(),numerator(),denominator(),exponent()); }
 
@@ -1074,7 +1074,7 @@ implements Ringlike<RationalFloat> {
   //
   //  public static final RationalFloat valueOf (final long x)  {
   //    final boolean nonNegative = (0L <= x);
-  //    return 
+  //    return
   //      valueOf(nonNegative,BoundedNatural.valueOf(nonNegative ? x : -x)); }
 
   //--------------------------------------------------------------
@@ -1132,7 +1132,7 @@ implements Ringlike<RationalFloat> {
   //  public static final RationalFloat TEN =
   //    new RationalFloat(true,BoundedNatural.valueOf(5),BoundedNatural.ONE,1);
 
-  //  public static final RationalFloat MINUS_ONE = 
+  //  public static final RationalFloat MINUS_ONE =
   //  new RationalFloat(false,BoundedNatural.ONE,BoundedNatural.ONE,0);
 
   //--------------------------------------------------------------

@@ -75,7 +75,7 @@ public final class Q implements Set {
   //--------------------------------------------------------------
 
   private final RationalFloat multiply (final Object x0,
-                                   final Object x1) {
+                                        final Object x1) {
     //assert contains(x0) :
     // "x0 " + Classes.className(x0) + ":" + x0 + " not in " + this;
     //assert contains(x1)  :
@@ -128,21 +128,14 @@ public final class Q implements Set {
   // TODO: collect some stats and order tests by frequency?
 
   public static final boolean knownRational (final Object x) {
-    if (x instanceof BigFloat) { return true; }
-    if (x instanceof RationalFloat) { return true; }
-    if (x instanceof BoundedNatural) { return true; }
-    if (x instanceof Number) { return true; }
+    if ((x instanceof BigFloat) || (x instanceof RationalFloat)
+      || (x instanceof BoundedNatural)
+      || (x instanceof Number)) { return true; }
     return false; }
 
   public static final boolean knownRational (final Class c) {
-    if (BigFloat.class.isAssignableFrom(c)) { return true; }
-    if (RationalFloat.class.isAssignableFrom(c)) { return true; }
-    if (BoundedNatural.class.isAssignableFrom(c)) { return true; }
-    if (Number.class.isAssignableFrom(c)) { return true; }
-    if (Byte.TYPE.equals(c)) { return true; }
-    if (Short.TYPE.equals(c)) { return true; }
-    if (Integer.TYPE.equals(c)) { return true; }
-    if (Long.TYPE.equals(c)) { return true; }
+    if (BigFloat.class.isAssignableFrom(c) || RationalFloat.class.isAssignableFrom(c) || BoundedNatural.class.isAssignableFrom(c) || Number.class.isAssignableFrom(c)) { return true; }
+    if (Byte.TYPE.equals(c) || Short.TYPE.equals(c) || Integer.TYPE.equals(c) || Long.TYPE.equals(c)) { return true; }
     if (Float.TYPE.equals(c)) { return true; }
     if (Double.TYPE.equals(c)) { return true; }
     return false; }

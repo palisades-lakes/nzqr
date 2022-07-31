@@ -41,7 +41,7 @@ extends ExactAccumulator<BigFloatAccumulator> {
 
   @Override
   public final BigFloatAccumulator addAll (final double[] z) {
-    _sum = _sum.addAll(z); 
+    _sum = _sum.addAll(z);
     return this; }
 
   @Override
@@ -51,7 +51,7 @@ extends ExactAccumulator<BigFloatAccumulator> {
 
   @Override
   public final BigFloatAccumulator addAbsAll (final double[] z) {
-    _sum = _sum.addAbsAll(z); 
+    _sum = _sum.addAbsAll(z);
     return this; }
 
   @Override
@@ -73,7 +73,7 @@ extends ExactAccumulator<BigFloatAccumulator> {
   @Override
   public final BigFloatAccumulator addProducts (final double[] z0,
                                                 final double[] z1)  {
-    _sum = _sum.addProducts(z0,z1); 
+    _sum = _sum.addProducts(z0,z1);
     return this; }
 
   @Override
@@ -83,10 +83,10 @@ extends ExactAccumulator<BigFloatAccumulator> {
     _sum = _sum.addL1(z0,z1);
     return this; }
 
-   @Override
+  @Override
   public final BigFloatAccumulator addL1Distance (final double[] z0,
                                                   final double[] z1)  {
-    _sum = _sum.addL1Distance(z0,z1); 
+    _sum = _sum.addL1Distance(z0,z1);
     return this; }
 
   @Override
@@ -98,7 +98,7 @@ extends ExactAccumulator<BigFloatAccumulator> {
   @Override
   public final BigFloatAccumulator addL2Distance (final double[] z0,
                                                   final double[] z1)  {
-    _sum = _sum.addL2Distance(z0,z1); 
+    _sum = _sum.addL2Distance(z0,z1);
     return this; }
 
   //--------------------------------------------------------------
@@ -110,9 +110,9 @@ extends ExactAccumulator<BigFloatAccumulator> {
     final int n = x.length;
     //assert s.length==n;
     BigFloat sum = BigFloat.ZERO;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       sum = sum.add(x[i]);
-      s[i] = sum.doubleValue(); } 
+      s[i] = sum.doubleValue(); }
     _sum = sum; }
 
   @Override
@@ -120,9 +120,9 @@ extends ExactAccumulator<BigFloatAccumulator> {
     final int n = x.length;
     final double[] s = new double[n];
     BigFloat sum = BigFloat.ZERO;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       sum = sum.add(x[i]);
-      s[i] = sum.doubleValue(); } 
+      s[i] = sum.doubleValue(); }
     _sum = sum;
     return s; }
 
@@ -131,9 +131,9 @@ extends ExactAccumulator<BigFloatAccumulator> {
     final int n = x.length;
     final double[] s = new double[n];
     BigFloat sum = BigFloat.ZERO;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       sum = sum.addAbs(x[i]);
-      s[i] = sum.doubleValue(); } 
+      s[i] = sum.doubleValue(); }
     _sum = sum;
     return s; }
 
@@ -142,9 +142,9 @@ extends ExactAccumulator<BigFloatAccumulator> {
     final int n = x.length;
     final double[] s = new double[n];
     BigFloat sum = BigFloat.ZERO;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       sum = sum.add2(x[i]);
-      s[i] = sum.doubleValue(); } 
+      s[i] = sum.doubleValue(); }
     _sum = sum;
     return s; }
 
@@ -156,7 +156,7 @@ extends ExactAccumulator<BigFloatAccumulator> {
     BigFloat sum = BigFloat.ZERO;
     for (int i=0;i<n;i++) {
       sum = sum.addProduct(x0[i],x1[i]);
-      s[i] = sum.doubleValue(); } 
+      s[i] = sum.doubleValue(); }
     _sum = sum;
     return s; }
 
@@ -168,7 +168,7 @@ extends ExactAccumulator<BigFloatAccumulator> {
     BigFloat sum = BigFloat.ZERO;
     for (int i=0;i<n;i++) {
       sum = sum.addL1(x0[i],x1[i]);
-      s[i] = sum.doubleValue(); } 
+      s[i] = sum.doubleValue(); }
     _sum = sum;
     return s; }
 
@@ -180,7 +180,7 @@ extends ExactAccumulator<BigFloatAccumulator> {
     BigFloat sum = BigFloat.ZERO;
     for (int i=0;i<n;i++) {
       sum = sum.addL2(x0[i],x1[i]);
-      s[i] = sum.doubleValue(); } 
+      s[i] = sum.doubleValue(); }
     _sum = sum;
     return s; }
 

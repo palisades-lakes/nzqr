@@ -5,7 +5,7 @@ import static java.lang.Math.fma;
 
 import java.util.Arrays;
 
-/** Immutable <code>double</code> approximation to 
+/** Immutable <code>double</code> approximation to
  * <b>R</b><sup>n</sup>.
  *
  * @author palisades dot lakes at gmail dot com
@@ -65,16 +65,16 @@ public final class Vektor {
     final int n5 = n % 5;
     double s = 0.0;
     int i=0;
-    while (i<n5) { 
+    while (i<n5) {
       final double xi = x[i++]; s = fma(xi,xi,s); }
     while (i<n) {
       final double x0 = x[i++];
-      final double x1 = x[i++]; 
+      final double x1 = x[i++];
       final double s1 = fma(x1,x1,x0*x0);
-      final double x2 = x[i++]; 
-      final double x3 = x[i++]; 
+      final double x2 = x[i++];
+      final double x3 = x[i++];
       final double s3 = fma(x3,x3,x2*x2);
-      final double x4 = x[i++]; 
+      final double x4 = x[i++];
       s += fma(x4,x4,s3+s1); }
     return s; }
 
@@ -94,7 +94,7 @@ public final class Vektor {
       final int i3 = i+3;
       final double z3 = fma(x[i3],y[i3],x[i2]*y[i2]);
       final int i4 = i+4;
-      s += fma(x[i4],y[i4],z1+z3); 
+      s += fma(x[i4],y[i4],z1+z3);
       i = i4 + 1; }
     return s; }
 
@@ -109,14 +109,14 @@ public final class Vektor {
   //--------------------------------------------------------------
   // Note: unrolling axpy, etc., make it slower.
 
-  public final void axpy (final double a, 
+  public final void axpy (final double a,
                           final double[] y) {
     final int n = x.length;
     for (int i=0;i<n;i++) { y[i] = fma(a,x[i],y[i]); } }
 
   //--------------------------------------------------------------
 
-  public final Vektor axpy (final double a, 
+  public final Vektor axpy (final double a,
                             final Vektor that) {
     final double[] y = that.x;
     final int n = x.length;
@@ -157,18 +157,18 @@ public final class Vektor {
   //--------------------------------------------------------------
   /** return a*this - that*/
 
-  public final Vektor axmy (final double a, 
+  public final Vektor axmy (final double a,
                             final Vektor that) {
     final double[] y = that.x;
     final int n = x.length;
     final double[] z = new double[n];
-    for (int i=0;i<n;i++) { z[i] = fma(a,x[i],-y[i]); } 
+    for (int i=0;i<n;i++) { z[i] = fma(a,x[i],-y[i]); }
     return unsafeMake(z); }
 
   //--------------------------------------------------------------
   /** y = a*this */
 
-  public final void scale (final double a, 
+  public final void scale (final double a,
                            final double[] y) {
     final int n = x.length;
     for (int i=0;i<n;i++) { y[i] = a*x[i]; } }
@@ -192,7 +192,7 @@ public final class Vektor {
                                                final double[] y,
                                                final int nrows,
                                                final int ncols) {
-    for (int j=0;j<ncols;j++) { 
+    for (int j=0;j<ncols;j++) {
       y[j] = x.dot(a[j],nrows); } }
 
   //--------------------------------------------------------------
@@ -204,12 +204,12 @@ public final class Vektor {
                                                final int yOff,
                                                final int nrows,
                                                final int ncols) {
-    for (int j=yOff;j<(ncols+yOff); j++) { 
+    for (int j=yOff;j<(ncols+yOff); j++) {
       y[j] = x.dot(a[j],nrows); } }
 
   //--------------------------------------------------------------
-  /** each coordinate within 
-   * <code>ulps * Math.ulp(1+abs(this)+abs(that))</code> 
+  /** each coordinate within
+   * <code>ulps * Math.ulp(1+abs(this)+abs(that))</code>
    */
 
   public final boolean approximatelyEqual (final double ulps,
@@ -222,8 +222,8 @@ public final class Vektor {
 
   @Override
   public final String toString () {
-    return 
-      getClass().getSimpleName() + 
+    return
+      getClass().getSimpleName() +
       "\n" +
       Arrays.toString(x); }
 

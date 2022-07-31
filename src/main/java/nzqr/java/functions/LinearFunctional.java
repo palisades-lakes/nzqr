@@ -13,7 +13,7 @@ public final class LinearFunctional extends Functional {
   //--------------------------------------------------------------
 
   private final Domain _domain;
-  
+
   private final Vektor _dual;
   public final Vektor dual () { return _dual; }
 
@@ -31,17 +31,17 @@ public final class LinearFunctional extends Functional {
   @Override
   public final double doubleValue (final Vektor x) {
     return _dual.dot(x); }
-  
+
   @Override
   @SuppressWarnings("unused")
   public final Vektor gradient (final Vektor x) {
     return _dual; }
-  
+
   @Override
   @SuppressWarnings("unused")
   public final Function tangentAt (final Vektor x) {
     return this; }
-  
+
   //--------------------------------------------------------------
   // Object methods
   //--------------------------------------------------------------

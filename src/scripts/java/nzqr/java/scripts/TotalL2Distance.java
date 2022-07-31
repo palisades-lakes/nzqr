@@ -21,9 +21,9 @@ public final class TotalL2Distance {
     final Generator g = Generators.make("gaussian",dim);
     //final Generator g = Generators.make("finite",dim);
     //final Generator g = Generators.make("uniform",dim);
-    final Accumulator a = 
+    final Accumulator a =
       nzqr.java.accumulators.RationalFloatAccumulator.make();
-//    nzqr.java.accumulators.BigFloatAccumulator.make();
+    //    nzqr.java.accumulators.BigFloatAccumulator.make();
     assert a.isExact();
     for (int i=0;i<trys;i++) {
       final double[] x0 = (double[]) g.next();

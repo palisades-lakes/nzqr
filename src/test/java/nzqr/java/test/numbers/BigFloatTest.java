@@ -51,7 +51,7 @@ public final class BigFloatTest {
     for (final BigFloat fi : f) {
       Common.doubleRoundingTest(
         BigFloat::valueOf,Numbers::doubleValue,dist,
-        Object::toString,fi, 
+        Object::toString,fi,
         Common::compareTo, Common::compareTo);
       Common.floatRoundingTest(
         BigFloat::valueOf,Numbers::floatValue,dist,

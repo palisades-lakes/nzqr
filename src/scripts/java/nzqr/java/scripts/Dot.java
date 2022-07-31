@@ -2,18 +2,11 @@ package nzqr.java.scripts;
 
 import static java.lang.Double.toHexString;
 
-import java.util.Arrays;
-
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.ListSampler;
-
 import nzqr.java.Classes;
 import nzqr.java.accumulators.Accumulator;
 import nzqr.java.accumulators.DoubleAccumulator;
 import nzqr.java.accumulators.RationalFloatAccumulator;
 import nzqr.java.numbers.Doubles;
-import nzqr.java.prng.Generator;
-import nzqr.java.prng.PRNG;
 
 /** Benchmark double dot products.
  *
@@ -21,7 +14,7 @@ import nzqr.java.prng.PRNG;
  * java -ea -jar target\benchmarks.jar Dot
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2021-07-08
+ * @version 2022-07-31
  */
 @SuppressWarnings("unchecked")
 public final class Dot {

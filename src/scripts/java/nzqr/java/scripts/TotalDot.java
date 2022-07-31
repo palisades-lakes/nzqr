@@ -27,8 +27,8 @@ public final class TotalDot {
       final double[] x0 = (double[]) g.next();
       final double[] x1 = (double[]) g.next();
       final double z = a.clear().addProducts(x0,x1).doubleValue();
-      assert Double.isFinite(z); } 
-    //    System.out.println("SWAPS/CALLS=" 
+      assert Double.isFinite(z); }
+    //    System.out.println("SWAPS/CALLS="
     //      + ((double) BigFloat.SWAPS)/BigFloat.CALLS);
   }
 

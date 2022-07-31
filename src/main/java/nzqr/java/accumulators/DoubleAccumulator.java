@@ -88,8 +88,8 @@ implements Accumulator<DoubleAccumulator> {
                                           final double[] z1)  {
     final int n = z0.length;
     //assert n == z1.length;
-    for (int i=0;i<n;i++) { 
-      final double dz = z0[i]-z1[i]; 
+    for (int i=0;i<n;i++) {
+      final double dz = z0[i]-z1[i];
       _sum += Math.abs(dz); }
     return this; }
 
@@ -107,8 +107,8 @@ implements Accumulator<DoubleAccumulator> {
                                           final double[] z1)  {
     final int n = z0.length;
     //assert n == z1.length;
-    for (int i=0;i<n;i++) { 
-      final double dz = z0[i]-z1[i]; 
+    for (int i=0;i<n;i++) {
+      final double dz = z0[i]-z1[i];
       _sum += dz*dz; }
     return this; }
 

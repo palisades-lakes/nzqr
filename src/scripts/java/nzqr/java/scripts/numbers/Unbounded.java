@@ -1,22 +1,15 @@
 package nzqr.java.scripts.numbers;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.google.common.collect.ImmutableMap;
 
-import nzqr.java.algebra.Set;
 import nzqr.java.algebra.Structure;
 import nzqr.java.numbers.BoundedNatural;
 import nzqr.java.numbers.UnboundedNatural;
 import nzqr.java.prng.Generator;
-import nzqr.java.prng.Generators;
 import nzqr.java.prng.PRNG;
 import nzqr.java.test.algebra.SetTests;
 
@@ -29,7 +22,7 @@ import nzqr.java.test.algebra.SetTests;
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-07
+ * @version 2022-07-31
  */
 
 @SuppressWarnings("unchecked")
@@ -52,23 +45,23 @@ public final class Unbounded {
       final long n = 1L+(BoundedNatural.MAX_WORDS<<4);
       System.out.println("n=" + n);
       System.out.flush();
-      final Generator g = 
+      final Generator g =
         UnboundedNatural.randomBitsGenerator(
           n,PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
 
-      final UnboundedNatural u0 = 
+      final UnboundedNatural u0 =
         (UnboundedNatural) g.next();
-      //    final UnboundedNatural u1 = 
+      //    final UnboundedNatural u1 =
       //      (UnboundedNatural) g.next();
-      // no overflow from add 
-      final UnboundedNatural v = u0.add(u0); 
+      // no overflow from add
+      final UnboundedNatural v = u0.add(u0);
       final int c0 = u0.compareTo(v);
       assert (c0 < 0) :
-        "\nadd u0 doesn't increase value\n" 
+        "\nadd u0 doesn't increase value\n"
         + "compareTo -> " + c0;
-      //    final int c1 = u0.compareTo(v); 
+      //    final int c1 = u0.compareTo(v);
       //    assert (c1 < 0) :
-      //      "\nadd u1 doesn't increase value\n" 
+      //      "\nadd u1 doesn't increase value\n"
       //          + "compareTo -> " + c1;
     }
     finally {
@@ -89,13 +82,13 @@ public final class Unbounded {
 
     final Structure monoid = UnboundedNatural.MONOID;
     final Supplier g = new Supplier () {
-      final Generator rbg = 
+      final Generator rbg =
         UnboundedNatural.randomBitsGenerator(
           1L+(BoundedNatural.MAX_WORDS<<3),
           PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
       @Override
       public final Object get () { return rbg.next(); } };
-      final Map generators = 
+      final Map generators =
         ImmutableMap.of(UnboundedNatural.SET,g);
 
       final int trys = 2;
@@ -105,7 +98,7 @@ public final class Unbounded {
         for(final Predicate law : monoid.laws()) {
           for (int i=0; i<trys; i++) {
             final boolean result = law.test(generators);
-            assert result: 
+            assert result:
               monoid.toString() + " : " + law.toString(); } } }
       finally {
         System.out.printf("Total seconds: %4.3f\n",

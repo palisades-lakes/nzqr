@@ -21,9 +21,9 @@ public final class TotalL1Norm {
     final int trys = 8 * 1024;
     //final Generator g = Generators.make("finite",dim);
     final Generator g = Generators.make("uniform",dim);
-    final Accumulator a = 
+    final Accumulator a =
       nzqr.java.accumulators.RationalFloatAccumulator.make();
-//    nzqr.java.accumulators.BigFloatAccumulator.make();
+    //    nzqr.java.accumulators.BigFloatAccumulator.make();
     assert a.isExact();
     for (int i=0;i<trys;i++) {
       final double[] x = (double[]) g.next();

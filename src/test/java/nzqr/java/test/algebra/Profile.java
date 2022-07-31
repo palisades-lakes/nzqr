@@ -52,8 +52,7 @@ public final class Profile {
           Set.URP,
           PRNG.well44497b("seeds/Well44497b-2019-01-07.txt")));
     for (int i=0; i<ntrys; i++) {
-      if (! Sets.isReflexive(set,g)) { return false; }
-      if (! Sets.isSymmetric(set,g)) { return false; } }
+      if (! Sets.isReflexive(set,g) || ! Sets.isSymmetric(set,g)) { return false; } }
     return true; }
 
   public static final boolean setTests (final Set set,

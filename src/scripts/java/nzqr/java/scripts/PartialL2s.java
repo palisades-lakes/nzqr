@@ -33,7 +33,7 @@ public final class PartialL2s {
       //Debug.println();
       //Debug.println(g.name());
       final double[] x = (double[]) g.next();
-      final double[] z = a.partialL2s(x); 
+      final double[] z = a.partialL2s(x);
       assert ! Double.isNaN(z[n-1]);} }
 
   //--------------------------------------------------------------

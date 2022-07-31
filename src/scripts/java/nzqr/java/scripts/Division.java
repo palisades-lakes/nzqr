@@ -35,34 +35,34 @@ public final class Division {
 
       assert xq.equals(yq) :
         "\nquotients differ!"
-      + "\n" + x0.toString(0x10)
-      + "\n / "
-      + "\n" +  x1.toString(0x10)
-      + "\n -> "
-      + "\n" + xq.toString(0x10)
-      + "\n" + y0.toString()
-      + "\n / "
-      + "\n" +  y1.toString()
-      + "\n -> "
-      + "\n" + yq.toString(0x10);
+        + "\n" + x0.toString(0x10)
+        + "\n / "
+        + "\n" +  x1.toString(0x10)
+        + "\n -> "
+        + "\n" + xq.toString(0x10)
+        + "\n" + y0.toString()
+        + "\n / "
+        + "\n" +  y1.toString()
+        + "\n -> "
+        + "\n" + yq.toString(0x10);
 
       assert xr.equals(yr) :
         "\nremainders differ!"
-      + "\n" + x0.toString(0x10)
-      + "\n / "
-      + "\n" +  x1.toString(0x10)
-      + "\n -> "
-      + "\n" + xr.toString(0x10)
-      + "\n" + y0.toString()
-      + "\n / "
-      + "\n" +  y1.toString()
-      + "\n -> "
-      + "\n" + yr.toString(0x10); } }
+        + "\n" + x0.toString(0x10)
+        + "\n / "
+        + "\n" +  x1.toString(0x10)
+        + "\n -> "
+        + "\n" + xr.toString(0x10)
+        + "\n" + y0.toString()
+        + "\n / "
+        + "\n" +  y1.toString()
+        + "\n -> "
+        + "\n" + yr.toString(0x10); } }
 
   //--------------------------------------------------------------
 
   private static final long TRYS = (1L << 32);
-  
+
   public static final void main (final String[] args) {
     final Generator gn =
       Generators.bigIntegerGenerator(

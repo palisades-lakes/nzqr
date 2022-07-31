@@ -11,7 +11,7 @@ public final class AffineFunctional extends Functional {
   //--------------------------------------------------------------
   // fields
   //--------------------------------------------------------------
-  
+
   private final Dn _domain;
 
   // TODO: wrap a LinearFunctional?
@@ -27,7 +27,7 @@ public final class AffineFunctional extends Functional {
   //--------------------------------------------------------------
 
   @Override
-  public final Domain domain () { 
+  public final Domain domain () {
     return _domain; }
 
   //--------------------------------------------------------------
@@ -68,10 +68,10 @@ public final class AffineFunctional extends Functional {
   private AffineFunctional (final Vektor dual,
                             final double translation) {
     _domain = Dn.get(dual.dimension());
-    _dual = dual; 
+    _dual = dual;
     _translation = translation; }
 
-  public static final AffineFunctional 
+  public static final AffineFunctional
   make (final Vektor dual,
         final double translation) {
     return new AffineFunctional(dual,translation); }

@@ -29,7 +29,7 @@ public final class PartialL2Distances {
     for (int i=0;i<trys;i++) {
       final double[] x0 = (double[]) g.next();
       final double[] x1 = (double[]) g.next();
-      final double[] z = a.partialL2Distances(x0,x1); 
+      final double[] z = a.partialL2Distances(x0,x1);
       assert ! Double.isNaN(z[dim-1]);} }
 
   //--------------------------------------------------------------

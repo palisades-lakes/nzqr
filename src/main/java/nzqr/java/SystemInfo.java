@@ -30,7 +30,7 @@ import oshi.util.FormatUtil;
 import oshi.util.Util;
 
 /** TODO: update to use <code>oshi.SystemInfo</code>.
- * 
+ *
  * Derived from oshi.SystemInfoTest example code.
  *
  * TODO: functions that return a hashmap,
@@ -189,7 +189,7 @@ public final class SystemInfo {
     // per core CPU
     final StringBuilder procCpu =
       new StringBuilder("CPU load per processor:");
-    final double[] load = 
+    final double[] load =
       processor.getProcessorCpuLoadBetweenTicks(
         processor.getProcessorCpuLoadTicks());
     for (final double avg : load) {
@@ -205,10 +205,10 @@ public final class SystemInfo {
     pw.println("Uptime: " + FormatUtil
       .formatElapsedSecs(os.getSystemUptime()));
 
-   pw.println("Processes: " + os.getProcessCount()
+    pw.println("Processes: " + os.getProcessCount()
     + ", Threads: " + os.getThreadCount());
     // Sort by highest CPU
-    final List<OSProcess> procs = 
+    final List<OSProcess> procs =
       os.getProcesses(null,ProcessSorting.CPU_DESC,5);
 
     pw.println("   PID  %CPU %MEM       VSZ       RSS Name");
@@ -245,7 +245,7 @@ public final class SystemInfo {
       sb.append("Unknown");
     }
     else {
-      final double timeRemaining = 
+      final double timeRemaining =
         powerSources[0].getTimeRemainingEstimated();
       if (timeRemaining < -1d) {
         sb.append("Charging");

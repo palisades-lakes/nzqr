@@ -33,7 +33,7 @@ public final class Ints implements Set {
    * and low unsigned int is the quotient.
    */
 
-  public static final long divWord (final long n, 
+  public static final long divWord (final long n,
                                     final long d) {
     //assert 0L<=n;
     //assert 0L<d;
@@ -97,7 +97,7 @@ public final class Ints implements Set {
     while ((0<=i) && (0==x[i])) { i--; }
     return i+1; }
 
-  /** <em>DANGER:</em> may return <code>m</code> or a new array. 
+  /** <em>DANGER:</em> may return <code>m</code> or a new array.
    */
   public static final int[] stripLeadingZeros (final int[] m) {
     final int n = m.length;
@@ -105,7 +105,7 @@ public final class Ints implements Set {
     while ((start < n) && (m[start] == 0)) { start++; }
     return (0==start) ? m : Arrays.copyOfRange(m,start,n); }
 
-  /** <em>DANGER:</em> may return <code>m</code> or a new array. 
+  /** <em>DANGER:</em> may return <code>m</code> or a new array.
    */
   public static final int[] stripTrailingZeros (final int[] m) {
     final int n = hiInt(m);
@@ -115,7 +115,7 @@ public final class Ints implements Set {
     // hotspot would probably create temps anyway
     final int n = x.length;
     final int n1 = n-1;
-    for (int i=0;i<n/2;i++) {
+    for (int i=0;i<(n/2);i++) {
       final int n1i = n1-i;
       final int t = x[n1i];
       x[n1i] = x[i];
@@ -133,11 +133,11 @@ public final class Ints implements Set {
     //assert lShift<32;
     final int rShift = 32-lShift;
     int c=src[isrc];
-    for (int i0=idst,i1=isrc;i0<idst+n-1; i0++) {
+    for (int i0=idst,i1=isrc;i0<((idst+n)-1); i0++) {
       final int b = c;
       c = src[++i1];
       dst[i0] = (b << lShift) | (c >>> rShift); }
-    dst[idst+n-1] = (c<<lShift); } 
+    dst[(idst+n)-1] = (c<<lShift); }
 
   //-------------------------------------------------------------
   // string parsing
@@ -240,8 +240,8 @@ public final class Ints implements Set {
 
   //--------------------------------------------------------------
   // TODO: move to Uints?
-  
-  /** Return the non-zero words in <code>u</code> as an 
+
+  /** Return the non-zero words in <code>u</code> as an
    * (unsigned) <code>int[]</code> in big endian order.
    */
 
@@ -254,7 +254,7 @@ public final class Ints implements Set {
       return new int[] { lo, }; }
     return new int[] { hi, lo, }; }
 
-  /** Return the non-zero words in <code>u</code> as an 
+  /** Return the non-zero words in <code>u</code> as an
    * (unsigned) <code>int[]</code> in little endian order.
    */
 
@@ -268,7 +268,7 @@ public final class Ints implements Set {
     return new int[] { lo, hi, }; }
 
   /** Return the non-zero (unsigned) <code>u</code>,
-   * shifted up <code>upShift</code> bits, as an 
+   * shifted up <code>upShift</code> bits, as an
    * (unsigned) <code>int[]</code> in little endian order.
    */
 
@@ -279,7 +279,7 @@ public final class Ints implements Set {
     if (0==upShift) { return new int[] {u}; }
     final int iShift = (upShift>>>5);
     final int bShift = (upShift&0x1f);
-    if (0==bShift) { 
+    if (0==bShift) {
       final int[] uu = new int[iShift+1];
       uu[iShift] = u;
       return uu; }
@@ -296,7 +296,7 @@ public final class Ints implements Set {
     return uu; }
 
   /** Return the non-zero words in <code>u</code>,
-   * shifted up <code>upShift</code> bits, as an 
+   * shifted up <code>upShift</code> bits, as an
    * (unsigned) <code>int[]</code> in little endian order.
    */
 
@@ -466,13 +466,13 @@ public final class Ints implements Set {
   //--------------------------------------------------------------
 
   /** TODO: more efficient via bits? */
-  
+
   public static final boolean isEven (final int k) {
     return k == (2*(k/2)); }
 
   //--------------------------------------------------------------
   /** See {@link Integer#numberOfLeadingZeros(int)}. */
-  
+
   public static final int ceilLog2 (final int k) {
     return Integer.SIZE - Integer.numberOfLeadingZeros(k-1); }
 

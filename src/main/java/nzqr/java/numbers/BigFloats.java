@@ -111,20 +111,20 @@ public final class BigFloats implements Set {
       @Override
       public final boolean test (final BigFloat q0,
                                  final BigFloat q1) {
-        final boolean result = q0.equals(q1); 
-//        if (! result) {
-//          System.out.println("nonNegative:" + 
-//            (q0.nonNegative()==q1.nonNegative()));
-//          System.out.println("exponent:" + 
-//            (q0.exponent()==q1.exponent()));
-//          System.out.println("significand:" + 
-//            (q0.significand()==q1.significand()));
-//          System.out.println(q0.significand().getClass());
-//          System.out.println(q0.significand());
-//          System.out.println(q1.significand().getClass());
-//          System.out.println(q1.significand());
-//        }
-      return result;} }; }
+        final boolean result = q0.equals(q1);
+        //        if (! result) {
+        //          System.out.println("nonNegative:" +
+        //            (q0.nonNegative()==q1.nonNegative()));
+        //          System.out.println("exponent:" +
+        //            (q0.exponent()==q1.exponent()));
+        //          System.out.println("significand:" +
+        //            (q0.significand()==q1.significand()));
+        //          System.out.println(q0.significand().getClass());
+        //          System.out.println(q0.significand());
+        //          System.out.println(q1.significand().getClass());
+        //          System.out.println(q1.significand());
+        //        }
+        return result;} }; }
 
   //--------------------------------------------------------------
 
@@ -163,8 +163,8 @@ public final class BigFloats implements Set {
 
   public static final Generator
   fromBigIntegerGenerator (final UniformRandomProvider urp) {
-    // default bounds allow multiply within int exponent range. 
-    return 
+    // default bounds allow multiply within int exponent range.
+    return
       fromBigIntegerGenerator(
         urp,Integer.MIN_VALUE/2,Integer.MAX_VALUE/2); }
 

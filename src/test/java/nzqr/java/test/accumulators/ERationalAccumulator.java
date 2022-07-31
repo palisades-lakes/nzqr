@@ -18,7 +18,7 @@ extends ExactAccumulator<ERationalAccumulator> {
   private ERational _sum;
 
   //--------------------------------------------------------------
-  
+
   private static final int loBit (final EInteger i) {
     return i.GetLowBitAsEInteger().ToInt32Checked(); }
 

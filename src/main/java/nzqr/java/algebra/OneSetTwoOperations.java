@@ -1,9 +1,7 @@
 package nzqr.java.algebra;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -11,16 +9,10 @@ import java.util.function.UnaryOperator;
 
 import com.google.common.collect.ImmutableList;
 
-import nzqr.java.numbers.BigFractions;
-import nzqr.java.numbers.Q;
-
-import org.apache.commons.math3.fraction.BigFraction;
-import org.apache.commons.rng.UniformRandomProvider;
-
 /** Ring-like structures
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2019-02-23
+ * @version 2022-07-31
  */
 @SuppressWarnings("unchecked")
 public final class OneSetTwoOperations extends Structure {
@@ -90,22 +82,13 @@ public final class OneSetTwoOperations extends Structure {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     final OneSetTwoOperations other = (OneSetTwoOperations) obj;
-    if (! Objects.equals(add(),other.add())) {
-      return false; }
-    if (! Objects.equals(
-      additiveIdentity(),other.additiveIdentity())) {
-      return false; }
-    if (! Objects.equals(
-      additiveInverse(),other.additiveInverse())) {
-      return false; }
-    if (! Objects.equals(multiply(),other.multiply())) {
+    if (! Objects.equals(add(),other.add()) || ! Objects.equals(
+      additiveIdentity(),other.additiveIdentity()) || ! Objects.equals(
+      additiveInverse(),other.additiveInverse()) || ! Objects.equals(multiply(),other.multiply())) {
       return false; }
     if (! Objects.equals(
       multiplicativeIdentity(),other.multiplicativeIdentity())) {

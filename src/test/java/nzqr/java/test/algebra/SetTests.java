@@ -70,7 +70,7 @@ public final class SetTests {
         ImmutableMap.of(
           Set.URP,
           PRNG.well44497b("seeds/Well44497b-2019-01-07.txt")));
-      tests(set,trys,g); }
+    tests(set,trys,g); }
 
   public static final void tests (final Set set) {
     assertTrue(null != set);

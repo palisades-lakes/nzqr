@@ -28,7 +28,7 @@ public final class PartialL1s {
     assert a.isExact();
     for (int i=0;i<trys;i++) {
       final double[] x = (double[]) g.next();
-      final double[] z = a.partialL1s(x); 
+      final double[] z = a.partialL1s(x);
       assert ! Double.isNaN(z[dim-1]);} }
 
   //--------------------------------------------------------------

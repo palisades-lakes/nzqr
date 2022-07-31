@@ -4,8 +4,8 @@ package nzqr.java.accumulators;
 /** Compensated summation for lots of numbers.
  * Only makes sense for floating point numbers of various kinds.
  * <p>
- * Use twoAdd and twoMul to convert, eg, dot products to 
- * multiple compensated additions. 
+ * Use twoAdd and twoMul to convert, eg, dot products to
+ * multiple compensated additions.
  * <p>
  * Mutable! Not thread safe!
  * <p>
@@ -60,7 +60,7 @@ implements Accumulator<KahanAccumulator> {
 
   @Override
   public final KahanAccumulator addAll (final double[] z) {
-    for (final double zi : z) { 
+    for (final double zi : z) {
       //assert Double.isFinite(z);
       final double zc = zi - correction;
       final double szc = value + zc;
@@ -81,7 +81,7 @@ implements Accumulator<KahanAccumulator> {
 
   @Override
   public final KahanAccumulator addAbsAll (final double[] z) {
-    for (final double zi : z) { 
+    for (final double zi : z) {
       //assert Double.isFinite(z);
       final double zc = Math.abs(zi) - correction;
       final double szc = value + zc;
@@ -103,7 +103,7 @@ implements Accumulator<KahanAccumulator> {
 
   @Override
   public final KahanAccumulator add2All (final double[] z) {
-    for (final double zi : z) { 
+    for (final double zi : z) {
       //assert Double.isFinite(zi);
       final double zz = zi*zi;
       add(zz);
@@ -130,7 +130,7 @@ implements Accumulator<KahanAccumulator> {
                                              final double[] z1) {
     final int n= z0.length;
     //assert n==z1.length;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       final double z0i = z0[i];
       //assert Double.isFinite(z0i);
       final double z1i = z1[i];
@@ -167,7 +167,7 @@ implements Accumulator<KahanAccumulator> {
                                                final double[] z1) {
     final int n= z0.length;
     //assert n==z1.length;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       final double z0i = z0[i];
       //assert Double.isFinite(z0i);
       final double z1i = z1[i];
@@ -209,7 +209,7 @@ implements Accumulator<KahanAccumulator> {
                                                final double[] z1) {
     final int n= z0.length;
     //assert n==z1.length;
-    for (int i=0;i<n;i++) { 
+    for (int i=0;i<n;i++) {
       final double z0i = z0[i];
       //assert Double.isFinite(z0i);
       final double z1i = z1[i];

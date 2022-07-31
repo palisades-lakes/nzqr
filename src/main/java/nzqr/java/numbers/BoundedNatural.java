@@ -81,7 +81,7 @@ implements Ringlike<BoundedNatural> {
 
   public final static int MAX_WORDS = (Integer.MAX_VALUE >> 5);
 
-/** throw an {@link ArithmeticException} if
+  /** throw an {@link ArithmeticException} if
    * <code>nwords</code> exceeds {@link #MAX_WORDS}.
    */
 
@@ -189,7 +189,7 @@ implements Ringlike<BoundedNatural> {
     return unsafe(u); }
 
   /** Singleton. */
-  public static final BoundedNatural ZERO = 
+  public static final BoundedNatural ZERO =
     new BoundedNatural(new int[0]);
 
   @Override
@@ -1082,7 +1082,7 @@ implements Ringlike<BoundedNatural> {
   //--------------------------------------------------------------
   // TODO: singleton class for one() and zero()?
 
-  static final BoundedNatural ONE = 
+  static final BoundedNatural ONE =
     new BoundedNatural(new int[] {1});
 
   @Override
@@ -1095,8 +1095,7 @@ implements Ringlike<BoundedNatural> {
 
   @Override
   public final boolean isOne () {
-    if (1!=hiInt()) { return false; }
-    if (1!=words()[0]) { return false; }
+    if ((1!=hiInt()) || (1!=words()[0])) { return false; }
     return true; }
 
   //--------------------------------------------------------------

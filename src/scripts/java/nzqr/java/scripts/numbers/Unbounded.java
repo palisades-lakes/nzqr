@@ -1,17 +1,9 @@
 package nzqr.java.scripts.numbers;
 
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-import com.google.common.collect.ImmutableMap;
-
-import nzqr.java.algebra.Structure;
 import nzqr.java.numbers.BoundedNatural;
 import nzqr.java.numbers.NaiveUnboundedNatural;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.PRNG;
-import nzqr.java.test.algebra.SetTests;
 
 //----------------------------------------------------------------
 /** Profiling {@link NaiveUnboundedNatural}.

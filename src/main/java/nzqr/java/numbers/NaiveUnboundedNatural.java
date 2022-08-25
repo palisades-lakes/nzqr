@@ -86,7 +86,8 @@ implements Comparable<NaiveUnboundedNatural> {
     Words vv = null;
     long sum = 0L;
     for (;(null!=tt)&&(null!=uu);
-      tt = tt.next,uu = uu.next) {
+        tt = tt.next,
+        uu = uu.next) {
       sum += unsigned(tt.word) + unsigned(uu.word);
       vv = new Words((int) sum,vv);
       sum = hiWord(sum); }

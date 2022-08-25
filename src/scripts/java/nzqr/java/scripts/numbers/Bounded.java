@@ -11,12 +11,12 @@ import nzqr.java.numbers.BoundedNatural;
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-07-31
+ * @version 2022-08-25
  */
 
 public final class Bounded {
 
-  private static final void additionNatural () {
+    private static final void additionBoundedNatural () {
     final long t0 = System.nanoTime();
     try {
       final BoundedNatural one = BoundedNatural.valueOf(1);
@@ -106,7 +106,8 @@ public final class Bounded {
 
   public static final void main (final String[] args) {
     System.out.println();
-    additionNatural();
+    //overflowBoundedNatural();
+    additionBoundedNatural();
     //    additionBigInteger();
   }
 

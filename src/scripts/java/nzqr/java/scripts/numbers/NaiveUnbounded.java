@@ -17,8 +17,8 @@ import nzqr.java.test.algebra.SetTests;
 /** Profiling {@link NaiveUnboundedNatural}.
  * <p>
  * <pre>
- * j src/scripts/java/nzqr/java/scripts/numbers/Unbounded.java
- * jy src/scripts/java/nzqr/java/scripts/numbers/Unbounded.java
+ * j src/scripts/java/nzqr/java/scripts/numbers/NaiveUnbounded.java
+ * jy src/scripts/java/nzqr/java/scripts/numbers/NaiveUnbounded.java
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
@@ -26,7 +26,7 @@ import nzqr.java.test.algebra.SetTests;
  */
 
 @SuppressWarnings("unchecked")
-public final class Unbounded {
+public final class NaiveUnbounded {
 
   /** passes in a 12g JVM:
    * <table>

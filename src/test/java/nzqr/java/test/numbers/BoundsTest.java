@@ -42,7 +42,7 @@ public final class BoundsTest {
 
   @SuppressWarnings({ "static-method" })
   @Test
-  public final void overflowNatural () {
+  public final void overflowBoundedNatural () {
     Assertions.assertThrows(
       ArithmeticException.class,
       () -> {

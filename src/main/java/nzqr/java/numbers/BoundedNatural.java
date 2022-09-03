@@ -464,55 +464,6 @@ implements Ringlike<BoundedNatural> {
   //--------------------------------------------------------------
   // add (non-negative) longs
   //--------------------------------------------------------------
-  // checking for int arithmetic overflow
-
-  //  public final BoundedNatural add (final long u) {
-  //    assert 0L<u;
-  //    //if (0L==u) { return this; }
-  //    final int nt = hiInt();
-  //    //if (0==nt) { return valueOf(u); }
-  //    final long uhi = hiWord(u);
-  //    final long ulo = loWord(u);
-  //    final int nu = ((0L!=uhi)?2:(0L!=ulo)?1:0);
-  //    final int nv = Math.max(nu,nt);
-  //    assert nv <= MAX_WORDS;
-  //    if (0==nv) { return ZERO; }
-  //    final int[] tt = words();
-  //    final int[] vv = new int[nv];
-  //    long sum = ulo;
-  //    if (0<nt) { sum = Math.addExact(sum,unsigned(tt[0])); }
-  //    vv[0] = (int) sum;
-  //    sum = hiWord(sum);
-  //    if (1<nv) {
-  //      sum = Math.addExact(sum, uhi);
-  //      if (1<nt) { sum = Math.addExact(sum, unsigned(tt[1])); }
-  //      vv[1] = (int) sum;
-  //      sum = hiWord(sum); }
-  //
-  //    int i=2;
-  //
-  //    for (;i<nt;i=Math.addExact(i,1)) {
-  //      if (0L==sum) { break; }
-  //      sum = Math.addExact(sum, unsigned(tt[i]));
-  //      vv[i] = (int) sum;
-  //      sum = hiWord(sum); }
-  //    //    if (0L!=sum) {
-  //    //      final int[] vvv = Arrays.copyOf(vv,nv+1);
-  //    //      vvv[nv] = 1;
-  //    //      return unsafe(vvv,nv+1); }
-  //    if (0L!=sum) {
-  //      //vv[nv] = (int) sum;
-  //      final int nvv =Math.addExact(nv,1);
-  //      assert nvv <= MAX_WORDS;
-  //      final int[] vvv = new int[nvv];
-  //      for (int j=0;j<nv;j=Math.addExact(j,1)) { vvv[j]=vv[j]; }
-  //      vvv[nv] = 1;
-  //      return new BoundedNatural(vvv); }
-  //
-  //    for (;i<nt;i=Math.addExact(i,1)) { vv[i] = tt[i]; }
-  //    return new BoundedNatural(vv); }
-
-  //--------------------------------------------------------------
 
   public final BoundedNatural add (final long u) {
     assert 0L<u;

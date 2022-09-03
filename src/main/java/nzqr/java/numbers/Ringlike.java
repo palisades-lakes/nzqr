@@ -6,12 +6,13 @@ import nzqr.java.Exceptions;
 
 /** arithmetic operations.
  *
- * 'Ringlike' because many number-like objects will define these
- * operations, but they won't obey the required properties
- * (eq associativity).
+ * 'Ringlike' because many number-like objects will define some
+ * subset of these operations, but they won't obey the required 
+ * properties (eq associativity). And it's expected to throw 
+ * unsupported operation exceptions where convenient.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2019-07-08
+ * @version 2022-09-03
  */
 
 @SuppressWarnings("unchecked")

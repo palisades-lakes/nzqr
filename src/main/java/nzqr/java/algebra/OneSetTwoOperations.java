@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 /** Ring-like structures
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-07-31
+ * @version 2022-09-03
  */
 @SuppressWarnings("unchecked")
 public final class OneSetTwoOperations extends Structure {
@@ -166,6 +166,22 @@ public final class OneSetTwoOperations extends Structure {
   //--------------------------------------------------------------
 
   public static final OneSetTwoOperations
+  semiring (final BinaryOperator add,
+        final Object additiveIdentity,
+        final BinaryOperator multiply,
+        final Object multiplicativeIdentity,
+        final Set elements) {
+    return make(
+      add,additiveIdentity,null,
+      multiply,multiplicativeIdentity,null,
+      elements,
+      Laws.semiring(
+        add,additiveIdentity,
+        multiply,multiplicativeIdentity,elements)); }
+
+  //--------------------------------------------------------------
+
+  public static final OneSetTwoOperations
   ring (final BinaryOperator add,
         final Object additiveIdentity,
         final UnaryOperator additiveInverse,
@@ -178,6 +194,22 @@ public final class OneSetTwoOperations extends Structure {
       elements,
       Laws.ring(
         add,additiveIdentity,additiveInverse,
+        multiply,multiplicativeIdentity,elements)); }
+
+  //--------------------------------------------------------------
+
+  public static final OneSetTwoOperations
+  commutativeSemiring (final BinaryOperator add,
+                   final Object additiveIdentity,
+                   final BinaryOperator multiply,
+                   final Object multiplicativeIdentity,
+                   final Set elements) {
+    return make(
+      add,additiveIdentity,null,
+      multiply,multiplicativeIdentity,null,
+      elements,
+      Laws.commutativeSemiring(
+        add,additiveIdentity,
         multiply,multiplicativeIdentity,elements)); }
 
   //--------------------------------------------------------------

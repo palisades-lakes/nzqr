@@ -375,6 +375,24 @@ public final class Laws {
       distributive(elements,add,multiply));}
 
   public static final ImmutableList<Predicate<Map<Set,Supplier>>>
+  commutativeSemiring (final BinaryOperator add,
+                   final Object additiveIdentity,
+                   final BinaryOperator multiply,
+                   final Object multiplicativeIdentity,
+                   final Set elements){
+    return ImmutableList.of(
+      closed(elements,add),
+      associative(elements,add),
+      identity(elements,add,additiveIdentity),
+      commutative(elements,add),
+      closed(elements,multiply),
+      associative(elements,multiply),
+      identity(elements,multiply,multiplicativeIdentity,
+        java.util.Set.of(additiveIdentity)),
+      commutative(elements,multiply),
+      distributive(elements,add,multiply));}
+
+  public static final ImmutableList<Predicate<Map<Set,Supplier>>>
   ring (final BinaryOperator add,
         final Object additiveIdentity,
         final UnaryOperator additiveInverse,

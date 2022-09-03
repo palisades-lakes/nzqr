@@ -62,7 +62,11 @@ import nzqr.java.prng.GeneratorBase;
  * This suggests that the maximum array size should be at least
  * <code>Integer.MAX_VALUE-5</code>.
  *
- * @author palisades dot lakes at gmail dot com
+ * The unbounded natural numbers are a commutative semi-ring,
+ * but this implementation fails to be closed under '+' and '*',
+ * when the operation result exceeds the bound.
+ * 
+* @author palisades dot lakes at gmail dot com
  * @version 2022-08-25
  */
 

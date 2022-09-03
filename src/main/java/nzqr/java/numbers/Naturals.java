@@ -1,7 +1,6 @@
 package nzqr.java.numbers;
 
 import java.math.BigInteger;
-//import nzqr.java.numbers.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
@@ -21,79 +20,83 @@ import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
 import nzqr.java.prng.Generators;
 
-/** The set of arbitrary precision floating point numbers
- * represented by <code>BigFloat</code>
- *
+/** Natural numbers as a commutative semi-ring,
+ * allowing a variety of implementations,
+ * some only covering subsets.
+ * 
+ * Implementations (eventually):
+ * <ul>
+ * <li> {@link BoundedNatural}
+ * <li> {@link NaiveUnboundedNatural}
+ * <li> {@link UnboundedNatural}
+ * <li> <code>java.math.BigInteger</code> (only nonnegative)
+ * <li> <code>java.lang.Long</code> (only nonnegative)
+ * <li> <code>java.lang.Integer</code> (only nonnegative)
+ * <li> ...
+ * </ul>
+ * 
+ * The code is unnecessarily complicated because
+ * (1) java doesn't have true dynamic method lookup,
+ * and (2) it's not possible to have an interface implemented by
+ * both BigInteger and my classes 
+ * 
  * @author palisades dot lakes at gmail dot com
  * @version 2022-09-03
  */
 @SuppressWarnings({"unchecked","static-method"})
-public final class BigFloats implements Set {
+public final class Naturals implements Set {
 
   //--------------------------------------------------------------
   // operations for algebraic structures over BigFloats.
   //--------------------------------------------------------------
 
-  // TODO: is consistency with other algebraic structure classes
-  // worth the indirection?
+  private static final Object add (final BoundedNatural x0,
+                                    final BoundedNatural x1) {
+    //assert contains(x0);
+    //assert contains(x1);
+    return x0.add(x1); }
 
-  private final BigFloat add (final BigFloat q0,
-                              final BigFloat q1) {
-    //assert contains(q0);
-    //assert contains(q1);
-    return q0.add(q1); }
+  private static final Object add (final Object x0,
+                                   final Object x1) {
+   assert contains(x0);
+   assert contains(x1);
+   return x0.add(x1); }
 
-  public final BinaryOperator<BigFloat> adder () {
+  public final BinaryOperator<Object> adder () {
     return new BinaryOperator<> () {
       @Override
       public final String toString () { return "BF.add()"; }
       @Override
-      public final BigFloat apply (final BigFloat q0,
-                                   final BigFloat q1) {
-        return BigFloats.this.add(q0,q1); } }; }
+      public final Objecy apply (final Object x0,
+                                 final Object x1) {
+        return Naturals.this.add(x0,x1); } }; }
 
   //--------------------------------------------------------------
 
-  public final BigFloat additiveIdentity () {
-    return BigFloat.valueOf(0L); }
+  public final BoundedNatural additiveIdentity () {
+    return BoundedNatural.valueOf(0L); }
 
-  //--------------------------------------------------------------
-  // TODO: is consistency with other algebraic structure classes
-  // worth the indirection?
+   //--------------------------------------------------------------
 
-  private final BigFloat negate (final BigFloat q) {
-    //assert contains(q);
-    return q.negate(); }
+  private final BoundedNatural multiply (final BoundedNatural x0,
+                                         final BoundedNatural x1) {
+    //assert contains(x0);
+    //assert contains(x1);
+    return x0.multiply(x1); }
 
-  public final UnaryOperator<BigFloat> additiveInverse () {
-    return new UnaryOperator<> () {
-      @Override
-      public final String toString () { return "BF.negate()"; }
-      @Override
-      public final BigFloat apply (final BigFloat q) {
-        return BigFloats.this.negate(q); } }; }
-
-  //--------------------------------------------------------------
-
-  private final BigFloat multiply (final BigFloat q0,
-                                   final BigFloat q1) {
-    //assert contains(q0);
-    //assert contains(q1);
-    return q0.multiply(q1); }
-
-  public final BinaryOperator<BigFloat> multiplier () {
+  public final BinaryOperator<BoundedNatural> multiplier () {
     return new BinaryOperator<>() {
       @Override
       public final String toString () { return "BF.multiply"; }
       @Override
-      public final BigFloat apply (final BigFloat q0,
-                                   final BigFloat q1) {
-        return BigFloats.this.multiply(q0,q1); } }; }
+      public final BoundedNatural apply (final BoundedNatural x0,
+                                         final BoundedNatural x1) {
+        return Naturals.this.multiply(x0,x1); } }; }
 
   //--------------------------------------------------------------
 
-  public final BigFloat multiplicativeIdentity () {
-    return BigFloat.valueOf(1L); }
+  public final BoundedNatural multiplicativeIdentity () {
+    return BoundedNatural.valueOf(1L); }
 
   //--------------------------------------------------------------
   // Set methods
@@ -101,28 +104,28 @@ public final class BigFloats implements Set {
 
   @Override
   public final boolean contains (final Object element) {
-    return element instanceof BigFloat; }
+    return element instanceof BoundedNatural; }
 
   //--------------------------------------------------------------
 
   @Override
   public final BiPredicate equivalence () {
-    return new BiPredicate<BigFloat,BigFloat>() {
+    return new BiPredicate<BoundedNatural,BoundedNatural>() {
       @Override
-      public final boolean test (final BigFloat q0,
-                                 final BigFloat q1) {
-        final boolean result = q0.equals(q1);
+      public final boolean test (final BoundedNatural x0,
+                                 final BoundedNatural x1) {
+        final boolean result = x0.equals(x1);
         //        if (! result) {
         //          System.out.println("nonNegative:" +
-        //            (q0.nonNegative()==q1.nonNegative()));
+        //            (x0.nonNegative()==x1.nonNegative()));
         //          System.out.println("exponent:" +
-        //            (q0.exponent()==q1.exponent()));
+        //            (x0.exponent()==x1.exponent()));
         //          System.out.println("significand:" +
-        //            (q0.significand()==q1.significand()));
-        //          System.out.println(q0.significand().getClass());
-        //          System.out.println(q0.significand());
-        //          System.out.println(q1.significand().getClass());
-        //          System.out.println(q1.significand());
+        //            (x0.significand()==x1.significand()));
+        //          System.out.println(x0.significand().getClass());
+        //          System.out.println(x0.significand());
+        //          System.out.println(x1.significand().getClass());
+        //          System.out.println(x1.significand());
         //        }
         return result;} }; }
 
@@ -144,11 +147,11 @@ public final class BigFloats implements Set {
         new CollectionSampler(
           urp,
           List.of(
-            BigFloat.valueOf(0L),
-            BigFloat.valueOf(1L),
-            BigFloat.valueOf(2L),
-            BigFloat.valueOf(10L),
-            BigFloat.valueOf(-1L)));
+            BoundedNatural.valueOf(0L),
+            BoundedNatural.valueOf(1L),
+            BoundedNatural.valueOf(2L),
+            BoundedNatural.valueOf(10L),
+            BoundedNatural.valueOf(-1L)));
       @Override
       public Object next () {
         final boolean edge = choose.sample() > dp;
@@ -159,7 +162,7 @@ public final class BigFloats implements Set {
           BoundedNatural.valueOf(nonNegative ? bi : bi.negate());
         final int exponent = urp.nextInt(eRan) + eMin;
         return
-          BigFloat.valueOf(nonNegative,significand,exponent); } }; }
+          BoundedNatural.valueOf(nonNegative,significand,exponent); } }; }
 
   public static final Generator
   fromBigIntegerGenerator (final UniformRandomProvider urp) {
@@ -168,45 +171,6 @@ public final class BigFloats implements Set {
       fromBigIntegerGenerator(
         urp,Integer.MIN_VALUE/2,Integer.MAX_VALUE/2); }
 
-  // Is this characteristic of most inputs?
-  public static final Generator
-  fromDoubleGenerator (final UniformRandomProvider urp) {
-    final double dp = 0.9;
-    return new GeneratorBase ("fromDoubleGenerator") {
-      private final ContinuousSampler choose =
-        new ContinuousUniformSampler(urp,0.0,1.0);
-      private final Generator g = Doubles.finiteGenerator(urp);
-      private final CollectionSampler edgeCases =
-        new CollectionSampler(
-          urp,
-          List.of(
-            BigFloat.valueOf(0L),
-            BigFloat.valueOf(1L),
-            BigFloat.valueOf(2L),
-            BigFloat.valueOf(10L),
-            BigFloat.valueOf(-1L)));
-      @Override
-      public Object next () {
-        final boolean edge = choose.sample() > dp;
-        if (edge) { return edgeCases.sample(); }
-        return BigFloat.valueOf(g.nextDouble()); } }; }
-
-  // Is this characteristic of most inputs?
-  public static final Generator
-  generator (final UniformRandomProvider urp) {
-    return fromDoubleGenerator(urp); }
-
-  public static final Generator
-  fromDoubleGenerator (final int n,
-                       final UniformRandomProvider urp) {
-    return new GeneratorBase ("fromDoubleGenerator:" + n) {
-      final Generator g = fromDoubleGenerator(urp);
-      @Override
-      public final Object next () {
-        final BigFloat[] z = new BigFloat[n];
-        for (int i=0;i<n;i++) { z[i] = (BigFloat) g.next(); }
-        return z; } }; }
-
   public static final Generator
   generator (final int n,
              final UniformRandomProvider urp) {
@@ -214,8 +178,8 @@ public final class BigFloats implements Set {
       final Generator g = generator(urp);
       @Override
       public final Object next () {
-        final BigFloat[] z = new BigFloat[n];
-        for (int i=0;i<n;i++) { z[i] = (BigFloat) g.next(); }
+        final BoundedNatural[] z = new BoundedNatural[n];
+        for (int i=0;i<n;i++) { z[i] = (BoundedNatural) g.next(); }
         return z; } }; }
 
   // TODO: determine which generator from options.
@@ -238,7 +202,7 @@ public final class BigFloats implements Set {
   // singleton
   @Override
   public final boolean equals (final Object that) {
-    return that instanceof BigFloats; }
+    return that instanceof Naturals; }
 
   @Override
   public final String toString () { return "BF"; }
@@ -247,11 +211,11 @@ public final class BigFloats implements Set {
   // construction
   //--------------------------------------------------------------
 
-  private BigFloats () { }
+  private Naturals () { }
 
-  private static final BigFloats SINGLETON = new BigFloats();
+  private static final Naturals SINGLETON = new Naturals();
 
-  public static final BigFloats get () { return SINGLETON; }
+  public static final Naturals get () { return SINGLETON; }
 
   //--------------------------------------------------------------
 
@@ -262,10 +226,9 @@ public final class BigFloats implements Set {
     OneSetOneOperation.magma(get().multiplier(),get());
 
   public static final OneSetTwoOperations RING =
-    OneSetTwoOperations.commutativeRing(
+    OneSetTwoOperations.commutativeSemiring(
       get().adder(),
       get().additiveIdentity(),
-      get().additiveInverse(),
       get().multiplier(),
       get().multiplicativeIdentity(),
       get());

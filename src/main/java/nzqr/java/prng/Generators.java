@@ -17,7 +17,7 @@ import nzqr.java.numbers.Doubles;
  * that return different values on each call.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-07
+ * @version 2022-09-04
  */
 
 @SuppressWarnings("unchecked")
@@ -37,6 +37,19 @@ public final class Generators {
         return Byte.valueOf(nextByte()); } }; }
 
   public static final Generator
+  nonNegativeByteGenerator (final UniformRandomProvider urp) {
+    return new GeneratorBase ("byteGenerator") {
+      // TODO: make this uniform over non-negative values
+      @Override
+      public final byte nextByte () { 
+        // No unsigned 8 bit integer in Java, so use the low 7 
+        // bits as an unsigned not quite byte
+        return (byte) (0x7F & urp.nextInt()); }
+      @Override
+      public final Object next () {
+        return Byte.valueOf(nextByte()); } }; }
+
+  public static final Generator
   byteGenerator (final int n,
                  final UniformRandomProvider urp) {
     return new GeneratorBase ("byteGenerator:" + n) {
@@ -47,11 +60,25 @@ public final class Generators {
         for (int i=0;i<n;i++) { z[i] = g.nextByte(); }
         return z; } }; }
 
+  //--------------------------------------------------------------
+
   public static final Generator
   shortGenerator (final UniformRandomProvider urp) {
     return new GeneratorBase ("shortGenerator") {
       @Override
       public final short nextShort () { return (short) urp.nextInt(); }
+      @Override
+      public final Object next () {
+        return Short.valueOf(nextShort()); } }; }
+
+  public static final Generator
+  nonNegativeShortGenerator (final UniformRandomProvider urp) {
+    return new GeneratorBase ("shortGenerator") {
+      // TODO: make this uniform over non-negative values
+      @Override
+      public final short nextShort () { 
+        // No unsigned short in Java, so use the lower 15 bits.
+        return (short) (0x7FFF & urp.nextInt()); }
       @Override
       public final Object next () {
         return Short.valueOf(nextShort()); } }; }
@@ -74,6 +101,17 @@ public final class Generators {
     return new GeneratorBase ("intGenerator") {
       @Override
       public final int nextInt () { return urp.nextInt(); }
+      @Override
+      public final Object next () {
+        return Integer.valueOf(nextInt()); } }; }
+
+  public static final Generator
+  nonNegativeIntGenerator (final UniformRandomProvider urp) {
+    return new GeneratorBase ("intGenerator") {
+      // TODO: make this uniform over non-negative values
+      @Override
+      public final int nextInt () { 
+        return Math.abs(urp.nextInt()); }
       @Override
       public final Object next () {
         return Integer.valueOf(nextInt()); } }; }
@@ -123,6 +161,17 @@ public final class Generators {
     return new GeneratorBase ("longGenerator") {
       @Override
       public final long nextLong () { return urp.nextLong(); }
+      @Override
+      public final Object next () {
+        return Long.valueOf(nextLong()); } }; }
+
+  public static final Generator
+  nonNegativeLongGenerator (final UniformRandomProvider urp) {
+    return new GeneratorBase ("longGenerator") {
+      // TODO: make this uniform over non-negative values
+      @Override
+      public final long nextLong () { 
+        return Math.abs(urp.nextLong()); }
       @Override
       public final Object next () {
         return Long.valueOf(nextLong()); } }; }
@@ -210,6 +259,23 @@ public final class Generators {
         final BigInteger[] z = new BigInteger[n];
         for (int i=0;i<n;i++) { z[i] = (BigInteger) g.next(); }
         return z; } }; }
+
+  //--------------------------------------------------------------
+  /** Intended primarily for testing. <b>
+   * Generate enough bytes to at least cover the range of
+   * <code>double</code> values.
+   */
+
+  public static final Generator
+  nonNegativeBigIntegerGenerator (final UniformRandomProvider urp) {
+    return new GeneratorBase ("bigIntegerGenerator") {
+      // TODO: choose within a range, rather than number of bytes
+      @Override
+      public Object next () {
+        // TODO: make this uniform over non-negative values
+        return new BigInteger(nextBytes(urp,1024)).abs(); } }; }
+
+  //--------------------------------------------------------------
   /** Intended primarily for testing. <b>
    * Generate enough bytes to at least cover the range of
    * <code>double</code> values.

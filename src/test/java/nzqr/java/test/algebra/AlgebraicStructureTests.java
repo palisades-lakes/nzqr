@@ -15,6 +15,7 @@ import nzqr.java.algebra.Structure;
 import nzqr.java.numbers.BigFloats;
 import nzqr.java.numbers.Doubles;
 import nzqr.java.numbers.Floats;
+import nzqr.java.numbers.Naturals;
 import nzqr.java.numbers.Q;
 import nzqr.java.numbers.RationalFloats;
 import nzqr.java.prng.PRNG;
@@ -24,7 +25,7 @@ import nzqr.java.prng.PRNG;
  * mvn -q -Dtest=nzqr/java/test/algebra/AlgebraicStructureTests test > AST.txt
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2021-07-08
+ * @version 2022-09-04
  */
 
 @SuppressWarnings("unchecked")
@@ -47,7 +48,7 @@ public final class AlgebraicStructureTests {
       for (int i=0; i<n; i++) {
         final boolean result = law.test(generators);
         assertTrue(result,
-          s.toString() + " : " + law.toString()); } } }
+          s.getClass().getName() + " : " + law.toString()); } } }
 
   //--------------------------------------------------------------
 
@@ -56,6 +57,8 @@ public final class AlgebraicStructureTests {
   public final void tests () {
 
     //Debug.DEBUG=false;
+    structureTests(Naturals.ADDITION_MONOID,TRYS);
+
     structureTests(BigFloats.ADDITIVE_MAGMA,TRYS);
     structureTests(BigFloats.MULTIPLICATIVE_MAGMA,TRYS);
     structureTests(BigFloats.RING,TRYS);

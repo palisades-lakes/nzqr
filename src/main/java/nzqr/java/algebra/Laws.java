@@ -90,12 +90,13 @@ public final class Laws {
         final boolean pass = equal.test(right,left);
         if (! pass) {
           System.out.println();
+          System.out.println(elements);
           System.out.println(operation);
-          System.out.println(a);
-          System.out.println(b);
-          System.out.println(c);
-          System.out.println(right);
-          System.out.println(left); }
+          System.out.println(a.getClass().getName() + ":" + a);
+          System.out.println(b.getClass().getName() + ":" + b);
+          System.out.println(c.getClass().getName() + ":" + c);
+          System.out.println(right.getClass().getName() + ":" + right);
+          System.out.println(left.getClass().getName() + ":" + left); }
         return pass; } }
     return new Associative(); }
 

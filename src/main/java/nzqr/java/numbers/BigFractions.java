@@ -17,7 +17,7 @@ import nzqr.java.prng.Generators;
  * <code>BigFraction</code>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-07-31
+ * @version 2022-09-04
  */
 public final class BigFractions implements Set {
 
@@ -93,7 +93,7 @@ public final class BigFractions implements Set {
     return that instanceof BigFractions; }
 
   @Override
-  public final String toString () { return "BF"; }
+  public final String toString () { return "BigFractions"; }
 
   //--------------------------------------------------------------
   // construction

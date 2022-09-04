@@ -25,7 +25,7 @@ import nzqr.java.prng.Generators;
  * represented by <code>BigFloat</code>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-09-03
+ * @version 2022-09-04
  */
 @SuppressWarnings({"unchecked","static-method"})
 public final class BigFloats implements Set {
@@ -241,7 +241,7 @@ public final class BigFloats implements Set {
     return that instanceof BigFloats; }
 
   @Override
-  public final String toString () { return "BF"; }
+  public final String toString () { return "BigFloats"; }
 
   //--------------------------------------------------------------
   // construction

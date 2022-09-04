@@ -143,7 +143,7 @@ public final class Naturals implements Set {
     default -> throw new UnsupportedOperationException(); }; }
 
   @SuppressWarnings("preview")
-  private final Object add (final Object x0,
+  public final Object add (final Object x0,
                             final Object x1) {
     assert contains(x0);
     assert contains(x1);

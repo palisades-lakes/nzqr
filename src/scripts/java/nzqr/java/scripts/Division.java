@@ -30,8 +30,8 @@ public final class Division {
       final BigInteger xq = xqr[0];
       final BigInteger xr = xqr[1];
       final List<BoundedNatural> yqr = y0.divideAndRemainder(y1);
-      final BigInteger yq = yqr.get(0).bigIntegerValue();
-      final BigInteger yr = yqr.get(1).bigIntegerValue();
+      final BigInteger yq = yqr.get(0).toBigInteger();
+      final BigInteger yr = yqr.get(1).toBigInteger();
 
       assert xq.equals(yq) :
         "\nquotients differ!"

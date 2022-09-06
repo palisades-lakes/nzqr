@@ -30,7 +30,7 @@ public final class NaturalTest {
     Common.naturalTest(
       BoundedNatural::valueOf,
       BoundedNatural::valueOf,
-      (z) -> z.bigIntegerValue(),
+      (z) -> z.toBigInteger(),
       u0,u1);
 
     final BigInteger z0 = new BigInteger(
@@ -42,13 +42,13 @@ public final class NaturalTest {
     Common.naturalTest(
       BoundedNatural::valueOf,
       BoundedNatural::valueOf,
-      (z) -> z.bigIntegerValue(),
+      (z) -> z.toBigInteger(),
       z0,z1);
 
     Common.naturalTest(
       BoundedNatural::valueOf,
       BoundedNatural::valueOf,
-      (z) -> z.bigIntegerValue());
+      (z) -> z.toBigInteger());
 
     //Debug.DEBUG=false;
   }

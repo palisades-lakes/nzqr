@@ -57,7 +57,7 @@ public final class AlgebraicStructureTests {
   public final void tests () {
 
     //Debug.DEBUG=false;
-    structureTests(Naturals.ADDITION_MONOID,TRYS);
+    structureTests(Naturals.ADDITION_MONOID,2*TRYS);
 
     structureTests(BigFloats.ADDITIVE_MAGMA,TRYS);
     structureTests(BigFloats.MULTIPLICATIVE_MAGMA,TRYS);

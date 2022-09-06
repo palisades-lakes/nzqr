@@ -19,7 +19,7 @@ import nzqr.java.prng.Generators;
 /** Natural numbers as a commutative semi-ring,
  * allowing a variety of implementations,
  * some only covering subsets.
- * 
+ *
  * Implementations (eventually):
  * <ul>
  * <li> {@link BoundedNatural}
@@ -30,132 +30,110 @@ import nzqr.java.prng.Generators;
  * <li> <code>java.lang.Integer</code> (only nonnegative)
  * <li> ...
  * </ul>
- * 
+ *
  * The code is unnecessarily complicated because
  * (1) java doesn't have true dynamic method lookup,
  * and (2) it's not possible to have an interface implemented by
  * both BigInteger and newly written classes.
- * 
+ *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-09-04
+ * @version 2022-09-06
  */
-@SuppressWarnings({"unchecked","static-method","preview"})
+@SuppressWarnings({"unchecked","static-method","preview","boxing"})
 public final class Naturals implements Set {
+
+  // NOTE: instanceof pattern matching in java 18 is a preview
+  // may need to be re-written as if-then-else cascade...
+
+  //--------------------------------------------------------------
+  // utilities
+  //--------------------------------------------------------------
+
+  private static final BigInteger toBigInteger (final Object x) {
+    return switch (x) {
+    case Byte y -> BigInteger.valueOf(y.longValue()); 
+    case Short y -> BigInteger.valueOf(y.longValue()); 
+    case Integer y -> BigInteger.valueOf(y.longValue()); 
+    case Long y -> BigInteger.valueOf(y.longValue()); 
+    case BoundedNatural y -> y.toBigInteger();
+    case BigInteger y -> y;
+    default -> throw new UnsupportedOperationException(
+      "can't convert " + x.getClass().getName() +
+      " to BigInteger"); }; }
+
+  private static final BoundedNatural toBoundedNatural (final Object x) {
+    return switch (x)  {
+    case Byte y -> BoundedNatural.valueOf(y.longValue()); 
+    case Short y -> BoundedNatural.valueOf(y.longValue()); 
+    case Integer y -> BoundedNatural.valueOf(y.longValue()); 
+    case Long y -> BoundedNatural.valueOf(y.longValue()); 
+    case BoundedNatural y -> y;
+    case BigInteger y -> BoundedNatural.valueOf(y); 
+    default -> 
+    throw new UnsupportedOperationException(
+      "can't convert " + x.getClass().getName() +
+      " to BoundedNatural"); }; }
 
   //--------------------------------------------------------------
   // operations for algebraic structures over BigFloats.
   //--------------------------------------------------------------
-  // TODO: How do (should) we handle unsigned interpretation of an 
-  // int's bits?
-  // TODO: cleaner handling of overflow to BigInteger or whatever
+  // TODO: How do (should) we handle unsigned interpretation of 
+  // all of an int's bits?
+  // TODO: cleaner handling of overflow to BigInteger or whatever,
+  // especially how to control which larger class is returned?
 
-  /** UNSAFE: Assumes all arguments are non-negative. */
-  @SuppressWarnings({ "preview", "boxing" })
-  private static final Object add (final Byte y0,
-                                   final Object x1) {
-    // NOTE: instanceof pattern matching in java 18 is a preview
-    // may need to be re-written as if-then-else cascade...
-    switch (x1) {
-    case Integer y1 : return y0 + ((long) y1);
-    case Long y1 :
-      try { return Math.addExact(y0,y1); }
-      catch (final ArithmeticException e) {
-        return BigInteger.valueOf(y1).add(BigInteger.valueOf(y0)); } 
-    case Short y1 : return y0 + ((long) y1);
-    case Byte y1 : return y0 + ((long) y1);
-    case BigInteger y1 : return y1.add(BigInteger.valueOf(y0));
-    default : throw new UnsupportedOperationException(); } }
+  /** UNSAFE: Assumes all arguments are non-negative */
 
-  /** UNSAFE: Assumes all arguments are non-negative. */
-  @SuppressWarnings({ "preview", "boxing" })
-  private static final Object add (final Short y0,
-                                   final Object x1) {
-    // NOTE: instanceof pattern matching in java 18 is a preview
-    // may need to be re-written as if-then-else cascade...
-    switch (x1) {
-    case Integer y1 : return y0 + ((long) y1);
-    case Long y1 :
-      try { return Math.addExact(y0,y1); }
-      catch (final ArithmeticException e) {
-        return BigInteger.valueOf(y1).add(BigInteger.valueOf(y0)); } 
-    case Short y1 : return y0 + ((long) y1);
-    case Byte y1 : return y0 + ((long) y1);
-    case BigInteger y1 : return y1.add(BigInteger.valueOf(y0));
-    default : throw new UnsupportedOperationException(); } }
-
-  /** UNSAFE: Assumes all arguments are non-negative. */
-  @SuppressWarnings({ "preview", "boxing" })
-  private static final Object add (final Integer y0,
-                                   final Object x1) {
-    // NOTE: instanceof pattern matching in java 18 is a preview
-    // may need to be re-written as if-then-else cascade...
-    switch (x1) {
-    case Integer y1 : return y0 + ((long) y1);
-    case Long y1 :
-      try { return Math.addExact(y0,y1); }
-      catch (final ArithmeticException e) {
-        return BigInteger.valueOf(y1).add(BigInteger.valueOf(y0)); } 
-    case Short y1 : return y0 + ((long) y1);
-    case Byte y1 : return y0 + ((long) y1);
-    case BigInteger y1 : return y1.add(BigInteger.valueOf(y0));
-    default : throw new UnsupportedOperationException(); } }
-
-
-  /** UNSAFE: Assumes all arguments are non-negative. */
-  @SuppressWarnings({ "preview", "boxing" })
   private static final Object add (final Long y0,
-                                   final Object x1) {
-    // NOTE: instanceof pattern matching in java 18 is a preview
-    // may need to be re-written as if-then-else cascade...
-    switch (x1) {
-    case Integer y1 :
-      try { return Math.addExact(y0,y1); }
-      catch (final ArithmeticException e) {
-        return BigInteger.valueOf(y1).add(BigInteger.valueOf(y0)); } 
-    case Long y1 :
-      try { return Math.addExact(y0,y1); }
-      catch (final ArithmeticException e) {
-        return BigInteger.valueOf(y1).add(BigInteger.valueOf(y0)); } 
-    case Short y1 : 
-      try { return Math.addExact(y0,y1); }
-      catch (final ArithmeticException e) {
-        return BigInteger.valueOf(y1).add(BigInteger.valueOf(y0)); } 
-    case Byte y1 :     
-      try { return Math.addExact(y0,y1); }
-      catch (final ArithmeticException e) {
-        return BigInteger.valueOf(y1).add(BigInteger.valueOf(y0)); } 
-    case BigInteger y1 : return y1.add(BigInteger.valueOf(y0));
-    default : throw new UnsupportedOperationException(); } }
+                                   final Long y1) {
 
+    try { return Math.addExact(y0,y1); }
+    // TODO: return BigInteger or BoundedNatural or ?
+    catch (final ArithmeticException e) {
+      return toBigInteger(y0).add(toBigInteger(y1)); } }
 
-  /** UNSAFE: Assumes all arguments are non-negative. */
-  @SuppressWarnings({ "preview", "boxing" })
-  private static final Object add (final BigInteger y0,
-                                   final Object x1) {
-    // NOTE: instanceof pattern matching in java 18 is a preview
-    // may need to be re-written as if-then-else cascade...
-    return switch (x1) {
-    case Integer y1 -> y0.add(BigInteger.valueOf(y1));
-    case Long y1 -> y0.add(BigInteger.valueOf(y1));
-    case Short y1 -> y0.add(BigInteger.valueOf(y1));
-    case Byte y1 -> y0.add(BigInteger.valueOf(y1));
-    case BigInteger y1 -> y1.add(y0);
-    default -> throw new UnsupportedOperationException(); }; }
+  /** UNSAFE: Assumes all arguments are non-negative,
+   * and Long, BigInteger, or BoundedNatural */
 
-  @SuppressWarnings("preview")
+  private static final Object add (final Object x0,
+                                   final Long y1) {
+
+    return switch (x0) {
+    case final Byte y0 -> add(y0.longValue(),y1);
+    case final Short y0 -> add(y0.longValue(),y1);
+    case final Integer y0 -> add(y0.longValue(),y1);
+    case final Long y0 -> add(y0,y1); 
+    case final BigInteger y0 -> y0.add(toBigInteger(y1));
+    case final BoundedNatural y0 -> y0.add(toBoundedNatural(y1));
+    default -> throw new UnsupportedOperationException(
+      "can't add " + 
+        x0.getClass().getName() + " and Long"); }; }
+
+  //--------------------------------------------------------------
+
   public final Object add (final Object x0,
-                            final Object x1) {
+                           final Object x1) {
     assert contains(x0);
     assert contains(x1);
-    // NOTE: instanceof pattern matching in java 18 is a preview
-    // may need to be re-written as if-then-else cascade...
-    return switch (x0) {
-    case Integer y0 -> add(y0,x1);
-    case Long y0 -> add(y0,x1);
-    case Short y0 -> add(y0,x1);
-    case Byte y0 -> add(y0,x1);
-    case BigInteger y0 -> add(y0,x1);
-    default -> throw new UnsupportedOperationException(); }; }
+    return switch (x1) {
+    // reduce number of cases to implement by converting all
+    // "primitive" numbers to Long.
+    // TODO: profile to determine if it's worth keeping returned
+    // values as int or smaller
+    case final Byte y1 -> add(x0,y1.longValue());
+    case final Short y1 -> add(x0,y1.longValue());
+    case final Integer y1 -> add(x0,y1.longValue());
+    case final Long y1 -> add(x0,y1);
+    // TODO: these 2 cases return a result of the same type as the 
+    // first argument. will probably want to change that to return
+    // the larger, which needs to be determined
+    case final BigInteger y1 -> y1.add(toBigInteger(x0));
+    case final BoundedNatural y1 -> y1.add(toBoundedNatural(x0));
+    default -> throw new UnsupportedOperationException(
+      "can't add " + 
+        x0.getClass().getName() +
+        " and " +
+        x1.getClass().getName()); }; }
 
   //--------------------------------------------------------------
 
@@ -199,114 +177,55 @@ public final class Naturals implements Set {
   //--------------------------------------------------------------
 
   @Override
-  @SuppressWarnings({ "preview", "boxing" })
   public final boolean contains (final Object x) {
     return switch (x) {
-    case Integer y -> y>=0;
-    case Long y -> y>=0;
-    case Short y -> y>=0;
-    case Byte y -> y>=0;
+    case final BoundedNatural y -> true;
+    case final Integer y -> y>=0;
+    case final Long y -> y>=0;
+    case final Short y -> y>=0;
+    case final Byte y -> y>=0;
     // TODO: is signum() better for all the integer classes?
-    // TODO: might be useful to define signum/isNegative/... for 
+    // TODO: might be useful to define signum/isNegative/... for
     // all Number classes.
-    case BigInteger y -> y.signum()>=0;
+    case final BigInteger y -> y.signum()>=0;
     default -> throw new UnsupportedOperationException(); }; }
 
   //--------------------------------------------------------------
   // Unfortunately, it looks like Number.equals() is only true
   // for args of the same class, rather than same value.
-  // Would it be better/faster is everything was cast to long
-  // before comparison?
+  // Coercing "primitive" numbers to Long to save code.
+  // TODO: profile to check if retaining smaller numbers helps.
 
   /** Test for equal value as Natural numbers.
-   * 
-   * UNSAFE: Assumes all arguments are non-negative. 
+   *
+   * UNSAFE: Assumes all arguments are non-negative,
+   * and "primitive".
    */
-  @SuppressWarnings({ "preview", "boxing" })
-  private final boolean equals (final Integer y0,
-                                final Object x1) {
-    return switch (x1) {
-    case Integer y1 -> y0.equals(y1);
-    case Long y1 ->  y1.equals((long) y0);
-    case Short y1 ->  y0.equals((int) y1);
-    case Byte y1 ->  y0.equals((int) y1);
-    case BigInteger y1 ->  y1.equals(BigInteger.valueOf(y0));
+  private static final boolean equals (final Object x0,
+                                       final Long y1) {
+    return switch (x0) {
+    case final Byte y0 -> equals(y0.longValue(),y1);
+    case final Short y0 -> equals(y0.longValue(),y1);
+    case final Integer y0 -> equals(y0.longValue(),y1);
+    case final Long y0 -> y0.equals(y1);
+    case final BigInteger y0 -> y0.equals(toBigInteger(y1));
+    case final BoundedNatural y0 -> y0.equals(toBoundedNatural(y1));
     default -> throw new UnsupportedOperationException(); }; }
 
-  /** Test for equal value as Natural numbers.
-   * 
-   * UNSAFE: Assumes all arguments are non-negative. 
-   */
-  @SuppressWarnings({ "preview", "boxing" })
-  private final boolean equals (final Long y0,
-                                final Object x1) {
-    return switch (x1) {
-    case Integer y1 -> y0.equals((long) y1);
-    case Long y1 ->  y0.equals(y1);
-    case Short y1 ->  y0.equals((long) y1);
-    case Byte y1 ->  y0.equals((long) y1);
-    case BigInteger y1 ->  y1.equals(BigInteger.valueOf(y0));
-    default -> throw new UnsupportedOperationException(); }; }
+  /** Test for equal values as Natural numbers. */
 
-  /** Test for equal value as Natural numbers.
-   * 
-   * UNSAFE: Assumes all arguments are non-negative. 
-   */
-  @SuppressWarnings({ "preview", "boxing" })
-  private final boolean equals (final Short y0,
-                                final Object x1) {
-    return switch (x1) {
-    case Integer y1 -> y1.equals((int) y0);
-    case Long y1 ->  y1.equals((long) y0);
-    case Short y1 ->  y0.equals(y1);
-    case Byte y1 ->  y0.equals((short) y1);
-    case BigInteger y1 ->  y1.equals(BigInteger.valueOf(y0));
-    default -> throw new UnsupportedOperationException(); }; }
-
-  /** Test for equal value as Natural numbers.
-   * 
-   * UNSAFE: Assumes all arguments are non-negative. 
-   */
-  @SuppressWarnings({ "preview", "boxing" })
-  private final boolean equals (final Byte y0,
-                                final Object x1) {
-    return switch (x1) {
-    case Integer y1 -> y1.equals((int) y0);
-    case Long y1 ->  y1.equals((long) y0);
-    case Short y1 ->  y1.equals((short) y0);
-    case Byte y1 ->  y0.equals(y1);
-    case BigInteger y1 ->  y1.equals(BigInteger.valueOf(y0));
-    default -> throw new UnsupportedOperationException(); }; }
-
-  /** Test for equal value as Natural numbers.
-   * 
-   * UNSAFE: Assumes all arguments are non-negative. 
-   */
-  @SuppressWarnings({ "preview", "boxing" })
-  private final boolean equals (final BigInteger y0,
-                                final Object x1) {
-    return switch (x1) {
-    case Integer y1 -> y0.equals(BigInteger.valueOf(y1));
-    case Long y1 -> y0.equals(BigInteger.valueOf(y1));
-    case Short y1 ->  y0.equals(BigInteger.valueOf(y1));
-    case Byte y1 ->  y0.equals(BigInteger.valueOf(y1));
-    case BigInteger y1 -> y0.equals(y1);
-    default -> throw new UnsupportedOperationException(); }; }
-
-  /** Test for equal value as Natural numbers. */
-
-  @SuppressWarnings("preview")
   private final boolean equals (final Object x0,
                                 final Object x1) {
     assert contains(x0);
     assert contains(x1);
-    return switch (x0) {
-    case Integer y0 -> equals(y0,x1);
-    case Long y0 -> equals(y0,x1);
-    case Short y0 -> equals(y0,x1);
-    case Byte y0 -> equals(y0,x1);
-    case BigInteger y0 -> equals(y0,x1);
-    default -> 
+    return switch (x1) {
+    case final Byte y1 -> equals(x0,y1.longValue());
+    case final Short y1 -> equals(x0,y1.longValue());
+    case final Integer y1 -> equals(x0,y1.longValue());
+    case final Long y1 -> equals(x0,y1);
+    case final BigInteger y1 -> y1.equals(toBigInteger(x0));
+    case final BoundedNatural y1 -> y1.equals(toBoundedNatural(x0));
+    default ->
     throw new UnsupportedOperationException(
       x0.getClass().getName() + " " + x1.getClass().getName()); }; }
 
@@ -330,6 +249,7 @@ public final class Naturals implements Set {
     //      randomBitsGenerator (1L+BoundedNatural.MAX_WORDS,urp);
     final CollectionSampler gs =
       new CollectionSampler(urp,List.of(
+        BoundedNatural.generator(urp,2048),
         Generators.nonNegativeBigIntegerGenerator(urp),
         Generators.nonNegativeByteGenerator(urp),
         Generators.nonNegativeShortGenerator(urp),

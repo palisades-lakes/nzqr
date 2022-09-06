@@ -15,6 +15,7 @@ import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
 
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
+import nzqr.java.prng.Generators;
 
 /** Immutable large but bounded (like BigInteger) non-negative integers
  * (natural numbers) as a bit sequence,
@@ -67,7 +68,7 @@ import nzqr.java.prng.GeneratorBase;
  * when the operation result exceeds the bound.
  * 
 * @author palisades dot lakes at gmail dot com
- * @version 2022-08-25
+ * @version 2022-09-06
  */
 
 @SuppressWarnings("unchecked")
@@ -1424,7 +1425,7 @@ implements Ringlike<BoundedNatural> {
       b[n-1-i] = (byte) w; }
     return b; }
 
-  public final  BigInteger bigIntegerValue () {
+  public final  BigInteger toBigInteger () {
     return new BigInteger(bigEndianBytes()); }
 
   //--------------------------------------------------------------
@@ -1489,14 +1490,20 @@ implements Ringlike<BoundedNatural> {
         if (edge) { return edgeCases.sample(); }
         return valueOf(Doubles.significand(g.nextDouble())); } }; }
 
-  /** Intended primarily for testing. <b>
-   * Generate enough bytes to at least cover the range of
-   * <code>double</code> values.
-   */
+//  public static final Generator
+//  generator (final UniformRandomProvider urp)  {
+//    return fromDoubleGenerator(urp); }
 
   public static final Generator
-  generator (final UniformRandomProvider urp)  {
-    return fromDoubleGenerator(urp); }
+  generator (final UniformRandomProvider urp,
+             final int nwords) {
+    final Generator g =  Generators.intGenerator(nwords,urp);
+    return new GeneratorBase ("BoundedNaturalGenerator") {
+      // TODO: choose within a range, rather than number of ints
+      @Override
+      public Object next () {
+        // TODO: make this uniform over non-negative values
+        return BoundedNatural.unsafe((int[]) g.next()); } }; }
 
   //--------------------------------------------------------------
   // construction

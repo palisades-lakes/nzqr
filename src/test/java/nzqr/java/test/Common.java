@@ -32,7 +32,7 @@ import nzqr.java.prng.PRNG;
 /** Test utilities
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-07-08
+ * @version 2022-10-27
  */
 @SuppressWarnings("unchecked")
 public final class Common {
@@ -197,7 +197,7 @@ public final class Common {
     final T y1 = fromBI.apply(x1);
     final BigInteger x2 = x0.add(x1);
     final T y2 = y0.add(y1);
-    final BigInteger x3 = toBI.apply( y2);
+    final BigInteger x3 = toBI.apply(y2);
     Assertions.assertEquals(x2,x3,() ->
     "\n" + x0.toString(0x10) + "(" + x0.toString() + ")"
     + "\n + "
@@ -544,11 +544,11 @@ public final class Common {
   //--------------------------------------------------------------
 
   public static final void
-  naturalTest (final Function<String,BoundedNatural> valueOf,
-               final Function<BigInteger,BoundedNatural> fromBI,
-               final Function<BoundedNatural,BigInteger> toBI,
-               final BigInteger z0,
-               final BigInteger z1) {
+  boundedNaturalTest (final Function<String,BoundedNatural> valueOf,
+                      final Function<BigInteger,BoundedNatural> fromBI,
+                      final Function<BoundedNatural,BigInteger> toBI,
+                      final BigInteger z0,
+                      final BigInteger z1) {
     assert 0<=z0.signum();
     assert 0<=z1.signum();
     //Debug.println("z0=" + z0.toString(0x10));
@@ -589,14 +589,14 @@ public final class Common {
 
 
   public static final void
-  naturalTest (final Function<String,BoundedNatural> valueOf,
-               final Function<BigInteger,BoundedNatural> fromBI,
-               final Function<BoundedNatural,BigInteger> toBI) {
+  boundedNaturalTest (final Function<String,BoundedNatural> valueOf,
+                      final Function<BigInteger,BoundedNatural> fromBI,
+                      final Function<BoundedNatural,BigInteger> toBI) {
     final Generator gn =
       Generators.bigIntegerGenerator(
         PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
     for (int i=0;i<TRYS;i++) {
-      naturalTest(valueOf,fromBI,toBI,
+      boundedNaturalTest(valueOf,fromBI,toBI,
         ((BigInteger) gn.next()).abs(),
         ((BigInteger) gn.next()).abs()); } }
 

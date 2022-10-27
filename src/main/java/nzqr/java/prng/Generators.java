@@ -354,7 +354,7 @@ public final class Generators {
         return z; } }; }
 
   //--------------------------------------------------------------
-  // TODO: momve this into BigFractions, then into test code,
+  // TODO: move this into BigFractions, then into test code,
   // until BigFraction passes reasonable tests, like round trip
   // invariance double -> BigFraction -> double
   // TODO: options?

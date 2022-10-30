@@ -32,7 +32,7 @@ import nzqr.java.prng.PRNG;
 /** Test utilities
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-10-27
+ * @version 2022-10-30
  */
 @SuppressWarnings("unchecked")
 public final class Common {

@@ -17,7 +17,7 @@ import nzqr.java.numbers.Doubles;
  * that return different values on each call.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-09-04
+ * @version 2022-10-30
  */
 
 @SuppressWarnings("unchecked")
@@ -268,12 +268,23 @@ public final class Generators {
 
   public static final Generator
   nonNegativeBigIntegerGenerator (final UniformRandomProvider urp) {
-    return new GeneratorBase ("bigIntegerGenerator") {
+    return new GeneratorBase ("nonNegativeBigIntegerGenerator") {
       // TODO: choose within a range, rather than number of bytes
       @Override
       public Object next () {
         // TODO: make this uniform over non-negative values
         return new BigInteger(nextBytes(urp,1024)).abs(); } }; }
+
+  public static final Generator
+  nonNegativeBigIntegerGenerator (final int n,
+                                  final UniformRandomProvider urp) {
+    return new GeneratorBase ("nonNegativeBigIntegerGenerator:" + n) {
+      final Generator g = nonNegativeBigIntegerGenerator(urp);
+      @Override
+      public final Object next () {
+        final BigInteger[] z = new BigInteger[n];
+        for (int i=0;i<n;i++) { z[i] = (BigInteger) g.next(); }
+        return z; } }; }
 
   //--------------------------------------------------------------
   /** Intended primarily for testing. <b>

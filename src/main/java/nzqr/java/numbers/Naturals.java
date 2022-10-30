@@ -11,6 +11,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.CollectionSampler;
 
 import nzqr.java.algebra.OneSetOneOperation;
+import nzqr.java.algebra.OneSetTwoOperations;
 import nzqr.java.algebra.Set;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
@@ -152,25 +153,75 @@ public final class Naturals implements Set {
     return Integer.valueOf(0); }
 
   //--------------------------------------------------------------
-  // TODO: implement these to define the commutative semi-ring.
 
-  //  private final Object multiply (final Object x0,
-  //                                         final Object x1) {
-  //    //assert contains(x0);
-  //    //assert contains(x1);
-  //    return x0.multiply(x1); }
-  //
-  //  public final BinaryOperator<Object> multiplier () {
-  //    return new BinaryOperator<>() {
-  //      @Override
-  //      public final String toString () { return "BF.multiply"; }
-  //      @Override
-  //      public final Object apply (final Object x0,
-  //                                         final Object x1) {
-  //        return Naturals.this.multiply(x0,x1); } }; }
-  //
-  //  public final Object multiplicativeIdentity () {
-  //    return Object.valueOf(1L); }
+  /** UNSAFE: Assumes all arguments are non-negative */
+
+  private static final Object multiply (final Long y0,
+                                        final Long y1) {
+
+    try { return Math.multiplyExact(y0,y1); }
+    // TODO: return BigInteger or BoundedNatural or ?
+    catch (final ArithmeticException e) {
+      return toBigInteger(y0).multiply(toBigInteger(y1)); } }
+
+  /** UNSAFE: Assumes all arguments are non-negative,
+   * and Long, BigInteger, or BoundedNatural */
+
+  private static final Object multiply (final Object x0,
+                                        final Long y1) {
+
+    return switch (x0) {
+    case final Byte y0 -> multiply(y0.longValue(),y1);
+    case final Short y0 -> multiply(y0.longValue(),y1);
+    case final Integer y0 -> multiply(y0.longValue(),y1);
+    case final Long y0 -> multiply(y0,y1); 
+    case final BigInteger y0 -> y0.multiply(toBigInteger(y1));
+    case final BoundedNatural y0 -> y0.multiply(toBoundedNatural(y1));
+    default -> throw new UnsupportedOperationException(
+      "can't multiply " + 
+        x0.getClass().getName() + " and Long"); }; }
+
+  //--------------------------------------------------------------
+
+  public final Object multiply (final Object x0,
+                                final Object x1) {
+    assert contains(x0);
+    assert contains(x1);
+    return switch (x1) {
+    // reduce number of cases to implement by converting all
+    // "primitive" numbers to Long.
+    // TODO: profile to determine if it's worth keeping returned
+    // values as int or smaller
+    case final Byte y1 -> multiply(x0,y1.longValue());
+    case final Short y1 -> multiply(x0,y1.longValue());
+    case final Integer y1 -> multiply(x0,y1.longValue());
+    case final Long y1 -> multiply(x0,y1);
+    // TODO: these 2 cases return a result of the same type as the 
+    // first argument. will probably want to change that to return
+    // the larger, which needs to be determined
+    case final BigInteger y1 -> y1.multiply(toBigInteger(x0));
+    case final BoundedNatural y1 -> y1.multiply(toBoundedNatural(x0));
+    default -> throw new UnsupportedOperationException(
+      "can't multiply " + 
+        x0.getClass().getName() +
+        " and " +
+        x1.getClass().getName()); }; }
+
+  //--------------------------------------------------------------
+
+  public final BinaryOperator<Object> multiplier () {
+    return new BinaryOperator<>() {
+      @Override
+      public final String toString () { return "Naturals.multiply"; }
+      @Override
+      public final Object apply (final Object x0,
+                                 final Object x1) {
+        return Naturals.this.multiply(x0,x1); } }; }
+
+  //--------------------------------------------------------------
+
+  public final Object multiplicativeIdentity () {
+    return Integer.valueOf(1); }
 
   //--------------------------------------------------------------
   // Set methods
@@ -305,16 +356,16 @@ public final class Naturals implements Set {
       get(),
       get().additiveIdentity());
 
-  //  public static final OneSetOneOperation MULTIPLICATIVE_MAGMA =
-  //    OneSetOneOperation.magma(get().multiplier(),get());
+  public static final OneSetOneOperation MULTIPLICATIVE_MAGMA =
+    OneSetOneOperation.magma(get().multiplier(),get());
 
-  //  public static final OneSetTwoOperations RING =
-  //    OneSetTwoOperations.commutativeSemiring(
-  //      get().adder(),
-  //      get().additiveIdentity(),
-  //      get().multiplier(),
-  //      get().multiplicativeIdentity(),
-  //      get());
+  public static final OneSetTwoOperations RING =
+    OneSetTwoOperations.commutativeSemiring(
+      get().adder(),
+      get().additiveIdentity(),
+      get().multiplier(),
+      get().multiplicativeIdentity(),
+      get());
 
   //--------------------------------------------------------------
 }

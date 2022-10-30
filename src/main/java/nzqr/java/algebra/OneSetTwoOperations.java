@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableList;
 /** Ring-like structures
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-09-03
+ * @version 2022-10-30
  */
 @SuppressWarnings("unchecked")
 public final class OneSetTwoOperations extends Structure {
@@ -129,7 +129,7 @@ public final class OneSetTwoOperations extends Structure {
     super(elements,laws);
     assert Objects.nonNull(add);
     assert Objects.nonNull(additiveIdentity);
-    assert Objects.nonNull(additiveInverse);
+    //assert Objects.nonNull(additiveInverse);
     assert Objects.nonNull(multiply);
     assert Objects.nonNull(multiplicativeIdentity);
     // rings won't have multiplicative inverses

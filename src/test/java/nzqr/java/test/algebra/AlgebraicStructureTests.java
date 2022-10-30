@@ -25,7 +25,7 @@ import nzqr.java.prng.PRNG;
  * mvn -q -Dtest=nzqr/java/test/algebra/AlgebraicStructureTests test > AST.txt
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2022-09-04
+ * @version 2022-10-30
  */
 
 @SuppressWarnings("unchecked")
@@ -58,6 +58,8 @@ public final class AlgebraicStructureTests {
 
     //Debug.DEBUG=false;
     structureTests(Naturals.ADDITION_MONOID,2*TRYS);
+    structureTests(Naturals.MULTIPLICATIVE_MAGMA,TRYS);
+    structureTests(Naturals.RING,TRYS);
 
     structureTests(BigFloats.ADDITIVE_MAGMA,TRYS);
     structureTests(BigFloats.MULTIPLICATIVE_MAGMA,TRYS);

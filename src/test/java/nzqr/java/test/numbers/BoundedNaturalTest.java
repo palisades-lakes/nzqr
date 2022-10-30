@@ -15,14 +15,14 @@ import nzqr.java.test.Common;
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-10-27
+ * @version 2022-10-30
  */
 
 public final class BoundedNaturalTest {
 
   @SuppressWarnings({ "static-method" })
   @Test
-  public final void leNatural () {
+  public final void boundedNatural () {
     //Debug.DEBUG=false;
 
     final BigInteger u0 = new BigInteger("744fe560",0x10);

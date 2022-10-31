@@ -96,19 +96,37 @@ public final class NaturalMultiply {
                                                       final BoundedNatural v) {
     final int n0 = u.hiInt();
     final int n1 = v.hiInt();
-    BoundedNatural w = u.zero();
+    final int[] w = new int[n0+n1];
     long carry = 0L;
     for (int i0=0;i0<n0;i0++) {
       carry = 0L;
       for (int i1=0;i1<n1;i1++) {
         final int i2 = i0+i1;
         final long product =
-          (v.uword(i1)*u.uword(i0)) + w.uword(i2) + carry;
-        w = w.setWord(i2, (int) product);
+          (v.uword(i1)*u.uword(i0)) + Numbers.unsigned(w[i2]) + carry;
+        w[i2] = (int) product;
         carry = (product>>>32); }
       final int i2 = i0+n1;
-      w = w.setWord(i2, (int) carry); }
-    return w; }
+      w[i2] = (int) carry; }
+    return BoundedNatural.unsafe(w); }
+
+//  private static final BoundedNatural multiplySimple (final BoundedNatural u,
+//                                                      final BoundedNatural v) {
+//    final int n0 = u.hiInt();
+//    final int n1 = v.hiInt();
+//    BoundedNatural w = u.zero();
+//    long carry = 0L;
+//    for (int i0=0;i0<n0;i0++) {
+//      carry = 0L;
+//      for (int i1=0;i1<n1;i1++) {
+//        final int i2 = i0+i1;
+//        final long product =
+//          (v.uword(i1)*u.uword(i0)) + w.uword(i2) + carry;
+//        w = w.setWord(i2, (int) product);
+//        carry = (product>>>32); }
+//      final int i2 = i0+n1;
+//      w = w.setWord(i2, (int) carry); }
+//    return w; }
 
   //--------------------------------------------------------------
 

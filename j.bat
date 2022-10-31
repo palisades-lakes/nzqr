@@ -1,6 +1,6 @@
 @echo off
 :: palisades.lakes (at) gmail (dot) com
-:: 2022-07-31
+:: 2022-10-31
 
 ::set GC=-XX:+AggressiveHeap -XX:+UseStringDeduplication 
 set GC=
@@ -10,7 +10,6 @@ set TRACE=
 
 ::set THRUPUT=
 set THRUPUT=-server -Xbatch -XX:+UseFMA
-::set THRUPUT=-server -Xbatch 
 
 ::set XMX=-Xms56g -Xmx56g 
 ::set XMX=-Xms31g -Xmx31g -Xmn12g 
@@ -20,9 +19,9 @@ set PROF=
 ::set PROF=-agentpath:"C:\Program Files\YourKit Java Profiler 2021.3-b230\bin\win64\yjpagent.dll=_no_java_version_check"
 
 set OPENS=--add-opens java.base/java.lang=ALL-UNNAMED
+
 set CP=-cp lib/*
 
-::set JAVA_HOME=%JAVA16%
 set JAVA="%JAVA_HOME%\bin\java"
 
 set CMD=%JAVA% %THRUPUT% -ea -dsa %PROF% %GC% %XMX% %TRACE% %OPENS% %CP% %*

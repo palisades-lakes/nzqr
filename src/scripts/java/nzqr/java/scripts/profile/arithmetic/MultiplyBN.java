@@ -12,23 +12,23 @@ import nzqr.java.prng.PRNG;
 /** Test long -> double -> long arithmetic.
  * <p>
  * <pre>
- * j --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/Multiply.java
- * jy --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/Multiply.java
+ * j --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/MultiplyBN.java
+ * jy --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/MultiplyBN.java
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-10-31
+ * @version 2022-11-07
  */
 
-public final class Multiply {
+public final class MultiplyBN {
 
   private static final Naturals NATURALS = Naturals.get();
-  
-  private static final int N = 1024 * 1024;
+  private static final int NBYTES = 1024;
+  private static final int NINTS = 1024 * 1024;
   
   private static final Generator generator =  
     Generators.nonNegativeBigIntegerGenerator(
-    1024, PRNG.well44497b("seeds/Well44497b-2019-01-07.txt"), N); 
+    NBYTES, PRNG.well44497b("seeds/Well44497b-2019-01-07.txt"), NINTS); 
   
   private static final BigInteger[] x0 = (BigInteger[]) generator.next();
   private static final BigInteger[] x1 = (BigInteger[]) generator.next(); 
@@ -44,7 +44,7 @@ public final class Multiply {
   private static final BoundedNatural[] y0 = fromBigInteger(x0);
   private static final BoundedNatural[] y1 = fromBigInteger(x1);
 
-  private static final BoundedNatural[] p = new BoundedNatural[N];
+  private static final BoundedNatural[] p = new BoundedNatural[NINTS];
 
   private static final void multiply (final String stage) {
     final long t0 = System.nanoTime();

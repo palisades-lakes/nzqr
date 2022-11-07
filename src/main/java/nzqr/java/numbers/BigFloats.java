@@ -139,7 +139,7 @@ public final class BigFloats implements Set {
       private final ContinuousSampler choose =
         new ContinuousUniformSampler(urp,0.0,1.0);
       private final Generator g0 =
-        Generators.bigIntegerGenerator(urp);
+        Generators.bigIntegerGenerator(1024, urp);
       private final CollectionSampler edgeCases =
         new CollectionSampler(
           urp,

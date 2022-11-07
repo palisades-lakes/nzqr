@@ -17,7 +17,7 @@ import nzqr.java.numbers.Doubles;
  * that return different values on each call.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-10-30
+ * @version 2022-11-07
  */
 
 @SuppressWarnings("unchecked")
@@ -225,12 +225,12 @@ public final class Generators {
 
   //--------------------------------------------------------------
   /** Intended primarily for testing. <b>
-   * Generate enough bytes to at least cover the range of
-   * <code>double</code> values.
+   * @param nbytes generate a BigInteger with this many bytes
    */
 
   public static final Generator
-  bigIntegerGenerator (final UniformRandomProvider urp) {
+  bigIntegerGenerator (final int nbytes, 
+                       final UniformRandomProvider urp) {
     final double dp = 0.99;
     return new GeneratorBase ("bigIntegerGenerator") {
       private final ContinuousSampler choose =
@@ -247,53 +247,55 @@ public final class Generators {
       public Object next () {
         final boolean edge = choose.sample() > dp;
         if (edge) { return edgeCases.sample(); }
-        return new BigInteger(nextBytes(urp,1024)); } }; }
+        return new BigInteger(nextBytes(urp,nbytes)); } }; }
 
   public static final Generator
-  bigIntegerGenerator (final int n,
-                       final UniformRandomProvider urp) {
-    return new GeneratorBase ("bigIntegerGenerator:" + n) {
-      final Generator g = bigIntegerGenerator(urp);
+  bigIntegerGenerator (final int nbytes,
+                       final UniformRandomProvider urp, 
+                       final int nints) {
+    return new GeneratorBase ("bigIntegerGenerator:" + nints) {
+      final Generator g = bigIntegerGenerator(nbytes, urp);
       @Override
       public final Object next () {
-        final BigInteger[] z = new BigInteger[n];
-        for (int i=0;i<n;i++) { z[i] = (BigInteger) g.next(); }
+        final BigInteger[] z = new BigInteger[nints];
+        for (int i=0;i<nints;i++) { z[i] = (BigInteger) g.next(); }
         return z; } }; }
 
   //--------------------------------------------------------------
   /** Intended primarily for testing. <b>
-   * Generate enough bytes to at least cover the range of
-   * <code>double</code> values.
+   * @param nbytes generate a BigInteger with up to this many bytes
    */
 
   public static final Generator
-  nonNegativeBigIntegerGenerator (final UniformRandomProvider urp) {
+  nonNegativeBigIntegerGenerator (final int nbytes, 
+                                  final UniformRandomProvider urp) {
     return new GeneratorBase ("nonNegativeBigIntegerGenerator") {
       // TODO: choose within a range, rather than number of bytes
       @Override
       public Object next () {
         // TODO: make this uniform over non-negative values
-        return new BigInteger(nextBytes(urp,1024)).abs(); } }; }
+        return new BigInteger(nextBytes(urp,nbytes)).abs(); } }; }
 
   public static final Generator
-  nonNegativeBigIntegerGenerator (final int n,
-                                  final UniformRandomProvider urp) {
-    return new GeneratorBase ("nonNegativeBigIntegerGenerator:" + n) {
-      final Generator g = nonNegativeBigIntegerGenerator(urp);
+  nonNegativeBigIntegerGenerator (final int nbytes,
+                                  final UniformRandomProvider urp, 
+                                  final int nints) {
+    return new GeneratorBase ("nonNegativeBigIntegerGenerator:" + nints) {
+      final Generator g = nonNegativeBigIntegerGenerator(nbytes, urp);
       @Override
       public final Object next () {
-        final BigInteger[] z = new BigInteger[n];
-        for (int i=0;i<n;i++) { z[i] = (BigInteger) g.next(); }
+        final BigInteger[] z = new BigInteger[nints];
+        for (int i=0;i<nints;i++) { z[i] = (BigInteger) g.next(); }
         return z; } }; }
 
   //--------------------------------------------------------------
   /** Intended primarily for testing. <b>
-   * Generate enough bytes to at least cover the range of
-   * <code>double</code> values.
+   * @param nbytes generate a BigInteger with up to this many bytes
    */
 
   public static final Generator
-  nonzeroBigIntegerGenerator (final UniformRandomProvider urp) {
+  nonzeroBigIntegerGenerator (final int nbytes, 
+                              final UniformRandomProvider urp) {
     final double dp = 0.99;
     return new GeneratorBase ("nonzeroBigIntegerGenerator") {
       private final ContinuousSampler choose =
@@ -309,30 +311,34 @@ public final class Generators {
       public Object next () {
         final boolean edge = choose.sample() > dp;
         if (edge) { return edgeCases.sample(); }
-        // TODO: bound infinite loop?
-        for (;;) {
+        for (int i=0;i<16;i++) {
           final BigInteger b =
-            new BigInteger(nextBytes(urp,1024));
-          if (0 != b.signum()) { return b; } } } }; }
+            new BigInteger(nextBytes(urp,nbytes));
+          if (0 != b.signum()) { return b; } }
+        throw new IllegalStateException(
+          "got too many pseudorandom zero BigIntegers!"); } }; }
 
   public static final Generator
-  nonzeroBigIntegerGenerator (final int n,
-                              final UniformRandomProvider urp) {
-    return new GeneratorBase ("nonzeroBigIntegerGenerator:" + n) {
-      final Generator g = nonzeroBigIntegerGenerator(urp);
+  nonzeroBigIntegerGenerator (int nbytes,
+                              final UniformRandomProvider urp, 
+                              final int nints) {
+    return new GeneratorBase ("nonzeroBigIntegerGenerator:" + nints) {
+      final Generator g = nonzeroBigIntegerGenerator(nbytes, urp);
       @Override
       public final Object next () {
-        final BigInteger[] z = new BigInteger[n];
-        for (int i=0;i<n;i++) { z[i] = (BigInteger) g.next(); }
+        final BigInteger[] z = new BigInteger[nints];
+        for (int i=0;i<nints;i++) { z[i] = (BigInteger) g.next(); }
         return z; } }; }
 
+  //--------------------------------------------------------------
   /** Intended primarily for testing. <b>
-   * Generate enough bytes to at least cover the range of
-   * <code>double</code> values.
+   * @param nbytes TODO
+   * @param nbytes generate a BigInteger with up to this many bytes
    */
 
   public static final Generator
-  positiveBigIntegerGenerator (final UniformRandomProvider urp) {
+  positiveBigIntegerGenerator (final int nbytes, 
+                               final UniformRandomProvider urp) {
     final double dp = 0.99;
     return new GeneratorBase ("positiveBigIntegerGenerator") {
       private final ContinuousSampler choose =
@@ -349,19 +355,24 @@ public final class Generators {
         final boolean edge = choose.sample() > dp;
         if (edge) { return edgeCases.sample(); }
         // TODO: bound infinite loop?
-        for (;;) {
-          final BigInteger b = new BigInteger(nextBytes(urp,1024));
-          if (0 != b.signum()) { return b.abs(); } } } }; }
+        for (int i=0;i<16;i++) {
+          final BigInteger b =
+            new BigInteger(nextBytes(urp,nbytes)).abs();
+          if (0 != b.signum()) { return b; } }
+        throw new IllegalStateException(
+          "got too many pseudorandom zero BigIntegers!"); } }; }
 
   public static final Generator
-  positiveBigIntegerGenerator (final int n,
-                               final UniformRandomProvider urp) {
-    return new GeneratorBase ("positiveBigIntegerGenerator:" + n) {
-      final Generator g = positiveBigIntegerGenerator(urp);
+  positiveBigIntegerGenerator (final int nbytes,
+                               final UniformRandomProvider urp, 
+                               final int nints) {
+    return new GeneratorBase ("positiveBigIntegerGenerator:" + nints) {
+      final Generator g = positiveBigIntegerGenerator(nbytes, urp);
       @Override
       public final Object next () {
-        final BigInteger[] z = new BigInteger[n];
-        for (int i=0;i<n;i++) { z[i] = (BigInteger) g.next(); }
+        final BigInteger[] z = new BigInteger[nints];
+        for (int i=0;i<nints;i++) { 
+          z[i] = (BigInteger) g.next(); }
         return z; } }; }
 
   //--------------------------------------------------------------

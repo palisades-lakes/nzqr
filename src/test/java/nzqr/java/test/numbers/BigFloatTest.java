@@ -21,7 +21,7 @@ import nzqr.java.test.Common;
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2019-12-01
+ * @version 2022-11-07
  */
 
 public final class BigFloatTest {

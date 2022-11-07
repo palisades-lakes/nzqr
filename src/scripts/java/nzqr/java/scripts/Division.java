@@ -66,7 +66,7 @@ public final class Division {
   public static final void main (final String[] args) {
     final Generator gn =
       Generators.bigIntegerGenerator(
-        PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
+        1024, PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
     for (long i=0;i<TRYS;i++) {
       if (0L==(i%(1L<<20))) { System.out.println(i); }
       divideAndRemainder(

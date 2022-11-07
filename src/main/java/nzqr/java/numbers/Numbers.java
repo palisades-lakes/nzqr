@@ -17,7 +17,7 @@ import nzqr.java.prng.Generators;
 /** Utilities for Object and primitive numbers.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-07
+ * @version 2022-11-07
  */
 @SuppressWarnings("unchecked")
 public final class Numbers implements Set {
@@ -297,7 +297,7 @@ public final class Numbers implements Set {
             Generators.longGenerator(urp),
             Floats.finiteGenerator(urp),
             Doubles.finiteGenerator(urp),
-            Generators.bigIntegerGenerator(urp),
+            Generators.bigIntegerGenerator(1024, urp),
             //bigDecimalGenerator(urp),
             RationalFloats.generator(urp)));
       @Override
@@ -328,7 +328,7 @@ public final class Numbers implements Set {
             Generators.longGenerator(urp),
             Floats.generator(urp),
             Doubles.generator(urp),
-            Generators.bigIntegerGenerator(urp),
+            Generators.bigIntegerGenerator(1024, urp),
             //bigDecimalGenerator(urp),
             RationalFloats.generator(urp)
             ));

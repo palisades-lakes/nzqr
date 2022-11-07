@@ -28,7 +28,7 @@ public final class Multiply {
   
   private static final Generator generator =  
     Generators.nonNegativeBigIntegerGenerator(
-    N, PRNG.well44497b("seeds/Well44497b-2019-01-07.txt")); 
+    1024, PRNG.well44497b("seeds/Well44497b-2019-01-07.txt"), N); 
   
   private static final BigInteger[] x0 = (BigInteger[]) generator.next();
   private static final BigInteger[] x1 = (BigInteger[]) generator.next(); 

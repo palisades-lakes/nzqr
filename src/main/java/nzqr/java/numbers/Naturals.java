@@ -301,7 +301,7 @@ public final class Naturals implements Set {
     final CollectionSampler gs =
       new CollectionSampler(urp,List.of(
         BoundedNatural.generator(urp,2048),
-        Generators.nonNegativeBigIntegerGenerator(urp),
+        Generators.nonNegativeBigIntegerGenerator(1024, urp),
         Generators.nonNegativeByteGenerator(urp),
         Generators.nonNegativeShortGenerator(urp),
         Generators.nonNegativeIntGenerator(urp),

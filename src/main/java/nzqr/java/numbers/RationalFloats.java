@@ -25,7 +25,7 @@ import nzqr.java.prng.Generators;
  * <code>RationalFloat</code>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-06-07
+ * @version 2022-11-07
  */
 @SuppressWarnings({"unchecked","static-method"})
 public final class RationalFloats implements Set {
@@ -220,9 +220,9 @@ public final class RationalFloats implements Set {
       private final ContinuousSampler choose =
         new ContinuousUniformSampler(urp,0.0,1.0);
       private final Generator g0 =
-        Generators.bigIntegerGenerator(urp);
+        Generators.bigIntegerGenerator(1024, urp);
       private final Generator g1 =
-        Generators.positiveBigIntegerGenerator(urp);
+        Generators.positiveBigIntegerGenerator(1024, urp);
       private final Generator g2 =
         Generators.intGenerator(urp);
       private final CollectionSampler edgeCases =

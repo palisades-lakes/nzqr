@@ -32,7 +32,7 @@ import nzqr.java.prng.PRNG;
 /** Test utilities
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-10-30
+ * @version 2022-11-07
  */
 @SuppressWarnings("unchecked")
 public final class Common {
@@ -594,7 +594,7 @@ public final class Common {
                       final Function<BoundedNatural,BigInteger> toBI) {
     final Generator gn =
       Generators.bigIntegerGenerator(
-        PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
+        1024, PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
     for (int i=0;i<TRYS;i++) {
       boundedNaturalTest(valueOf,fromBI,toBI,
         ((BigInteger) gn.next()).abs(),
@@ -635,7 +635,7 @@ public final class Common {
                final Function<Ringlike,BigInteger> toBI) {
     final Generator gn =
       Generators.bigIntegerGenerator(
-        PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
+        1024, PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
     for (int i=0;i<TRYS;i++) {
       integerTest(valueOf,fromBI,toBI,
         (BigInteger) gn.next(), (BigInteger) gn.next()); } }
@@ -648,7 +648,7 @@ public final class Common {
                 final Function<Ringlike,BigInteger> toBI) {
     final Generator gn =
       Generators.bigIntegerGenerator(
-        PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
+        1024, PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
     for (int i=0;i<TRYS;i++) {
       integerTest(valueOf,fromBI,toBI,
         (BigInteger) gn.next(), (BigInteger) gn.next()); } }
@@ -842,10 +842,10 @@ public final class Common {
                                final ToIntBiFunction compareDists) {
     final Generator gn =
       Generators.bigIntegerGenerator(
-        PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
+        1024, PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
     final Generator gd =
       Generators.positiveBigIntegerGenerator(
-        PRNG.well44497b("seeds/Well44497b-2019-01-07.txt"));
+        1024, PRNG.well44497b("seeds/Well44497b-2019-01-07.txt"));
     //Debug.DEBUG=false;
     for (int i=0;i<TRYS;i++) {
       // some longs will not be exactly representable as floats
@@ -1106,10 +1106,11 @@ public final class Common {
                                final ToIntBiFunction compareDists) {
     final Generator gn =
       Generators.bigIntegerGenerator(
+        1024, 
         PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
     final Generator gd =
       Generators.positiveBigIntegerGenerator(
-        PRNG.well44497b("seeds/Well44497b-2019-01-07.txt"));
+        1024, PRNG.well44497b("seeds/Well44497b-2019-01-07.txt"));
     for (int i=0;i<TRYS;i++) {
       // some longs will not be exactly representable as doubles
       final BigInteger n = (BigInteger) gn.next();

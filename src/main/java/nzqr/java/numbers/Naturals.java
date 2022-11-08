@@ -13,6 +13,7 @@ import org.apache.commons.rng.sampling.CollectionSampler;
 import nzqr.java.algebra.OneSetOneOperation;
 import nzqr.java.algebra.OneSetTwoOperations;
 import nzqr.java.algebra.Set;
+import nzqr.java.numbers.jdk19.BigIntegerJDK;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
 import nzqr.java.prng.Generators;
@@ -38,7 +39,7 @@ import nzqr.java.prng.Generators;
  * both BigInteger and newly written classes.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-09-06
+ * @version 2022-11-07
  */
 @SuppressWarnings({"unchecked","static-method","preview","boxing"})
 public final class Naturals implements Set {
@@ -49,6 +50,19 @@ public final class Naturals implements Set {
   //--------------------------------------------------------------
   // utilities
   //--------------------------------------------------------------
+
+  private static final BigIntegerJDK toBigIntegerJDK (final Object x) {
+    return switch (x) {
+    case Byte y -> BigIntegerJDK.valueOf(y.longValue()); 
+    case Short y -> BigIntegerJDK.valueOf(y.longValue()); 
+    case Integer y -> BigIntegerJDK.valueOf(y.longValue()); 
+    case Long y -> BigIntegerJDK.valueOf(y.longValue()); 
+    case BoundedNatural y -> toBigIntegerJDK(y.toBigInteger());
+    case BigInteger y -> new BigIntegerJDK(y.toByteArray());
+    case BigIntegerJDK y -> y;
+    default -> throw new UnsupportedOperationException(
+      "can't convert " + x.getClass().getName() +
+      " to BigInteger"); }; }
 
   private static final BigInteger toBigInteger (final Object x) {
     return switch (x) {
@@ -200,6 +214,7 @@ public final class Naturals implements Set {
     // first argument. will probably want to change that to return
     // the larger, which needs to be determined
     case final BigInteger y1 -> y1.multiply(toBigInteger(x0));
+    case final BigIntegerJDK y1 -> y1.multiply(toBigIntegerJDK(x0));
     case final BoundedNatural y1 -> y1.multiply(toBoundedNatural(x0));
     default -> throw new UnsupportedOperationException(
       "can't multiply " + 

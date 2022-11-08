@@ -7,7 +7,7 @@ import static nzqr.java.numbers.Numbers.loWord;
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2019-10-06
+ * @version 2022-11-07
  */
 
 @SuppressWarnings("unchecked")
@@ -15,11 +15,6 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
   // square
-  //--------------------------------------------------------------
-
-  static final int KARATSUBA_SQUARE_THRESHOLD = 128;
-  static final int TOOM_COOK_SQUARE_THRESHOLD = 216;
-
   //--------------------------------------------------------------
 
   static final BoundedNatural squareKaratsuba (final BoundedNatural u) {
@@ -86,29 +81,46 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-  private static final int MULTIPLY_SQUARE_THRESHOLD = 20;
-  private static final int KARATSUBA_THRESHOLD = 80;
-  private static final int TOOM_COOK_THRESHOLD = 240;
+//  private static final BoundedNatural multiplySimple (final BoundedNatural u,
+//                                                      final BoundedNatural v) {
+//    final int n0 = u.hiInt();
+//    final int n1 = v.hiInt();
+//    final int[] w = new int[n0+n1];
+//    // UNSAFE: direct reference to internal arrays
+//    final int[] uu = u.words();
+//    final int[] vv = v.words();
+//    long carry = 0L;
+//    for (int i0=0;i0<n0;i0++) {
+//      carry = 0L;
+//      for (int i1=0;i1<n1;i1++) {
+//        final int i2 = i0+i1;
+//        final long vi = unsigned(vv[i1]);
+//        final long ui = unsigned(uu[i0]);
+//        final long product =
+//          (vi*ui) + unsigned(w[i2]) + carry;
+//        w[i2] = (int) product;
+//        carry = (product>>>32); }
+//      final int i2 = i0+n1;
+//      w[i2] = (int) carry; }
+//    return BoundedNatural.unsafe(w); }
 
-  //--------------------------------------------------------------
-
-  private static final BoundedNatural multiplySimple (final BoundedNatural u,
-                                                      final BoundedNatural v) {
-    final int n0 = u.hiInt();
-    final int n1 = v.hiInt();
-    final int[] w = new int[n0+n1];
-    long carry = 0L;
-    for (int i0=0;i0<n0;i0++) {
-      carry = 0L;
-      for (int i1=0;i1<n1;i1++) {
-        final int i2 = i0+i1;
-        final long product =
-          (v.uword(i1)*u.uword(i0)) + Numbers.unsigned(w[i2]) + carry;
-        w[i2] = (int) product;
-        carry = (product>>>32); }
-      final int i2 = i0+n1;
-      w[i2] = (int) carry; }
-    return BoundedNatural.unsafe(w); }
+//  private static final BoundedNatural multiplySimple (final BoundedNatural u,
+//                                                      final BoundedNatural v) {
+//    final int n0 = u.hiInt();
+//    final int n1 = v.hiInt();
+//    final int[] w = new int[n0+n1];
+//    long carry = 0L;
+//    for (int i0=0;i0<n0;i0++) {
+//      carry = 0L;
+//      for (int i1=0;i1<n1;i1++) {
+//        final int i2 = i0+i1;
+//        final long product =
+//          (v.uword(i1)*u.uword(i0)) + Numbers.unsigned(w[i2]) + carry;
+//        w[i2] = (int) product;
+//        carry = (product>>>32); }
+//      final int i2 = i0+n1;
+//      w[i2] = (int) carry; }
+//    return BoundedNatural.unsafe(w); }
 
 //  private static final BoundedNatural multiplySimple (final BoundedNatural u,
 //                                                      final BoundedNatural v) {
@@ -130,7 +142,7 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-  private static final BoundedNatural multiplyKaratsuba (final BoundedNatural u,
+  static final BoundedNatural multiplyKaratsuba (final BoundedNatural u,
                                                          final BoundedNatural v) {
     final int n0 = u.hiInt();
     final int n1 = v.hiInt();
@@ -219,7 +231,7 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-  private static final BoundedNatural multiplyToomCook3 (final BoundedNatural u,
+  static final BoundedNatural multiplyToomCook3 (final BoundedNatural u,
                                                          final BoundedNatural v) {
     final int n0 = u.hiInt();
     final int n1 = v.hiInt();
@@ -301,20 +313,20 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-  public static final BoundedNatural multiply (final BoundedNatural u,
-                                               final BoundedNatural v) {
-    if ((u.isZero()) || (v.isZero())) { return u.zero(); }
-    final int n0 = u.hiInt();
-    if (u.equals(v) && (n0>MULTIPLY_SQUARE_THRESHOLD)) {
-      return u.square(); }
-    if (n0==1) { return v.multiply(u.uword(0)); }
-    final int n1 = v.hiInt();
-    if (n1==1) { return u.multiply(v.uword(0)); }
-    if ((n0<KARATSUBA_THRESHOLD) || (n1<KARATSUBA_THRESHOLD)) {
-      return multiplySimple(u,v); }
-    if ((n0<TOOM_COOK_THRESHOLD) && (n1<TOOM_COOK_THRESHOLD)) {
-      return multiplyKaratsuba(u,v); }
-    return multiplyToomCook3(u,v); }
+//  public static final BoundedNatural multiply (final BoundedNatural u,
+//                                               final BoundedNatural v) {
+//    if ((u.isZero()) || (v.isZero())) { return u.zero(); }
+//    final int n0 = u.hiInt();
+//    if (u.equals(v) && (n0>MULTIPLY_SQUARE_THRESHOLD)) {
+//      return u.square(); }
+//    if (n0==1) { return v.multiply(u.uword(0)); }
+//    final int n1 = v.hiInt();
+//    if (n1==1) { return u.multiply(v.uword(0)); }
+//    if ((n0<KARATSUBA_THRESHOLD) || (n1<KARATSUBA_THRESHOLD)) {
+//      return u.multiplySimple(v); }
+//    if ((n0<TOOM_COOK_THRESHOLD) && (n1<TOOM_COOK_THRESHOLD)) {
+//      return multiplyKaratsuba(u,v); }
+//    return multiplyToomCook3(u,v); }
 
   //  public static final BoundedNatural multiply (final BoundedNatural t,
   //                                        final long u) {

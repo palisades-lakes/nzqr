@@ -2,7 +2,6 @@ package nzqr.java.scripts.profile.arithmetic;
 
 import java.math.BigInteger;
 
-import nzqr.java.numbers.BoundedNatural;
 import nzqr.java.numbers.Naturals;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.Generators;
@@ -12,15 +11,15 @@ import nzqr.java.prng.PRNG;
 /** Test long -> double -> long arithmetic.
  * <p>
  * <pre>
- * j --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/MultiplyBN.java
- * jy --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/MultiplyBN.java
+ * j --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/MultiplyBI.java
+ * jy --enable-preview --source 19 src/scripts/java/nzqr/java/scripts/profile/arithmetic/MultiplyBI.java
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
  * @version 2022-11-07
  */
 
-public final class MultiplyBN {
+public final class MultiplyBI {
 
   private static final Naturals NATURALS = Naturals.get();
   private static final int NBYTES = 256;
@@ -33,11 +32,10 @@ public final class MultiplyBN {
   private static final BigInteger[] x0 = (BigInteger[]) generator.next();
   private static final BigInteger[] x1 = (BigInteger[]) generator.next(); 
 
-  private static final Object[] fromBigInteger (final BigInteger[] x) {
-    final int n = x.length;
-    final Object[] y = new Object[n];
-    for (int i=0;i<n;i++) { y[i] = BoundedNatural.valueOf(x[i]); }
-    return y; }
+  private static final Object[] 
+    fromBigInteger (final BigInteger[] x) {
+    
+    return x; }
 
   private static final Object[] y0 = fromBigInteger(x0);
   private static final Object[] y1 = fromBigInteger(x1);

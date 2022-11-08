@@ -1,5 +1,7 @@
 package nzqr.java.numbers;
 
+import static nzqr.java.numbers.NaturalMultiply.multiplyKaratsuba;
+import static nzqr.java.numbers.NaturalMultiply.multiplyToomCook3;
 import static nzqr.java.numbers.Numbers.hiWord;
 import static nzqr.java.numbers.Numbers.loWord;
 import static nzqr.java.numbers.Numbers.unsigned;
@@ -68,7 +70,7 @@ import nzqr.java.prng.Generators;
  * when the operation result exceeds the bound.
  * 
 * @author palisades dot lakes at gmail dot com
- * @version 2022-09-06
+ * @version 2022-11-07
  */
 
 @SuppressWarnings("unchecked")
@@ -112,7 +114,7 @@ implements Ringlike<BoundedNatural> {
    */
 
   private final int[] _words;
-  private final int[] words () { return _words; }
+  final int[] words () { return _words; }
 
   public final int hiInt () { return _words.length; }
 
@@ -1093,14 +1095,17 @@ implements Ringlike<BoundedNatural> {
 
   //--------------------------------------------------------------
 
+  private static final int KARATSUBA_SQUARE_THRESHOLD = 128;
+  private static final int TOOM_COOK_SQUARE_THRESHOLD = 216;
+
   @Override
   public final BoundedNatural square () {
     if (isZero()) { return zero(); }
     if (isOne()) { return one(); }
     final int n = hiInt();
-    if (n < NaturalMultiply.KARATSUBA_SQUARE_THRESHOLD) {
+    if (n < KARATSUBA_SQUARE_THRESHOLD) {
       return squareSimple(); }
-    if (n < NaturalMultiply.TOOM_COOK_SQUARE_THRESHOLD) {
+    if (n < TOOM_COOK_SQUARE_THRESHOLD) {
       return NaturalMultiply.squareKaratsuba(this); }
     // For a discussion of overflow detection see multiply()
     return NaturalMultiply.squareToomCook3(this); }
@@ -1109,16 +1114,54 @@ implements Ringlike<BoundedNatural> {
   // multiply
   //--------------------------------------------------------------
 
-  @Override
-  public final BoundedNatural multiply (final BoundedNatural u) {
-    //    //assert isValid();
-    //    //assert u.isValid();
-    return NaturalMultiply.multiply(this,u); }
+  private final BoundedNatural multiplySimple (final BoundedNatural v) {
+    // the equivalent method in BigInteger is marked @IntrinsicCandidate
+    // it may not be possible to get the same performance with 
+    // ordinary java code?
+    // TODO: compile BigInteger.java locally to see if that's the case?
+    final int n0 = hiInt();
+    final int n1 = v.hiInt();
+    final int[] w = new int[n0+n1];
+    // UNSAFE: direct reference to internal arrays
+    final int[] uu = words();
+    final int[] vv = v.words();
+    long carry = 0L;
+    for (int i0=0;i0<n0;i0++) {
+      carry = 0L;
+      for (int i1=0;i1<n1;i1++) {
+        final int i2 = i0+i1;
+        final long vi = unsigned(vv[i1]);
+        final long ui = unsigned(uu[i0]);
+        final long product =
+          (vi*ui) + unsigned(w[i2]) + carry;
+        w[i2] = (int) product;
+        carry = (product>>>32); }
+      final int i2 = i0+n1;
+      w[i2] = (int) carry; }
+    return unsafe(w); }
 
   //--------------------------------------------------------------
 
-  //  public final BoundedNatural multiply (final long u) {
-  //    return NaturalMultiply.multiply(this,u); }
+  private static final int MULTIPLY_SQUARE_THRESHOLD = 20;
+  private static final int KARATSUBA_THRESHOLD = 80;
+  private static final int TOOM_COOK_THRESHOLD = 240;
+
+  @Override
+  public final BoundedNatural multiply (final BoundedNatural v) {
+    if ((v.isZero()) || (isZero())) { return v.zero(); }
+    final int n0 = v.hiInt();
+    if (equals(v) && (n0>MULTIPLY_SQUARE_THRESHOLD)) {
+      return v.square(); }
+    if (n0==1) { return multiply(v.uword(0)); }
+    final int n1 = hiInt();
+    if (n1==1) { return v.multiply(uword(0)); }
+    if ((n0< KARATSUBA_THRESHOLD) || (n1<KARATSUBA_THRESHOLD)) {
+      return multiplySimple(v); }
+    if ((n0<TOOM_COOK_THRESHOLD) && (n1<TOOM_COOK_THRESHOLD)) {
+      return multiplyKaratsuba(v,this); }
+    return multiplyToomCook3(v,this); }
+
+  //--------------------------------------------------------------
 
   public final BoundedNatural multiply (final long v) {
     if (0L==v) { return ZERO; }

@@ -119,6 +119,7 @@ public final class Naturals implements Set {
     case final Integer y0 -> add(y0.longValue(),y1);
     case final Long y0 -> add(y0,y1); 
     case final BigInteger y0 -> y0.add(toBigInteger(y1));
+    case final BigIntegerJDK y0 -> y0.add(toBigIntegerJDK(y1));
     case final BoundedNatural y0 -> y0.add(toBoundedNatural(y1));
     default -> throw new UnsupportedOperationException(
       "can't add " + 
@@ -143,6 +144,7 @@ public final class Naturals implements Set {
     // first argument. will probably want to change that to return
     // the larger, which needs to be determined
     case final BigInteger y1 -> y1.add(toBigInteger(x0));
+    case final BigIntegerJDK y1 -> y1.add(toBigIntegerJDK(x0));
     case final BoundedNatural y1 -> y1.add(toBoundedNatural(x0));
     default -> throw new UnsupportedOperationException(
       "can't add " + 

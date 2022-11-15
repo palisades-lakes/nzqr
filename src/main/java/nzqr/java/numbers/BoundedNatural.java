@@ -70,7 +70,7 @@ import nzqr.java.prng.Generators;
  * when the operation result exceeds the bound.
  * 
 * @author palisades dot lakes at gmail dot com
- * @version 2022-11-07
+ * @version 2022-11-14
  */
 
 @SuppressWarnings("unchecked")

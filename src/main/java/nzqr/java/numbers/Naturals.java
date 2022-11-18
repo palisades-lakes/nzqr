@@ -38,7 +38,7 @@ import nzqr.java.prng.Generators;
  * both BigInteger and newly written classes.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-11-14
+ * @version 2022-11-15
  */
 @SuppressWarnings({"unchecked","static-method","preview","boxing"})
 public final class Naturals implements Set {
@@ -222,6 +222,136 @@ public final class Naturals implements Set {
 
   public final Object multiplicativeIdentity () {
     return Integer.valueOf(1); }
+
+  //--------------------------------------------------------------
+  // non-ring arithmetic methods
+  //--------------------------------------------------------------
+
+  private static final Object absDiff (final Long y0,
+                                       final Long y1) {
+
+    try { return Math.abs(Math.subtractExact(y0,y1)); }
+    // TODO: return BigInteger or BoundedNatural or ?
+    catch (final ArithmeticException e) {
+      return toBigInteger(y0).subtract(toBigInteger(y1)).abs(); } }
+
+  /** UNSAFE: Assumes all arguments are non-negative,
+   * and Long, BigInteger, or BoundedNatural */
+
+  private static final Object absDiff (final Object x0,
+                                       final Long y1) {
+
+    return switch (x0) {
+    case final Byte y0 -> absDiff(y0.longValue(),y1);
+    case final Short y0 -> absDiff(y0.longValue(),y1);
+    case final Integer y0 -> absDiff(y0.longValue(),y1);
+    case final Long y0 -> absDiff(y0,y1); 
+    case final BigInteger y0 -> y0.subtract(toBigInteger(y1)).abs();
+    case final BoundedNatural y0 -> y0.absDiff(toBoundedNatural(y1));
+    default -> throw new UnsupportedOperationException(
+      "can't absDiff " + 
+        x0.getClass().getName() + " and Long"); }; }
+
+  //--------------------------------------------------------------
+
+  public final Object absDiff (final Object x0,
+                               final Object x1) {
+    assert contains(x0);
+    assert contains(x1);
+    return switch (x1) {
+    // reduce number of cases to implement by converting all
+    // "primitive" numbers to Long.
+    // TODO: profile to determine if it's worth keeping returned
+    // values as int or smaller
+    case final Byte y1 -> absDiff(x0,y1.longValue());
+    case final Short y1 -> absDiff(x0,y1.longValue());
+    case final Integer y1 -> absDiff(x0,y1.longValue());
+    case final Long y1 -> absDiff(x0,y1);
+    // TODO: these 2 cases return a result of the same type as the 
+    // first argument. will probably want to change that to return
+    // the larger, which needs to be determined
+    case final BigInteger y1 -> y1.subtract(toBigInteger(x0)).abs();
+    case final BoundedNatural y1 -> y1.absDiff(toBoundedNatural(x0));
+    default -> throw new UnsupportedOperationException(
+      "can't absDiff " + 
+        x0.getClass().getName() +
+        " and " +
+        x1.getClass().getName()); }; }
+
+  //--------------------------------------------------------------
+
+  public final BinaryOperator<Object> absDiffer () {
+    return new BinaryOperator<> () {
+      @Override
+      public final String toString () { return "Naturals.absDiff()"; }
+      @Override
+      public final Object apply (final Object x0,
+                                 final Object x1) {
+        return Naturals.this.absDiff(x0,x1); } }; }
+
+  //--------------------------------------------------------------
+
+  private static final Object[] divideAndRemainder (final Long y0,
+                                                    final Long y1) {
+    return new Long[] { y0/y1, y0%y1 }; }
+
+  private static final Object[] divideAndRemainder (final Object x0,
+                                                    final Long y1) {
+
+    return switch (x0) {
+    case final Byte y0 -> divideAndRemainder(y0.longValue(),y1);
+    case final Short y0 -> divideAndRemainder(y0.longValue(),y1);
+    case final Integer y0 -> divideAndRemainder(y0.longValue(),y1);
+    case final Long y0 -> divideAndRemainder(y0,y1); 
+    case final BigInteger y0 -> y0.divideAndRemainder(toBigInteger(y1));
+    case final BoundedNatural y0 -> divideAndRemainder(y0,toBoundedNatural(y1));
+    default -> throw new UnsupportedOperationException(
+      "can't divideAndRemainder " + 
+        x0.getClass().getName() + " and Long"); }; }
+
+  private static final BoundedNatural[] 
+    divideAndRemainder (final BoundedNatural x0,
+                        final BoundedNatural x1) {
+    final List<BoundedNatural> qr = x0.divideAndRemainder(x1);
+    return new BoundedNatural[] { qr.get(0), qr.get(1), }; }
+
+  //--------------------------------------------------------------
+
+  public final Object[] divideAndRemainder (final Object x0,
+                                            final Object x1) {
+    assert contains(x0);
+    assert contains(x1);
+    return switch (x1) {
+    // reduce number of cases to implement by converting all
+    // "primitive" numbers to Long.
+    // TODO: profile to determine if it's worth keeping returned
+    // values as int or smaller
+    case final Byte y1 -> divideAndRemainder(x0,y1.longValue());
+    case final Short y1 -> divideAndRemainder(x0,y1.longValue());
+    case final Integer y1 -> divideAndRemainder(x0,y1.longValue());
+    case final Long y1 -> divideAndRemainder(x0,y1);
+    // TODO: these 2 cases return a result of the same type as the 
+    // first argument. will probably want to change that to return
+    // the larger, which needs to be determined
+    case final BigInteger y1 -> toBigInteger(x0).divideAndRemainder(y1);
+    case final BoundedNatural y1 -> divideAndRemainder(toBoundedNatural(x0),y1);
+    default -> throw new UnsupportedOperationException(
+      "can't divideAndRemainder " + 
+        x0.getClass().getName() +
+        " and " +
+        x1.getClass().getName()); }; }
+
+  //--------------------------------------------------------------
+
+  public final BinaryOperator<Object> divideAndRemainderer () {
+    return new BinaryOperator<> () {
+      @Override
+      public final String toString () { 
+        return "Naturals.divideAndRemainder()"; }
+      @Override
+      public final Object apply (final Object x0,
+                                 final Object x1) {
+        return Naturals.this.divideAndRemainder(x0,x1); } }; }
 
   //--------------------------------------------------------------
   // Set methods

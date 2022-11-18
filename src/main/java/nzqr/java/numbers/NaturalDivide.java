@@ -1,10 +1,7 @@
 package nzqr.java.numbers;
 
-import static nzqr.java.numbers.Numbers.hiWord;
-import static nzqr.java.numbers.Numbers.loWord;
-import static nzqr.java.numbers.Numbers.unsigned;
-
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 
 /** Division, gcd, etc., of natural numbers.
@@ -12,11 +9,31 @@ import java.util.List;
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2019-09-04
+ * @version 2022-11-17
  */
 
 @SuppressWarnings("unchecked")
 public final class NaturalDivide {
+
+  //--------------------------------------------------------------
+  /** <code>(int &amp; UNSIGNED_MASK)</code>
+   * returns <code>long<code> containing <code>unsigned int</code>
+ . */
+
+  private static final long UNSIGNED_MASK = 0xFFFFFFFFL;
+
+  /** <code>(int &amp; UNSIGNED_MASK)</code>
+   * returns <code>long<code> containing <code>unsigned int</code>
+ . */
+  
+  private static final long unsigned (final int i) {
+    return i & UNSIGNED_MASK; }
+
+  private static final long loWord (final long i) {
+    return i & UNSIGNED_MASK; }
+
+  private static final long hiWord (final long i) {
+    return i >>> 32; }
 
   //--------------------------------------------------------------
   // division
@@ -85,31 +102,73 @@ public final class NaturalDivide {
   /** Special shifted fused multiply-subtract
    */
 
-  private static List fms (final BoundedNatural u,
-                           final int n0,
-                           final long x,
-                           final BoundedNatural v,
-                           final int n1,
-                           final int i0) {
+  private static final List fms (final BoundedNatural u,
+                                 final int n0,
+                                 final long x,
+                                 final BoundedNatural v,
+                                 final int n1,
+                                 final int i0) {
     //assert 0L<=x;
     //assert 0<=i0;
-    BoundedNatural w = u;
     long carry = 0;
     int i = n0-1-n1-i0;
     //assert 0<=i :
-    //      "\nu=" + Classes.className(w) + "\n" + w +
+    //      "\nu=" + Classes.className(u) + "\n" + u +
     //      "\nv=" + Classes.className(v) + "\n" + v
     //      + "\nx= " + x
     //      + "\nn0= " + n0 + "\nn1= " + n1 + "\ni0= " + i0;
+    final int[] vv = v.words();
+    final int[] w = 
+      Arrays.copyOf(u.words(), Math.max(i+n1,u.words().length));
+//    try {
     for (int j=0;j<n1;j++,i++) {
-      final long prod = (v.uword(j)*x) + carry;
-      final long diff = w.uword(i)-prod;
-      w = w.setWord(i, (int) diff);
+      final long prod = (unsigned(vv[j])*x) + carry;
+      final long diff = unsigned(w[i])-prod;
+      w[i] = (int) diff;
       carry = hiWord(prod);
       // TODO: is this related to possibility x*u > this,
       // so difference is negative?
-      if (loWord(diff) > unsigned(~(int)prod)) { carry++; } }
-    return List.of(w, Long.valueOf(loWord(carry))); }
+      if (loWord(diff) > unsigned(~((int)prod))) { carry++; } }
+//    } catch (final ArrayIndexOutOfBoundsException e) {
+//      System.err.println("u = " + u);
+//      System.err.println("n0= " + n0);
+//      System.err.println("x = " + x);
+//      System.err.println("v = " + v);
+//      System.err.println("n1= " + n1);
+//      System.err.println("i0= " + i0);
+//      System.err.println("i = " + i);
+//      System.err.println("w.length= " + w.length);
+//    }
+    return List.of(
+      BoundedNatural.unsafe(w), 
+      Long.valueOf(loWord(carry))); }
+
+
+//  private static final List fms (final BoundedNatural u,
+//                                 final int n0,
+//                                 final long x,
+//                                 final BoundedNatural v,
+//                                 final int n1,
+//                                 final int i0) {
+//    //assert 0L<=x;
+//    //assert 0<=i0;
+//    BoundedNatural w = u;
+//    long carry = 0;
+//    int i = n0-1-n1-i0;
+//    //assert 0<=i :
+//    //      "\nu=" + Classes.className(w) + "\n" + w +
+//    //      "\nv=" + Classes.className(v) + "\n" + v
+//    //      + "\nx= " + x
+//    //      + "\nn0= " + n0 + "\nn1= " + n1 + "\ni0= " + i0;
+//    for (int j=0;j<n1;j++,i++) {
+//      final long prod = (v.uword(j)*x) + carry;
+//      final long diff = w.uword(i)-prod;
+//      w = w.setWord(i, (int) diff);
+//      carry = hiWord(prod);
+//      // TODO: is this related to possibility x*u > this,
+//      // so difference is negative?
+//      if (loWord(diff) > unsigned(~(int)prod)) { carry++; } }
+//    return List.of(w, Long.valueOf(loWord(carry))); }
 
   //--------------------------------------------------------------
   /** A primitive used for division. This method adds in one
@@ -142,24 +201,14 @@ public final class NaturalDivide {
   private static final List<BoundedNatural>
   knuthDivision (final BoundedNatural u,
                  final BoundedNatural v) {
-    //assert u.isValid();
-    //assert v.isValid();
-    //assert !v.isZero();
     // D1 compact the divisor
     final int nv = v.hiInt();
     final int lShift = Integer.numberOfLeadingZeros(v.word(nv-1));
     final BoundedNatural d = v.shiftUp(lShift);
-    //assert v.isValid();
     final int nd = d.hiInt();
-    //assert nv==nd;
     BoundedNatural r = u.shiftUp(lShift);
-    //assert u.isValid();
     final int nr0 = r.hiInt();
-    //    final int nu = u.hiInt();
-    //assert (nu==nr0)||(nu+1==nr0) :
-    //      "\nnu=" + nu + "\nnr=" + nr0;
     r = r.setWord(nr0,0);
-    //assert u.isValid();
     final int nr = nr0+1;
     BoundedNatural q = u.zero();
     final int nq = nr-nd;
@@ -203,8 +252,7 @@ public final class NaturalDivide {
       // D5 Test remainder, D6 Add back
       if (borrow>rh) { r = divadd(r,nr,d,nd,j); qhat--; }
       // Store the quotient digit
-      //assert nq==q.hiInt();
-      q = q.setWord(nq-1-j,(int) qhat); } // D7 loop on j
+      q = q.setWord(nq-1-j,(int) qhat); } 
 
     // D3 Calculate qhat
     // 1st estimate
@@ -243,14 +291,10 @@ public final class NaturalDivide {
       if (borrow > nh) { // D6 Add back
         r = divadd(r,nr,d,nd,nq-1); qhat--; }
       // Store the quotient digit
-      //assert nq==q.hiInt();
-      //q = q.setWord(q.hiInt()-nr+nd,(int)qhat); }
-      q = q.setWord(0,(int)qhat); }
+      q = q.setWord(0,(int) qhat); }
 
     // D8 decompact
     if (0<lShift) { r = r.shiftDown(lShift); }
-    //r.compact();
-    //q.compact();
     return List.of(q,r); }
 
   //--------------------------------------------------------------

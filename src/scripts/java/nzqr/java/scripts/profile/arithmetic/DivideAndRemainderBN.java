@@ -23,8 +23,8 @@ import nzqr.java.prng.PRNG;
 public final class DivideAndRemainderBN {
 
   private static final Naturals NATURALS = Naturals.get();
-  private static final int NBYTES = 4096;
-  private static final int NINTS = 256 * 1024;
+  private static final int NBYTES = 1024;
+  private static final int NINTS = 1024 * 1024;
 
   private static final Generator generator =  
     Generators.nonNegativeBigIntegerGenerator(

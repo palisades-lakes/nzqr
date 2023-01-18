@@ -6,19 +6,17 @@
       "Generally useful stuff with no obvious better location" }
     
     nzqr.commons.core
-  
+
   (:refer-clojure :exclude [contains? name time])
   (:require [clojure.pprint :as pp]
             [clojure.string :as s])
-  (:import [java.lang.reflect Method]
-           [java.util Collection HashMap Iterator List Map]
-           [java.time LocalDateTime]
-           [java.time.format DateTimeFormatter]
-           [com.google.common.collect Multimap]
-           ;;[zana.java.functions Functions]
+  (:import (java.lang.reflect Method)
+           (java.time LocalDateTime)
+           (java.time.format DateTimeFormatter)
+    ;;[zana.java.functions Functions]
            ))
 ;;----------------------------------------------------------------
-(defn jvm-args 
+#_(defn jvm-args
   "Return the command line arguments passed to java. 
    Useful for logging."
   []
@@ -51,7 +49,7 @@
 
 (defmethod name :default [x] (binding-name x))
 
-(defmethod name nil [x] nil)
+(defmethod name nil [_] nil)
 (defmethod name String [^String x] x)
 (defmethod name Class [^Class x] (.getSimpleName x))
 (defmethod name java.io.File [^java.io.File x] (.getName x))
@@ -151,7 +149,7 @@
            ret#))))
   ([exprs] `(seconds "" ~@exprs)))
 ;;----------------------------------------------------------------
-(defn print-stack-trace
+#_(defn print-stack-trace
   ([] (.printStackTrace (Throwable.)))
   ([& args]
     (let [^String msg (s/join " " args)]
@@ -169,7 +167,7 @@
   ([x length] (pprint-str x length 8))
   ([x] (pprint-str x 10 8)))
 ;;----------------------------------------------------------------
-(defmacro echo 
+#_(defmacro echo
   "Print the expressions followed by their values. 
    Useful for quick logging."
   [& es]
@@ -182,7 +180,7 @@
                   (pprint-str ~e 60))) 
              es)))
 ;;----------------------------------------------------------------
-(defmacro echo-types 
+#_(defmacro echo-types
   "Print the expressions followed by their values and types. 
    Useful for quick logging.
 

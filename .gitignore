@@ -26,7 +26,6 @@
 *.gls
 *.ilg
 *.ind
-*.out
 *.xdy
 *.ist
 *synctex*
@@ -39,3 +38,10 @@
 /data/
 /java_pid5048.hprof
 /AST.txt
+/.idea/.gitignore
+/.idea/ClojureProjectResolveSettings.xml
+/.idea/compiler.xml
+/.idea/encodings.xml
+/.idea/jarRepositories.xml
+/.idea/misc.xml
+/.idea/vcs.xml

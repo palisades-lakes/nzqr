@@ -5,14 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /** Division, gcd, etc., of natural numbers.
- *
+ * <br>
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
  * @version 2022-11-17
  */
 
-@SuppressWarnings("unchecked")
 public final class NaturalDivide {
 
   //--------------------------------------------------------------
@@ -100,6 +99,8 @@ public final class NaturalDivide {
 
   //--------------------------------------------------------------
   /** shifted fused multiply-subtract.
+   * <br>
+   * DANGER: destroys <code>u<</code>.
    */
 
   private static final List fms (final BoundedNatural u,
@@ -111,19 +112,45 @@ public final class NaturalDivide {
     long carry = 0;
     int i = n0-1-n1-i0;
     final int[] vv = v.words();
-    final int[] ww = 
-      Arrays.copyOf(u.words(), Math.max(i+n1,u.words().length));
+    final int[] uu;
+
+    if (i+n1 <= u.words().length) { uu = u.words(); }
+    else { uu = Arrays.copyOf(u.words(), i+n1); }
     for (int j=0;j<n1;j++,i++) {
       final long prod = (unsigned(vv[j])*x) + carry;
-      final long diff = unsigned(ww[i])-prod;
-      ww[i] = (int) diff;
+      final long diff = unsigned(uu[i])-prod;
+      uu[i] = (int) diff;
       carry = hiWord(prod);
       // TODO: is this related to possibility x*u > this,
       // so difference is negative?
       if (loWord(diff) > unsigned(~((int)prod))) { carry++; } }
     return List.of(
-      BoundedNatural.unsafe(ww), 
-      Long.valueOf(loWord(carry))); }
+            BoundedNatural.unsafe(uu),
+            loWord(carry)); }
+
+
+//  private static final List fms (final BoundedNatural u,
+//                                 final int n0,
+//                                 final long x,
+//                                 final BoundedNatural v,
+//                                 final int n1,
+//                                 final int i0) {
+//    long carry = 0;
+//    int i = n0-1-n1-i0;
+//    final int[] vv = v.words();
+//    final int[] uu =
+//            Arrays.copyOf(u.words(), Math.max(i+n1,u.words().length));
+//    for (int j=0;j<n1;j++,i++) {
+//      final long prod = (unsigned(vv[j])*x) + carry;
+//      final long diff = unsigned(uu[i])-prod;
+//      uu[i] = (int) diff;
+//      carry = hiWord(prod);
+//      // TODO: is this related to possibility x*u > this,
+//      // so difference is negative?
+//      if (loWord(diff) > unsigned(~((int)prod))) { carry++; } }
+//    return List.of(
+//            BoundedNatural.unsafe(uu),
+//            Long.valueOf(loWord(carry))); }
 
 
 //  private static final List fms (final BoundedNatural u,
@@ -215,6 +242,9 @@ public final class NaturalDivide {
 //    return w; }
 
    //--------------------------------------------------------------
+  // TODO: replace BoundedNatural by int[], to permit reuse of arrays
+  // without modifying immutable objects.
+  // or possibly create MutableBoundedNatural class.
 
   private static final List<BoundedNatural>
   knuthDivision (final BoundedNatural u,
@@ -263,7 +293,7 @@ public final class NaturalDivide {
       r = r.setWord(i,0);
       final List rc = fms(r,nr,qhat,d,nd,j);
       r = (BoundedNatural) rc.get(0);
-      final long borrow = ((Long) rc.get(1)).longValue();
+      final long borrow = (Long) rc.get(1);
       if (borrow>rh) { r = divadd(r,nr,d,nd,j); qhat--; }
       qq = setWord(qq,nq-1-j,(int) qhat); 
       //qq[nq-1-j] = (int) qhat; 
@@ -296,7 +326,7 @@ public final class NaturalDivide {
       r = r.setWord(nd,0);
       final List rc = fms(r,nr,qhat,d,nd,nq-1);
       r = (BoundedNatural) rc.get(0);
-      final long borrow = ((Long) rc.get(1)).longValue();
+      final long borrow = (Long) rc.get(1);
       if (borrow > nh) { r = divadd(r,nr,d,nd,nq-1); qhat--; }
       qq = setWord(qq,0,(int) qhat); }
 
@@ -703,11 +733,7 @@ public final class NaturalDivide {
     //assert a.isValid();
     //assert b.isValid();
     while (!b.isZero()) {
-      if (Math.abs(a.hiInt()-b.hiInt()) < 2) {
-        final BoundedNatural g = gcdKnuth(a,b);
-        //assert a.isValid();
-        //assert b.isValid();
-        return g; }
+      if (Math.abs(a.hiInt()-b.hiInt()) < 2) { return gcdKnuth(a,b); }
       final List<BoundedNatural> qr = divideAndRemainder(a,b);
       //assert a.isValid();
       //assert b.isValid();

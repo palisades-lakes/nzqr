@@ -42,7 +42,7 @@
      </execution>
     </executions>
     <configuration>
-     <vmArgs>${clojure.vmargs}</vmArgs>
+     <!-- vmArgs>${clojure.vmargs}</vmArgs -->
      <clojureOptions>${clojure.options}</clojureOptions>
      <namespaces>
       <namespace>!nzqr.test.*</namespace>

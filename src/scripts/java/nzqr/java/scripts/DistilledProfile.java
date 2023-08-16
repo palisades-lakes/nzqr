@@ -14,7 +14,7 @@ import nzqr.java.test.Common;
  * @author palisades dot lakes at gmail dot com
  * @version 2019-10-17
  */
-@SuppressWarnings("unchecked")
+//@SuppressWarnings("unchecked")
 public final class DistilledProfile {
 
   public static final void main (final String[] args) {
@@ -30,7 +30,8 @@ public final class DistilledProfile {
       final long t = System.nanoTime();
       for (int i=0;i<trys;i++) {
         DistilledAccumulator a = DistilledAccumulator.make();
-        for (final double xi : x) { a = a.add2(xi); }
+        for (final double xi : x) { //noinspection ReassignedVariable
+          a = a.add2(xi); }
         final double z0 = a.doubleValue();
         if (z1 != z0) {
           System.out.println(Double.toHexString(z1)
@@ -38,7 +39,7 @@ public final class DistilledProfile {
             ); }
       }
       System.out.printf("total secs: %8.2f\n",
-        Double.valueOf((System.nanoTime()-t)*1.0e-9)); } }
+        (System.nanoTime()-t)*1.0e-9); } }
 
   //--------------------------------------------------------------
 }

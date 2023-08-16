@@ -30,8 +30,7 @@ public final class DistilledProfile {
       final long t = System.nanoTime();
       for (int i=0;i<trys;i++) {
         DistilledAccumulator a = DistilledAccumulator.make();
-        for (final double xi : x) { //noinspection ReassignedVariable
-          a = a.add2(xi); }
+        for (final double xi : x) { a = a.add2(xi); }
         final double z0 = a.doubleValue();
         if (z1 != z0) {
           System.out.println(Double.toHexString(z1)

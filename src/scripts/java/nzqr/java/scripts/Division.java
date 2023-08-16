@@ -12,12 +12,12 @@ import nzqr.java.prng.PRNG;
  * At least 4*2<sup>32</sup> tests to get calls to BoundedNatural.divadd.
  *
  * <pre>
- * j --source 12 -ea src/scripts/java/xfp/java/scripts/Division.java > division.txt
+ * jy --source 20 -ea src/scripts/java/nzqr/java/scripts/Division.java > division.txt
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2019-09-04
+ * @version 2023-08-15
  */
-@SuppressWarnings("unchecked")
+//@SuppressWarnings("unchecked")
 public final class Division {
 
   private static final void
@@ -40,9 +40,9 @@ public final class Division {
         + "\n" +  x1.toString(0x10)
         + "\n -> "
         + "\n" + xq.toString(0x10)
-        + "\n" + y0.toString()
+        + "\n" + y0
         + "\n / "
-        + "\n" +  y1.toString()
+        + "\n" +  y1
         + "\n -> "
         + "\n" + yq.toString(0x10);
 
@@ -53,9 +53,9 @@ public final class Division {
         + "\n" +  x1.toString(0x10)
         + "\n -> "
         + "\n" + xr.toString(0x10)
-        + "\n" + y0.toString()
+        + "\n" + y0
         + "\n / "
-        + "\n" +  y1.toString()
+        + "\n" +  y1
         + "\n -> "
         + "\n" + yr.toString(0x10); } }
 

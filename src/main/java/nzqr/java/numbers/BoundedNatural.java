@@ -138,7 +138,7 @@ implements Ringlike<BoundedNatural> {
 //    for (int i=0;i<n;i++) { if (0!=x[i]) { return i; } }
 //    return 0; }
 
-  private static final int hiInt (final int[] x) {
+  public static final int hiInt (final int[] x) {
     final int n = x.length;
     if (0==n) { return 0; }
     int i = n-1;
@@ -178,17 +178,23 @@ implements Ringlike<BoundedNatural> {
 
   //--------------------------------------------------------------
 
-  public final int word (final int i) {
+  public static final int word (final int[] a, final int i) {
     assert 0<=i : "Negative index: " + i;
     assert i < MAX_WORDS : "word index too large " + i;
-    if (hiInt()<=i) { return 0; }
-    return _words[i]; }
+    if (hiInt(a)<=i) { return 0; }
+    return a[i]; }
+
+  public final int word (final int i) {
+    return word(_words,i); }
+
+  public static final long uword (final int[] a, final int i) {
+    assert 0<=i : "Negative index: " + i;
+    assert i < MAX_WORDS : "word index too large " + i;
+    if (hiInt(a)<=i) { return 0L; }
+    return unsigned(a[i]); }
 
   public final long uword (final int i) {
-    assert 0<=i : "Negative index: " + i;
-    assert i < MAX_WORDS : "word index too large " + i;
-    if (hiInt()<=i) { return 0L; }
-    return unsigned(_words[i]); }
+    return uword(_words,i); }
 
   //--------------------------------------------------------------
   /** Return the <code>[i0,i1)</code> words as a new
@@ -212,19 +218,25 @@ implements Ringlike<BoundedNatural> {
     System.arraycopy(tt,i0,vv,0,n);
     return unsafe(vv,n); }
 
-  public final BoundedNatural setWord (final int i,
-                                       final int w) {
+  public static final int[] setWord (final int[] a,
+                                     final int i,
+                                     final int w) {
     assert 0<=i : "Negative index: " + i;
     assert i < MAX_WORDS : "word index too large" + i;
+    final int h = hiInt(a);
     if (0==w) {
-      if (i>=hiInt()) { return this; }
-      final int[] u = Arrays.copyOf(words(),hiInt());
+      if (i>=h) { return a; }
+      final int[] u = Arrays.copyOf(a,h);
       u[i] = 0;
-      return unsafe(u); }
-    final int n = Math.max(i+1,hiInt());
-    final  int[] u = Arrays.copyOf(words(),n);
+      return u; }
+    final int n = Math.max(i+1,h);
+    final  int[] u = Arrays.copyOf(a,n);
     u[i] = w;
-    return unsafe(u); }
+    return u; }
+
+  public final BoundedNatural setWord (final int i,
+                                       final int w) {
+    return unsafe(setWord(words(),i,w)); }
 
   /** Singleton. */
   public static final BoundedNatural ZERO =
@@ -1356,11 +1368,17 @@ implements Ringlike<BoundedNatural> {
 
   //--------------------------------------------------------------
 
-  private final BoundedNatural shiftDownByWords (final int iShift) {
-    final int nt = hiInt();
-    if (0>=(nt-iShift)) { return zero(); }
-    final int[] vv = Arrays.copyOfRange(words(),iShift,nt);
-    return new BoundedNatural(vv); }
+  private static final int[] shiftDownByWords (final int[] w,
+                                              final int iShift) {
+    final int nt = hiInt(w);
+    if (0>=(nt-iShift)) { return new int[0]; }
+    return Arrays.copyOfRange(w,iShift,nt); }
+
+//  private final BoundedNatural shiftDownByWords (final int iShift) {
+//    final int nt = hiInt();
+//    if (0>=(nt-iShift)) { return zero(); }
+//    final int[] vv = Arrays.copyOfRange(words(),iShift,nt);
+//    return new BoundedNatural(vv); }
 
   //  private final BoundedNatural shiftDownByWords (final int iShift) {
   //    final int nt = hiInt();
@@ -1371,16 +1389,16 @@ implements Ringlike<BoundedNatural> {
   //    //System.arraycopy(words(),iShift,vv,0,nv);
   //    return new BoundedNatural(vv); }
 
-  private final BoundedNatural shiftDownByBits (final int iShift,
-                                                final int bShift) {
-    final int nt = hiInt();
+  private static final int[] shiftDownByBits (final int[] w,
+                                              final int iShift,
+                                              final int bShift) {
+    final int nt = hiInt(w);
     final int nv = nt-iShift;
     // shifting all bits off the end, covers zero input case
-    if (0>=nv) { return zero(); }
+    if (0>=nv) { return new int[0]; }
 
     final int[] vv = new int[nv];
     final int rShift = 32-bShift;
-    final int[] w = words();
     int w0 = w[iShift];
     int i = 0;
     int j = iShift+1;
@@ -1388,12 +1406,35 @@ implements Ringlike<BoundedNatural> {
       final int w1 = w[j];
       final int wi = ((w1<<rShift) | (w0>>>bShift));
       w0 = w1;
-      vv[i] = wi; 
+      vv[i] = wi;
       i++; j++;}
     final int vvn = (w0>>>bShift);
-    if (0!=vvn) { vv[i] = vvn; return new BoundedNatural(vv); }
-    final int[] vvv = Arrays.copyOf(vv,nv-1);
-    return new BoundedNatural(vvv); }
+    if (0!=vvn) { vv[i] = vvn; return vv; }
+    return Arrays.copyOf(vv,nv-1); }
+
+//  private final BoundedNatural shiftDownByBits (final int iShift,
+//                                                final int bShift) {
+//    final int nt = hiInt();
+//    final int nv = nt-iShift;
+//    // shifting all bits off the end, covers zero input case
+//    if (0>=nv) { return zero(); }
+//
+//    final int[] vv = new int[nv];
+//    final int rShift = 32-bShift;
+//    final int[] w = words();
+//    int w0 = w[iShift];
+//    int i = 0;
+//    int j = iShift+1;
+//    while (j<nt) {
+//      final int w1 = w[j];
+//      final int wi = ((w1<<rShift) | (w0>>>bShift));
+//      w0 = w1;
+//      vv[i] = wi;
+//      i++; j++;}
+//    final int vvn = (w0>>>bShift);
+//    if (0!=vvn) { vv[i] = vvn; return new BoundedNatural(vv); }
+//    final int[] vvv = Arrays.copyOf(vv,nv-1);
+//    return new BoundedNatural(vvv); }
 
   //  private final BoundedNatural shiftDownByBits (final int iShift,
   //                                                final int bShift) {
@@ -1443,22 +1484,28 @@ implements Ringlike<BoundedNatural> {
   //      vv[i] = w; }
   //    return unsafe(vv); }
 
-  public final BoundedNatural shiftDown (final int downShift) {
+  public static final int[] shiftDown (final int[] a,
+                                       final int downShift) {
     assert 0<=downShift;
-    if (0==downShift) { return this; }
+    if (0==downShift) { return a; }
     final int iShift = (downShift>>>5);
     final int bShift = (downShift&0x1F);
-    if (0==bShift) { return shiftDownByWords(iShift); }
-    return shiftDownByBits(iShift,bShift); }
+    if (0==bShift) { return shiftDownByWords(a,iShift); }
+    return shiftDownByBits(a,iShift,bShift); }
+
+  public final BoundedNatural shiftDown (final int downShift) {
+    if (0==downShift) { return this; }
+    return new BoundedNatural(shiftDown(words(),downShift)); }
 
   //--------------------------------------------------------------
 
-  private final BoundedNatural shiftUpByWords (final int iShift) {
-    final int nt = hiInt();
+  private static final int[] shiftUpByWords (final int[] w,
+                                              final int iShift) {
+    final int nt = hiInt(w);
     final int nv = nt+iShift;
     final int[] vv = new int[nv];
-    System.arraycopy(words(),0,vv,iShift,nt);
-    return new BoundedNatural(vv); }
+    System.arraycopy(w,0,vv,iShift,nt);
+    return vv; }
 
   //  private final BoundedNatural shiftUpByWords (final int iShift) {
   //    final int nt = hiInt();
@@ -1469,12 +1516,12 @@ implements Ringlike<BoundedNatural> {
   //    //System.arraycopy(words(),0,u,iShift,n0);
   //    return new BoundedNatural(vv); }
 
-  private final BoundedNatural shiftUpByBits (final int iShift,
-                                              final int bShift) {
-    final int nt = hiInt();
+  private static final int[] shiftUpByBits (final int[] tt,
+                                            final int iShift,
+                                            final int bShift) {
+    final int nt = hiInt(tt);
     final int nv = nt+iShift;
     final int rShift = 32-bShift;
-    final int[] tt = words();
     final int[] vv = new int[nv+1];
     int w0 = tt[0];
     vv[iShift] = (w0<<bShift);
@@ -1484,12 +1531,33 @@ implements Ringlike<BoundedNatural> {
       final int w1 = tt[i];
       final int wj = ((w1<<bShift)|(w0>>>rShift));
       w0 = w1;
-      vv[j] = wj; 
+      vv[j] = wj;
       i++; j++;}
     final int vvn = (w0>>>rShift);
-    if (0!=vvn) { vv[nv] = vvn; return new BoundedNatural(vv); }
-    final int[] vvv = Arrays.copyOf(vv,nv);
-    return new BoundedNatural(vvv); }
+    if (0!=vvn) { vv[nv] = vvn; return vv; }
+    return Arrays.copyOf(vv,nv); }
+
+//  private final BoundedNatural shiftUpByBits (final int iShift,
+//                                              final int bShift) {
+//    final int nt = hiInt();
+//    final int nv = nt+iShift;
+//    final int rShift = 32-bShift;
+//    final int[] tt = words();
+//    final int[] vv = new int[nv+1];
+//    int w0 = tt[0];
+//    vv[iShift] = (w0<<bShift);
+//    int i = 1;
+//    int j = iShift+1;
+//    while (i<nt) {
+//      final int w1 = tt[i];
+//      final int wj = ((w1<<bShift)|(w0>>>rShift));
+//      w0 = w1;
+//      vv[j] = wj;
+//      i++; j++;}
+//    final int vvn = (w0>>>rShift);
+//    if (0!=vvn) { vv[nv] = vvn; return new BoundedNatural(vv); }
+//    final int[] vvv = Arrays.copyOf(vv,nv);
+//    return new BoundedNatural(vvv); }
 
   //  private final BoundedNatural shiftUpByBits (final int iShift,
   //                                              final int bShift) {
@@ -1511,14 +1579,20 @@ implements Ringlike<BoundedNatural> {
   //    for  (int i=0;i<nv;i++) { vvv[i] = vv[i]; }
   //    return new BoundedNatural(vvv); }
 
-  public final BoundedNatural shiftUp (final int upShift) {
+  public static final int[] shiftUp (final int[] a,
+                                     final int upShift) {
     assert 0<=upShift;
-    //if (0==upShift) { return this; }
-    if (isZero()) { return this; }
+    if (0==upShift) { return a; }
     final int iShift = (upShift>>>5);
     final int bShift = (upShift&0x1f);
-    if (0==bShift) { return shiftUpByWords(iShift); }
-    return shiftUpByBits(iShift,bShift); }
+    if (0==bShift) { return shiftUpByWords(a,iShift); }
+    return shiftUpByBits(a,iShift,bShift); }
+
+public final BoundedNatural shiftUp (final int upShift) {
+    assert 0<=upShift;
+    if (0==upShift) { return this; }
+    if (isZero()) { return this; }
+    return new BoundedNatural(shiftUp(words(),upShift)); }
 
 //  public final boolean testBit (final int n) {
 //    assert 0<=n;

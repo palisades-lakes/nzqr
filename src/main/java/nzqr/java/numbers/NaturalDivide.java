@@ -100,34 +100,55 @@ public final class NaturalDivide {
   //--------------------------------------------------------------
   /** shifted fused multiply-subtract.
    * <br>
-   * DANGER: destroys <code>u<</code>.
+   * DANGER: read-only <code>v</code>,
+   * but destroys <code>u<</code>.
    */
 
-  private static final List fms (final BoundedNatural u,
+  private static final List fms (final int[] u,
                                  final int n0,
                                  final long x,
-                                 final BoundedNatural v,
+                                 final int[] v,
                                  final int n1,
                                  final int i0) {
     long carry = 0;
-    int i = n0-1-n1-i0;
-    final int[] vv = v.words();
+    final int n2 = n0-1-i0;
     final int[] uu;
-
-    if (i+n1 <= u.words().length) { uu = u.words(); }
-    else { uu = Arrays.copyOf(u.words(), i+n1); }
-    for (int j=0;j<n1;j++,i++) {
-      final long prod = (unsigned(vv[j])*x) + carry;
+    if (n2 <= u.length) { uu = u; }
+    else { uu = Arrays.copyOf(u, n2); }
+    for (int i=n2-n1,j=0;j<n1;j++,i++) {
+      final long prod = (unsigned(v[j])*x) + carry;
       final long diff = unsigned(uu[i])-prod;
       uu[i] = (int) diff;
       carry = hiWord(prod);
       // TODO: is this related to possibility x*u > this,
       // so difference is negative?
       if (loWord(diff) > unsigned(~((int)prod))) { carry++; } }
-    return List.of(
-            BoundedNatural.unsafe(uu),
-            loWord(carry)); }
+    return List.of(uu,loWord(carry)); }
 
+//  private static final List fms (final BoundedNatural u,
+//                                 final int n0,
+//                                 final long x,
+//                                 final BoundedNatural v,
+//                                 final int n1,
+//                                 final int i0) {
+//    long carry = 0;
+//    int i = n0-1-n1-i0;
+//    final int[] vv = v.words();
+//    final int[] uu;
+//
+//    if (i+n1 <= u.words().length) { uu = u.words(); }
+//    else { uu = Arrays.copyOf(u.words(), i+n1); }
+//    for (int j=0;j<n1;j++,i++) {
+//      final long prod = (unsigned(vv[j])*x) + carry;
+//      final long diff = unsigned(uu[i])-prod;
+//      uu[i] = (int) diff;
+//      carry = hiWord(prod);
+//      // TODO: is this related to possibility x*u > this,
+//      // so difference is negative?
+//      if (loWord(diff) > unsigned(~((int)prod))) { carry++; } }
+//    return List.of(
+//      BoundedNatural.unsafe(uu),
+//      loWord(carry)); }
 
 //  private static final List fms (final BoundedNatural u,
 //                                 final int n0,
@@ -151,7 +172,6 @@ public final class NaturalDivide {
 //    return List.of(
 //            BoundedNatural.unsafe(uu),
 //            Long.valueOf(loWord(carry))); }
-
 
 //  private static final List fms (final BoundedNatural u,
 //                                 final int n0,
@@ -209,21 +229,20 @@ public final class NaturalDivide {
    * so DANGER that changes have made it incorrect...
    */
 
-  private static final BoundedNatural divadd (final BoundedNatural u,
-                                              final int n0,
-                                              final BoundedNatural v,
-                                              final int n1,
-                                              final int i0) {
+  private static final int[] divadd (final int[] u,
+                                     final int n0,
+                                     final int[] v,
+                                     final int n1,
+                                     final int i0) {
     final int off = n0 - n1 - 1 - i0;
-    int[] ww = Arrays.copyOf(u.words(),n1+off);
-    final int[] vv = v.words();
+    int[] ww = Arrays.copyOf(u,n1+off);
     long carry = 0;
     for (int j=0;j<n1;j++) {
       final int i = off + j;
-      final long sum = unsigned(vv[j]) + unsigned(ww[i]) + carry;
+      final long sum = unsigned(v[j]) + unsigned(ww[i]) + carry;
       ww[i] = (int) sum;
       carry = sum >>> 32; }
-    return BoundedNatural.unsafe(ww); }
+    return ww; }
 
 //  private static final BoundedNatural divadd (final BoundedNatural u,
 //                                              final int n0,
@@ -251,22 +270,22 @@ public final class NaturalDivide {
                  final BoundedNatural v) {
     final int nv = v.hiInt();
     final int lShift = Integer.numberOfLeadingZeros(v.word(nv-1));
-    final BoundedNatural d = v.shiftUp(lShift);
-    final int nd = d.hiInt();
-    BoundedNatural r = u.shiftUp(lShift);
-    final int nr0 = r.hiInt();
-    r = r.setWord(nr0,0);
+    final int[] d = BoundedNatural.shiftUp(v.words(),lShift);
+    final int nd = BoundedNatural.hiInt(d);
+    int[] r = BoundedNatural.shiftUp(u.words(),lShift);
+    final int nr0 = BoundedNatural.hiInt(r);
+    r = setWord(r,nr0,0);
     final int nr = nr0+1;
     final int nq = nr-nd;
     int[] qq = new int[1];
     //int[] qq = new int[nq];
-    final long dh = d.uword(nd-1);
-    final long dl = d.uword(nd-2);
+    final long dh = BoundedNatural.uword(d,nd-1);
+    final long dl = BoundedNatural.uword(d,nd-2);
     for (int j=0;j<(nq-1);j++) {
       boolean correctQhat = true;
       final int i = nr-j-1;
-      final long rh = r.uword(i);
-      final long rm = r.uword(i-1);
+      final long rh = BoundedNatural.uword(r,i);
+      final long rm = BoundedNatural.uword(r,i-1);
       long qhat; long qrem;
       if (rh==dh) {
         qhat=0xFFFFFFFFL; qrem=rh+rm; correctQhat=(qrem>=rh); }
@@ -280,7 +299,7 @@ public final class NaturalDivide {
           qhat = loWord(tmp); qrem = hiWord(tmp); } }
       if (0L==qhat) { continue; }
       if (correctQhat) {
-        final long nl = r.uword(i-2);
+        final long nl = BoundedNatural.uword(r,i-2);
         long rs = (qrem << 32) | nl;
         long estProduct = dl*qhat;
         if (Long.compareUnsigned(estProduct, rs)>0) {
@@ -290,19 +309,21 @@ public final class NaturalDivide {
             estProduct -= (dl);
             rs = (qrem << 32) | nl;
             if (Long.compareUnsigned(estProduct, rs)>0) { qhat--; } } } }
-      r = r.setWord(i,0);
+      r = BoundedNatural.setWord(r,i,0);
       final List rc = fms(r,nr,qhat,d,nd,j);
-      r = (BoundedNatural) rc.get(0);
+      r = (int[]) rc.get(0);
       final long borrow = (Long) rc.get(1);
-      if (borrow>rh) { r = divadd(r,nr,d,nd,j); qhat--; }
+      if (borrow>rh) {
+        r = divadd(r,nr,d,nd,j);
+        qhat--; }
       qq = setWord(qq,nq-1-j,(int) qhat); 
       //qq[nq-1-j] = (int) qhat; 
       } 
 
     long qhat; long qrem;
     boolean correctQhat = true;
-    final long nh = r.uword(nd);
-    final long nm =  r.uword(nd-1);
+    final long nh = BoundedNatural.uword(r,nd);
+    final long nm =  BoundedNatural.uword(r,nd-1);
     if (nh==dh) {
       qhat=0xFFFFFFFFL; qrem=nh+nm; correctQhat=(qrem>=nh); }
     else {
@@ -314,7 +335,7 @@ public final class NaturalDivide {
         qhat = loWord(tmp); qrem = hiWord(tmp); } }
     if (0L!=qhat) {
       if (correctQhat) {
-        final long nl = r.uword(nd-2);
+        final long nl = BoundedNatural.uword(r,nd-2);
         long rs = (qrem << 32) | nl;
         long estProduct = dl*qhat;
         if (Long.compareUnsigned(estProduct, rs)>0) {
@@ -323,15 +344,17 @@ public final class NaturalDivide {
             estProduct -= (dl);
             rs = (qrem << 32) | nl;
             if (Long.compareUnsigned(estProduct, rs)>0) { qhat--; } } } }
-      r = r.setWord(nd,0);
+      r = BoundedNatural.setWord(r,nd,0);
       final List rc = fms(r,nr,qhat,d,nd,nq-1);
-      r = (BoundedNatural) rc.get(0);
+      r = (int[]) rc.get(0);
       final long borrow = (Long) rc.get(1);
-      if (borrow > nh) { r = divadd(r,nr,d,nd,nq-1); qhat--; }
+      if (borrow > nh) {
+        r = divadd(r,nr,d,nd,nq-1);
+        qhat--; }
       qq = setWord(qq,0,(int) qhat); }
 
-    if (0<lShift) { r = r.shiftDown(lShift); }
-    return List.of(BoundedNatural.unsafe(qq),r); }
+    if (0<lShift) { r = BoundedNatural.shiftDown(r,lShift); }
+    return List.of(BoundedNatural.unsafe(qq),BoundedNatural.unsafe(r)); }
 
 //  private static final List<BoundedNatural>
 //  knuthDivision (final BoundedNatural u,

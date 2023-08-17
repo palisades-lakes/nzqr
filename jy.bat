@@ -17,7 +17,7 @@ set THRUPUT=-server -Xbatch -XX:+UseFMA
 set XMX=-Xms12g -Xmx12g -Xmn5g 
 
 ::set PROF=
-set PROF=-agentpath:"C:\Program Files\YourKit Java Profiler 2023.5-b229\bin\windows-x86-64\yjpagent.dll=_no_java_version_check"
+set PROF=-agentpath:"C:\Program Files\YourKit Java Profiler 2023.5-b230\bin\windows-x86-64\yjpagent.dll=_no_java_version_check"
 
 set OPENS=--add-opens java.base/java.lang=ALL-UNNAMED
 set CP=-cp lib/*

@@ -1,6 +1,6 @@
 package nzqr.java.scripts.numbers;
 
-import nzqr.java.numbers.BoundedNatural;
+import nzqr.java.numbers.BoundedNaturalInts;
 import nzqr.java.numbers.NaiveUnboundedNatural;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.PRNG;
@@ -32,7 +32,7 @@ public final class Unbounded {
   private static final void noOverflow () {
     final long t0 = System.nanoTime();
     try {
-      final long n = 1L+(BoundedNatural.MAX_WORDS<<2);
+      final long n = 1L+(BoundedNaturalInts.MAX_WORDS<<2);
       System.out.println("n=" + n);
       System.out.flush();
       final Generator g =

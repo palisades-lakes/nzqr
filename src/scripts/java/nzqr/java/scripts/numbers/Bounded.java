@@ -1,6 +1,7 @@
 package nzqr.java.scripts.numbers;
 
 import nzqr.java.numbers.BoundedNatural;
+import nzqr.java.numbers.BoundedNaturalInts;
 
 //----------------------------------------------------------------
 /** Test bounded ranges for various number implementations.
@@ -21,10 +22,10 @@ public final class Bounded {
     try {
       final BoundedNatural one = BoundedNatural.valueOf(1);
       final BoundedNatural n0 = one
-        .shiftUp(BoundedNatural.MAX_BITS-2)
+        .shiftUp(BoundedNaturalInts.MAX_BITS-2)
         .subtract(1);
       final BoundedNatural n1 = one
-        .shiftUp(BoundedNatural.MAX_BITS-1)
+        .shiftUp(BoundedNaturalInts.MAX_BITS-1)
         //.add(n0)
         .add(n0);
       BoundedNatural n = n1;

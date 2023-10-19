@@ -1,0 +1,1236 @@
+% !TEX TS-program = arara
+% arara: xelatex: { synctex: on, options: [-halt-on-error] } 
+% arara: biber
+% % arara: biber: { options: [--noremove-tmp-dir] }
+% % arara: texindy: { markup: xelatex }
+% %% arara: makeglossaries
+% % arara: xelatex: { synctex: on, options: [-interaction=batchmode, -halt-on-error] }
+% % arara: xelatex: { synctex: on, options: [-interaction=batchmode, -halt-on-error]  }
+% % arara: clean: { extensions: [ aux, log, out, run.xml, ptc, toc, mw, synctex.gz, ] }
+% % arara: clean: { extensions: [ bbl, bcf, blg, ] }
+% % arara: clean: { extensions: [ glg, glo, gls, ] }
+% % arara: clean: { extensions: [ idx, ilg, ind, xdy, ] }
+% % arara: clean: { extensions: [ plCode, plData, plMath, plExercise, plNote, plQuote, ] }
+%-----------------------------------------------------------------
+\documentclass[11pt]{PalisadesLakesBook}
+% \geomHDTV
+% \geomLandscape
+\geomHalfDTV
+\geomPortraitOneColumn
+%-----------------------------------------------------------------
+
+%\AsanaFonts % misssing \mathhyphen; less on page than Cormorant/Garamond
+%\CormorantFonts % light, missing unicode greek
+\EBGaramondFonts % fewest pages
+%\ErewhonFonts
+%\FiraFonts % tall lines, all sans, much less per page, missing \in?
+%\GFSNeohellenicFonts 
+%\KpFonts
+%\LatinModernFonts
+%\LegibleFonts
+%\LibertinusFonts
+%\NewComputerModernFonts
+%\STIXTwoFonts
+%\BonumFonts % most pages
+%\PagellaFonts
+%\ScholaFonts
+%\TermesFonts
+%\XITSFonts
+
+%-----------------------------------------------------------------
+\togglefalse{plMath}
+\togglefalse{plCode}
+\togglefalse{plData}
+\togglefalse{plNote}
+\togglefalse{plExercise}
+\togglefalse{plQuote}
+\togglefalse{printglossary}
+\togglefalse{printindex}
+%-----------------------------------------------------------------
+\title{Computable mathematics:
+real numbers, calculus, analysis, etc.}
+\author{John Alan McDonald 
+(palisades dot lakes at gmail dot com)}
+\date{draft of \today}
+%-----------------------------------------------------------------
+\begin{document}
+
+\maketitle
+\PalisadesLakesTableOfContents{7}
+%-----------------------------------------------------------------
+\begin{plSection}{Introduction} 
+ 
+
+\end{plSection}%{Introduction}
+%-----------------------------------------------------------------
+\begin{plSection}{Generic functions} 
+
+In this section, I intend to present generic function 
+from something like first principles.
+
+Generic functions are often presented as some kind of unusual 
+addons to ``normal'' object-oriented languages..
+An example of this is the choice of  naming in Clojure,
+which implies that there are ``normal'' (single-dispatch)
+methods, and then there are these odd things called 
+``multimethods'', 
+which are poorly integrated into the language,
+and rarely used, as far as I can tell.
+This may be due to the message-passing metaphor,
+common in early object-oriented languages,
+but whatever the reason, 
+I think it's worth coming at this from a different direction:
+
+(Languages where all functions are generic: 
+Dylan~\cite{ShalitPiazzaMoon:1992:Dylan}, 
+Julia~\cite{Bezanson:2017:Julia}, ...)
+
+It is common for procedures to begin by analyzing their inputs,
+and using the result to choose a specific algorithm.
+
+\begin{plExample}{{\javaFont BigInteger.multiply(BigInteger)}
+}{BigInteger.multiply}
+An example of this is 
+{\javaFont 
+BigInteger.multiply(BigInteger)}~\cite{BigInteger.multiply:2021}.
+
+Instances of {\javaFont BigInteger} can represent 
+integers much larger than can be held in the fixed length
+representations 
+({\javaFont byte}/{\javaFont Byte}\ldots
+{\javaFont long}/{\javaFont Long}).
+The Java $17$ API~\cite{Oracle:2021:JDK17} 
+guarantees at least numbers in the range
+$\left[ -2^{{2^{31}}-1}, 2^{{2^{31}}-1} \right]$,
+and the reference implementation,
+ {\javaFont ArithmeticException}s for operations whose result
+would exceed it.
+The implementation is essentially a bit sequence 
+for the magnitude, 
+plus a flag for positive or negative.
+
+{\javaFont BigInteger.multiply(BigInteger)} 
+is a procedure which computes the product of $2$ 
+{\javaFont BigInteger}s.
+It chooses among $8$--$12$ 'methods' (depending on how you want to
+count):
+\begin{enumerate}
+  \item It first checks if either input number if zero,
+returning an existing {\javaFont ZERO} singleton in that case.
+
+\item It then checks whether both inputs are the same 
+{\javaFont BigInteger} instance (and have more 
+than a certain number of significant bits),
+in which case it hands off to a similar  procedure optimized
+for \textit{squaring}---multiplying  a number by itself.
+
+\item It then chooses sequentially from $4$ 'methods', 
+depending on the number of
+significant bits in \textit{both} arguments:
+\begin{enumerate}
+  \item Either argument fits in a $32$ bit {\javaFont int}.
+  \item Either argument is below an upper bound for
+  \textit{grade-school} 
+  multiplication~\cite{wiki:GradeSchoolMultiplication}.
+  \item Both arguments are above the grade-school upper bound 
+  and below an upper bound for \textit{Karatsuba}
+   multiplication~\cite{wiki:KaratsubaMultiplication}.
+  \item Otherwise (both arguments above the grade-school cap
+  and at least one above the Karatsuba cap)
+  use \textit{Toom-Cook} 
+  multiplication~\cite{wiki:ToomCookMultiplication}.
+\end{enumerate}
+\end{enumerate}
+
+Note that all these tests depend on \textit{both} arguments,
+and depend on their state/value, rather than type/class.
+\end{plExample}%{{\javaFont BigInteger.multiply}}{BigInteger.multiply}}
+
+As of \formatdate{22}{10}{2021},
+the most recent change to {\javaFont BigInteger.multiply} 
+in the reference implementation was committed more than $3$ years 
+earlier (on \formatdate{22}{08}{2018}).
+There have only been $6$ commits 
+that affected {\javaFont BigInteger.multiply} directly
+in the $14$ years
+since the reference implementation was initially loaded into 
+GitHub on (\formatdate{7}{11}{2007}).
+
+What changes might one want to make to 
+{\javaFont BigInteger.multiply}?
+
+\begin{itemize}
+\item An obvious one is to add algorithms which are faster for
+larger integer values.
+The \textit{Schönhage–Strassen} 
+algorithm~\cite{wiki:SchonhageStrassenMultiplication}
+potentially outperforms Toom-Cook for numbers with more
+than $2^{15}$ bits well within the minimum value range
+required by the {\javaFont BigInteger} API.
+An alternate implementation that adds Schönhage–Strassen
+to the sequence of tests choosing between
+single {\javaFont int}, grade-school, Karatsuba, and
+Toom-Cook can be found at 
+\cite{tbuktu:2015:EfficientBigIntegerImplementation}.
+
+There are algorithms which are even faster,
+for much larger numbers.
+
+\textit{Fürer}'s algorithm~\cite{ wiki:FurerMultiplication}
+potentially outperforms Schönhage–Strassen,
+for numbers with more than $2^{64}$ bits, 
+outside the range required by the {\javaFont BigInteger} 
+API, requiring perhaps $10^{-4} \cdots 10^{-6}$ 
+of the total digital storage---possible, but only if there were
+some truly compelling reason.
+
+There are even faster algorithms~\cite{
+Hartnett:2019:NLogNIntegerMultiplication,
+HarveyVanDerHoeven:2020:NLogNIntegerMultiplication}),
+but they fall into the class of 
+``galactic algorithms''~\cite{wiki:GalacticAlgorithm},
+meaning, in this case, they only win as the number of bits
+approaches the number of elementary particles in the universe.
+
+\item It would be fairly straightforward to create an unbounded
+integer representation, with no significant overhead 
+in the range {\javaFont BigInteger}
+can handle.
+Just use an unbounded sequence of {\javaFont BigInteger}s
+for the magnitude, and the grade-school algorithm on the
+of {\javaFont BigInteger} words.
+This would require a version of {\javaFont BigInteger.multiply}
+that returned an overflow amount as well as the truncated
+{\javaFont BigInteger} product. 
+
+\item A lot of code would be simplified if it were possible
+evaluate general arithmetic expressions without requiring 
+specifying which implementation of {\javaFont java.lang.Number}
+for the inputs and intermediate values,
+while making it possible to specify that if desired.
+It would be nice to be able to rely on the system 
+to use the most compact/efficient representation for the returned
+and intermediate values, especially where it would be possible to
+use primitives for inputs and outputs.
+\end{itemize}
+
+\end{plSection}%{Generic functions}
+%-----------------------------------------------------------------
+\begin{plSection}{Arithmetic} 
+
+I suspect that, when most software developers see ``arithmetic'',
+they remember elementary school
+and think of addition, subtraction, multiplication, and division.
+The ``numbers'' passed to these operations are 
+understood to be the (classical) reals, 
+though probably only partially understood.
+
+
+\end{plSection}%{Arithmetic}
+%-----------------------------------------------------------------
+\begin{plSection}{Numbers} 
+
+
+\end{plSection}%{Numbers}
+%-----------------------------------------------------------------
+\begin{plSection}{Mathematical structures} 
+
+
+This adds up to what a mathematician would call an ordered 
+\emph{field}~\cite{wiki:FieldMathematics}.
+Skipping the ``ordered'' part for now,
+a field $\Space{F}$ consists of
+$[\Set{F},\Add{\Space{F}},\Mul{\Space{F}},
+\Sub{\Space{F}},\Div{\Space{F}},\Zero{\Space{F}}, \One{\Space{F}}]$:
+\begin{description}
+\item[Elements:] a set $\Set{F}$, the ``numbers''.
+\item[Addition:] a binary operation (two argument function)
+$\Add{\Space{F}} : \Set{F} \times \Set{F} \rightarrow \Set{F}$
+\item[Multiplication:] a binary operation 
+$\Mul{\Space{F}} : \Set{F} \times \Set{F} \rightarrow \Set{F}$
+\item[Additive inverse:] a unary operation (one argument function)
+$\Sub{\Space{F}} :\Set{F} \rightarrow \Set{F}$.
+\item[Multiplicative inverse:] 
+a unary operation (one argument function)
+on everything but the additive identity:
+$\Div{\Space{F}} :  \Set{F} \setminus \left\{\Zero{\Space{F}}\right\} 
+\rightarrow \Set{F}$.
+\item[Additive identity:] a nullary operation 
+(zero argument function)
+$\Zero{\Space{F}} : \emptyset \rightarrow \Set{F}$.
+Mathematicians typically ignore the difference between a zero
+argument function and the value of that function,
+acting as if $\Zero{\Space{F}}() = \Zero{\Space{F}}\, \in \, \Set{F}$.
+\item[Multiplicative identity:] a nullary operation 
+$\One{\Space{F}} : \emptyset \rightarrow \Set{F}$.
+\end{description}
+Note that I am being pedantic about a number of things
+that mathematicians usually leave ambiguous,
+such as the difference between the field $\Space{F}$ 
+and the set of elements $\Set{F}$,
+and labeling the operations
+with the field for which they are defined.
+Another non-standard aspect of my definition is taking
+the identities to be zero-argument functions rather than
+elements of the set.
+The reason for these peculiarities is to better match the needs 
+of implementation, which should, I hope, 
+become clear later.
+
+The operations satisfy the following laws, for all 
+$a, b, c \,\in \, \Set{F}$
+\begin{description}
+
+\item[Additive identity:] 
+$\Zero{\Space{F}} \,\Add{\Space{F}}\, a \,=\, a$.
+
+\item[Multiplicative identity:] 
+$\One{\Space{F}} \,\Mul{\Space{F}}\, a \,=\, a$.
+
+\item[Additive inverse:] 
+$\Sub{\Space{F}}(a) \;\Add{\Space{F}}\; a = \Zero{\Space{F}}$.
+Binary subtraction is defined as the composition 
+of addition and inverse:
+$a \,\Sub{\Space{F}}\, b = 
+a \,\Add{\Space{F}}\, \left(\Sub{\Space{F}}(b)\right) $
+
+\item[Multiplicative inverse:] 
+$\Div{\Space{F}}(a) \;\Mul{\Space{F}}\; a = \One{\Space{F}}$ 
+for all $a \neq \Zero{\Space{F}}$.
+Binary division is defined as with binary addition,
+with the wrinkle that the second argument (the divisor)
+cannot be the additive identity.
+
+\item[Associative addition:] 
+$\left( a \Add{\Space{F}} b \right)  \Add{\Space{F}} c 
+\,=\, 
+a  \Add{\Space{F}} \left( b  \Add{\Space{F}} c \right)$
+
+\item[Associative multiplication:] 
+$\left( a  \Mul{\Space{F}} b \right) \Mul{\Space{F}} c 
+\,=\, 
+a \Mul{\Space{F}} \left( b \Mul{\Space{F}} c \right)$
+
+\item[Commutative addition:] 
+$a \Add{\Space{F}} b \,=\, b \Add{\Space{F}} a$
+
+\item[Commutative multiplication:] 
+$a \Mul{\Space{F}} b \,=\, b \Mul{\Space{F}} a$
+
+\item[Distributive multiplication over addition:] 
+$a \, \Mul{\Space{F}} \, \left( b \Add{\Space{F}} c \right)
+\,=\, 
+\left(a \Mul{\Space{F}} b \right) 
+\, \Add{\Space{F}} \, 
+\left(a \Mul{\Space{F}} c \right)$
+
+\end{description}
+
+\end{plSection}%{Mathematical structures}
+%-----------------------------------------------------------------
+\begin{plSection}{Foundations}
+
+The problem with this viewpoint is that computer arithmetic
+doesn't work this way
+and, more critically, computer arithmetic \emph{can't} work
+this way.
+The (classical) reals, $\Re$, are \emph{uncountable};
+computer arithmetic can at most handle countably infinite sets
+(in the sense that the representable values are 
+bounded by available memory (and time),
+rather than having an intrinsically limited range)
+
+This suggests the following question:
+Is there a countable, implementable number system,
+probably a subset of $\Re$,
+which is sufficient for, in my case,
+``scientific computing''?
+
+Perhaps surprisingly, the answer to this seems to be yes.
+See: 
+
+\citeAuthorYearTitle{Feferman:1989:IsCantorNecessary}
+
+\citeAuthorYearTitle{Feferman:1992:ALittleBit}
+
+Reprinted, updated in:
+
+\citeAuthorYearTitle[ch.~2 ``Is Cantor necessary?'']{
+Feferman:1998:LightOfLogic}
+
+\citeAuthorYearTitle[ch.~12 ``Is Cantor necessary? (Conclusion)'']
+{Feferman:1998:LightOfLogic}
+
+\citeAuthorYearTitle[ch~14 ``Why a little bit goes a long way:
+logical foundations of scientifically applicable mathematics'']{
+Feferman:1998:LightOfLogic}
+
+Useful references, intended for undergraduates, include:
+ 
+\citeAuthorYearTitle{Feferman:1989:NumberSystems}
+
+\citeAuthorYearTitle{Henle:2012:RealNumbers}
+
+\citeAuthorYearTitle{Bridger:2019}
+
+In the next few sections I'm going to work thru a series
+of number systems, both mathematical and computational.
+My approach is to motivate a new structure
+by posing a problem that can't be solved in the structures
+introduced up to that point.
+This leads to an implementation/representation
+in terms of previous (structures),
+which can then be abstracted into a set of axioms.
+The goal is to end up with something that is both
+implementable and covers ``scientifically applicable mathematics''.
+
+\begin{plQuote}
+{\citeAuthorYearTitle{Thurston:1994:Proof}}{}%
+{Mathematics as we practice it is much more formally 
+complete and precise than
+other sciences, but it is much less formally complete and precise 
+for its content than computer programs.
+}
+\end{plQuote}
+
+The mathematics I will be using is unusual in two ways:
+
+\begin{itemize}
+  
+\item Universal quantification only.
+
+This is related to, but not exactly the same as,
+universal algebra~\cite{wiki:UniversalAlgebra}.
+The idea here is that the laws (axioms) 
+in the definition of a mathematical structure
+will be expressed using
+universal (``for all'') quantifiers, 
+not existential (``there exists") ones.
+
+For example, the classical definition of 
+\emph{monoid}~\cite{wiki:Monoid} $\Space{M} = [\Set{M}, \odot]$
+would be:
+\begin{description}
+  \item[Elements:] The set $\Set{M}$ is given.
+  \item[Binary operation:] The function
+  $\odot : \Set{M} \times \Set{M} \rightarrow \Set{M}$ is given.
+  Implied here is 
+  $m_0 \odot m_1 = \odot(m_0,m_1) \in \Set{M};
+  \text{ for all } m_0, m_1 \in \Set{M}$.
+  \item[Associativity:] For all $m_0, m_1, m_2 \in \Set{M}$,
+  $(m_0 \odot m_1) \odot m_2 \;=\; m_0 \odot (m_1 \odot m_2).$
+  \item[Identity:] There exists $e \in \Set{M}$ such that
+  $e \odot m \,=\, m \odot e \,=\, m$,
+  for all $m \in \Set{M}$. 
+\end{description}
+The universal version treats the identity as given
+(as a nullary/zero-argument/constant) function.
+\begin{description}
+  \item[Identity:] Given a zero-argument function 
+  $e() : \emptyset \rightarrow \Set{M}$ such that
+  $e() \odot m \,=\, m \odot e() \,=\, m$,
+  for all $m \in \Set{M}$. 
+\end{description}
+The difference may seem subtle, but the universal approach
+helps with test generation.
+Proving an implementation satisfies all the laws is difficult 
+in either case, but is it easier to validate
+universal laws with generative tests.
+
+\item Computable/constructive/intuitionist mathematics
+
+(To be honest, this is not fully worked out.)
+
+The basic idea here is to start from an
+idealized, Turing machine equivalent,
+virtual machine for ``procedures'', and define 
+``computable mathematics'' in terms of what can be computed 
+in a finite number of steps.
+I believe this restricts us to at most countable sets,
+and eliminates some of the paradoxes that led to the crisis
+in the foundations of mathematics circa 1900.
+More important in a practical sense, a mathematics that is
+defined by finitary procedures translates more-or-less
+directly into physical computation---the only difference is 
+that real machines are bounded in space and time.
+
+There is at least some reason to think 
+that this kind of foundation covers all ``scientifically
+applicable mathematics''.
+See:
+
+This approach to mathematics eliminates much of the ugliness
+of classical analysis---no axiom of choice, no unmeasurable
+sets, etc.
+
+However, more or less in exchange, it adds other complexities,
+related to the fact that one can't in general tell whether a given
+procedure with a given input, will ever halt.
+This modifies our idea of ``true'' and ``false''.
+A statement is ``true'' if there is a finite procedure that
+proves it true, and the same for false,
+but we have a third state: not halting. 
+And we can't be sure whether a running procedure won't halt,
+or is just very slow.
+
+\end{itemize}
+
+\end{plSection}%{Foundations}
+%-----------------------------------------------------------------
+\begin{plSection}{Natural numbers}
+
+I'm going to take the \emph{natural numbers},
+$\Naturals =
+ [ \Set{N}=\left\{ 0, 1, 2, {\cdots}\right\}, \Add{\Naturals}]$,
+and the usual notion of addition on them $\Add{\Naturals}$,
+as given.
+
+(You can start from less than this if you like.
+What's essential is a starting element, eg, $0$,
+and a {\pseudocodeFont next}
+or {\pseudocodeFont increment} operation. 
+See, for example, 
+\citeAuthorYearTitle[section 3.1]{Feferman:1989:NumberSystems}.
+However, this kind of axiomatic minimalism 
+isn't my primary interest.
+What I want to do instead is to motivate the mathematical
+structures I describe by posing at least somewhat realistic
+problems that they can be used to solve.)
+
+In the case of $\Naturals$, I find it a bit difficult 
+come up with something convincing without
+jumping ahead to the rationals.
+So, if this seems a bit too trivial,
+ bear with me for the moment.
+
+The natural numbers answer two kinds of questions:
+\begin{itemize}
+\item How many? (cardinality)
+\item What's next? or Which is bigger? (ordinality)
+\end{itemize}
+
+Addition, $\Add{\Naturals}$, answers questions like:
+If I have $m$ loaves of bread,
+and my friend has $n$, how many do we have all together?
+
+The ordering tells us: Who has more bread?
+
+\TODO: This isn't very satisfying.
+Look into origins of math, Egypt, Mesopotamia, etc, for better
+examples?
+
+$\Naturals$ is a \emph{commutative monoid},
+which is a monoid where the operation is symmetric:
+\begin{description}
+\item[Elements:] $\Set{N}$
+\item[Operation:] $\Add{\Naturals}$
+\item[Identity:] $\Ide{\Add{\Naturals}}() \rightarrow \Zero{\Naturals}$
+\item[Associative:] 
+$(n_0 \Add{\Naturals} n_1) \Add{\Naturals} n_2 \;=\;
+n_0 \Add{\Naturals} (n_1 \Add{\Naturals} n_2)$, 
+for all $n_0, n_1, n_2 \in \Set{N}$
+\item[Commutative:] $n_0 \Add{\Naturals} n_1 \;=\;
+n_1 \Add{\Naturals} n_0$,
+for all $n_0, n_1 \in \Set{N}$
+\end{description}
+
+\TODO: missing $<$, $\leq$ as operator.
+Should this be \emph{ordered commutative monoid},
+or deal with ordering separately?
+
+Multiplication, $\Mul{\Naturals}$, can be derived from addition in the
+obvious way.
+This gives us another commutative monoid:
+$[\Set{N}, \Mul{\Naturals}, \Ide{\Mul{\Naturals}}]$.
+
+Monoids are examples of what sometimes are referred to 
+as group-like structures~\cite{wiki:GroupLike},
+but might be better called ``one set, one (binary) operation''
+structures.
+
+We can also consider $\Naturals$ as a ring-like
+(one set, two operation)
+structure, a \emph{commutative semi-ring}~\cite{wiki:Semiring}, 
+using both $\Add{\Naturals}$ and $\Mul{\Naturals}$,
+which then obeys the commutative monoid laws for
+$\Add{\Naturals}$ and $\Mul{\Naturals}$, and two more laws in addition:
+\begin{description}
+\item[Distributive:] 
+$(n_0 \Add{\Naturals} n_1) \; \Mul{\Naturals}\; n_2 \;=\;
+(n_0 \Mul{\Naturals} n_2) \; \Add{\Naturals} \; (n_1 \Mul{\Naturals} n_2)$, \\
+for all $n_0, n_1, n_2 \in \Set{N}$.
+\item[Zero:] $\Ide{\Add{\Naturals}} \Mul{\Naturals} n 
+\; = \; \Ide{\Add{\Naturals}}
+\; = \; 0$ for all $n \in \Set{N}$
+\end{description}
+
+This is not particularly important, but it serves as 
+a very simple example
+of how multiple mathematical structures can be defined
+over a single set.
+This does have significant implications for implementations.
+It's tempting, and a common mistake, 
+to represent mathematical structures by types or classes.
+We might have, say, a Java class that provides an
+unbounded implementation of the natural numbers,
+with methods for $\Add{\Naturals}$, $\Mul{\Naturals}$, 
+$\Ide{\Add{\Naturals}}$,
+and $\Ide{\Mul{\Naturals}}$.
+But that locks us into the semi-ring view,
+disallowing the monoid views.
+
+\TODO In this particular case, that doesn't seem so bad,
+but we will see more convincing examples later.
+
+%-----------------------------------------------------------------
+\begin{plSection}{Modular arithmetic}
+
+Another example of why it would be a mistake to implement
+$\Naturals$ as, in Java terms,
+a class implementing some {\javaFont CommutativeMonoid} interface,
+is the fact that there are many other important structures
+to be defined on subsets of $\Set{N}$, which require
+different definitions for $\Add{\Naturals}$ and $\Mul{\Naturals}$.
+
+The too simple motivating question here might be:
+It is the $20$th hour of the day. What hour will it be $5$ hours
+from now?
+
+To deal with questions like this, we need to modify 
+$\Add{\Naturals}$,
+give up ordering, and get, as a result, two new \emph{families} of 
+commutative monoids (or a family of semi-rings, 
+if we prefer to think of of it that way).
+
+Consider the \emph{intervals} in $\Set{N}$:
+For $n_{0}\,\leq\, n_{1}$, 
+$\left[ n_{0}, n_{1} \right] \; \defeq \;
+\left\{ n_{0}, n_{0} + 1, \cdots , n_{1} \right\}$.
+
+(\NOTE To avoid off-by-one errors, 
+I prefer to define all integer intervals as half-open.
+But that is a bit difficult without subtraction.
+
+\NOTE Modular arithmetic is more often defined for the special 
+case of $n_0=0$. My reasons for this slightly more general 
+version should become apparent soon.)
+
+Then we can define a new addition operator 
+$\Add{ \Naturals[n_0,n_1] }$:
+
+\TODO breakable option for plChunks
+
+\begin{plAlgorithm}
+[breakable=false]
+{Modular addition}
+{modularAddition}
+\begin{lstlisting}[language=pseudocode]
+(defn $\Add{\Naturals[n_0,n_1]}$ [a b]
+  (assert ($\Leq{\Naturals}$ 0 $n_0$ a $n_1$))
+  (assert ($\Leq{\Naturals}$ 0 $n_0$ b $n_1$))
+  (let [step (fn [sum count]
+                    (if ($\Eq{\Naturals}$ count b)
+                      sum
+                      (if ($\Eq{\Naturals}$ sum $n_1$)
+                        (step $n_0$ ($\Add{\Naturals}$ 1 count))
+                        (step ($\Add{\Naturals}$ 1 sum) ($\Add{\Naturals}$ 1 count)))))]
+    (step a 0)))
+\end{lstlisting}
+\end{plAlgorithm}
+(\NOTE This is not intended to be a practical algorithm,
+more a specification using only $\Add{\Naturals}$.)
+
+\TODO Change $\Add{\Naturals}$ to something like
+$\mathsf{\Naturals{.}+}$, 
+$\mathsf{\Naturals{:}+}$, 
+$\Naturals\mathsf{{:}+}$, 
+$\Naturals\mathsf{{\colon}+}$, 
+$\Naturals\mathsf{/+}$, 
+$\mathsf{(+ \, \Naturals)}$, 
+$\mathsf{+(\Naturals)}$, 
+to look more like a package prefix or field value?
+
+We can then define the commutative semi-group 
+(a monoid without identity~\cite{wiki:Semigroup})
+$
+\Naturals[n_0,n_1] =
+\left[ 
+\left[ n_{0}, n_{1} \right], 
+\Add{\Naturals[n_0,n_1]}
+\right]
+$.
+(If $n_0=0$, then it's a commutative monoid.)
+
+(A perhaps cleaner, or ``more pure'' version of this
+would distinguish the elements of $\Naturals[n_0,n_1]$
+from the elements of $\Naturals$,
+and define $\Add{\Naturals[n_0,n_1]}$ via an isomorphism.
+I'm using the ambiguity typical of mathematics to ignore that
+distinction.)
+
+\end{plSection}%{Modular arithmetic}
+%-----------------------------------------------------------------
+\begin{plSection}{Implementations}
+
+Implementing $\Naturals$ is straightforward 
+(as long as we ignore time and space constraints).
+All we need is an implementation of unbounded bit sequences:
+
+Any natural number $n$ can be written as
+\begin{equation}
+n \; = \; \sum_{k=0} \beta_{k}(n) * 2^{k}
+\end{equation}
+where $\beta_{k}(n)$ is $0$ or $1$,
+and exponentiation over natural numbers is defined from
+$\Mul{\Naturals}$ in the obvious way.
+I'll note without proof that for any $n$ there is a 
+$k_{\text{max}}(n)$ such that $\beta_{k}(n) \equiv 0$ for all
+$k \geq k_{\text{max}(n)}$.
+In other words, all such sequences are finite. 
+
+Note also that we can define addition on bit sequences in the
+obvious way, to match addition of the corresponding numbers.
+
+The set of finite bit sequences 
+$\Space{B} = \left\{[\beta_{0}, \beta_{1}, \cdots, 
+\beta_{k_{\text{max}}]} \right\}$
+ is a 
+\emph{representation} of $\Naturals$
+in the sense that we can define an invertible function,
+$\beta : \Naturals \rightarrow \Space{B}$,
+(an \emph{isomorphism}) between $\Naturals$ and 
+finite bit sequences
+that preserves addition (and ordering and identity):
+\begin{equation}
+\beta \left( a \,\Add{\Naturals} \, b\right)
+\;=\;
+\beta ( a ) \, \Add{\Space{B}} \, \beta ( b )
+\end{equation}
+(again without proof).
+
+A proof-of-concept implementation in Java,
+supporting just the commutative monoid over addition, 
+can be found at
+\href{https://github.com/palisades-lakes/nzqr/blob/main/src/main/java/nzqr/java/numbers/UnboundedNatural.java}
+{\javaFont UnboundedNatural.java}.
+This implements $\Naturals$ with an unbounded sequence
+of {\javaFont int} 32 bit words, treated as unsigned.
+Adding two such sequences of $1073741809$ words
+takes more than $20$ minutes and 
+runs out of memory in a 56g JVM.
+
+A more practical implementation,
+that offers better performance for most purposes,
+can be found at: 
+\href{https://github.com/palisades-lakes/nzqr/blob/main/src/main/java/nzqr/java/numbers/BoundedNatural.java}
+{\javaFont BoundedNatural.java}.
+However, 
+like \href{https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/math/BigInteger.java}
+{\javaFont java.math.BigInteger},
+its range is bounded, so it only supports a subset of $\Naturals$.
+
+{\javaFont BoundedNatural} and {\javaFont BigInteger}
+both use {\javaFont int[]} arrays to hold their bits.
+The maximum size of an array in Java is limited
+by the fact that the JVM 
+requires array sizes and indexes to be specified 
+with {\javaFont int} values.
+(See \citeAuthorYearTitle[section 6.5]{LindholmEtAl:2021:JVMS16}.)
+This limits us to at most {\javaFont Integer.MAX\_VALUE} elements.
+However, the actual maximum array length is strictly less than that,
+by an amount that appears to be implementation dependent.
+In my particular setup, attempting to create an 
+{\javaFont int[Integer.MAX\_VALUE-1]} results in:
+``{\javaFont java.lang.OutOfMemoryError: 
+Requested array size exceeds VM limit}'',
+even though there is plenty of memory available to hold 
+an array of that size.
+(I haven't been able to find any clear discussion of this in
+\citeAuthorYearTitle{GoslingEtAl:2021:JLS16}.)
+
+There is an even smaller limit on the size of numbers that can be
+represented by {\javaFont BoundedNatural} and 
+{\javaFont java.math.BigInteger},
+due to the fact that both allow access to arbitrary bits
+indexed by {\javaFont int}.
+This means the maximum length bit sequence is 
+{\javaFont Integer.MAX\_VALUE},
+and the maximum number of words is then
+{\javaFont Integer.MAX\_VALUE>>5}.
+
+(We could increase this a bit, since the bit indexes need to fit
+in an {\javaFont int}, but the number of bits could be $1$ more
+than the maximum index, or {\javaFont Integer.MAX\_VALUE + 1L}.
+This would however, complicate the code, requiring a fair amount
+of mixing of {\javaFont int} and {\javaFont long})
+
+{\javaFont BoundedNatural}, like {\javaFont java.math.BigInteger},
+deals with operations that would overflow the supported range
+by throwing an exception, 
+so it doesn't implement a monoid or semi-ring 
+or anything like that.
+
+\TODO Consider whether our foundational definition of a procedure
+should include error exit as a possible outcome, eg,
+$ f : \Set{X} \rightarrow \Set{Y}$ may
+return $y\in \Set{Y}$, throw an exception,
+or never halt.
+
+An alternative would be to overflow into an unbounded 
+representation, which would be more work that I want to do 
+at present.
+In practice, time and space constraints limit how much useful
+computation can be done close to the overflow limit.
+
+\TODO Use JMH to measure cost of arithmetic with
+{\javaFont UnboundedNatural},
+{\javaFont BoundedNatural},
+and primitives.
+
+\TODO Should this discussion be moved to the integer section?
+So that signed numbers make more sense? On the other hand, 
+it is a simpler to just stick to one operation:
+the $\Add{\Naturals}$ monoid.
+
+
+Most C-family languages offer primitive fixed length
+unsigned integers, with $8$, $16$, $32$, $64$, and 
+sometimes $128$ bits.
+Arithmetic on these numbers is implemented with one or a few
+instructions, XXXX times faster than possible with something
+like {\javaFont UnboundedNatural} or
+{\javaFont BoundedNatural}.
+What is implemented is actually modular arithmetic,
+so each of these primitive types corresponds to a valid
+semi-ring.
+aHowever, I think this is poorly understood by many developers.
+I suspect many lurking bugs due to unchecked overflows.
+
+Java, on the other hand, doesn't support unsigned numbers.
+The reasoning behind that is a bit obscure,
+and the brief explanations in various places on the web
+are unconvincing:
+
+\begin{plQuote}
+{\citeAuthorYearTitle{RitchieStroustrupGosling:2000:CFamily}}{}%
+{%
+Q: Programmers often talk about the advantages and disadvantages 
+of programming in a "simple language."  
+What does that phrase mean to you, and is [C/C++/Java] 
+a simple language in your view? 
+
+\ldots
+
+Gosling: For me as a language designer, 
+which I don't really count myself as these days, 
+what "simple" really ended up meaning was could I expect 
+J. Random Developer to hold the spec in his head. 
+That definition says that, for instance, Java isn't---and 
+in fact a lot of these languages end up 
+with a lot of corner cases, things that nobody really understands. 
+\emph{Quiz any C developer about unsigned, 
+and pretty soon you discover 
+that almost no C developers actually understand what goes on 
+with unsigned, what unsigned arithmetic is.}[emphasis added] 
+Things like that made C complex. 
+The language part of Java is, I think, pretty simple. 
+The libraries you have to look up.}
+
+\ldots
+\end{plQuote}
+
+I don't think this is correct.
+My guess is that few developers are confused about
+what unsigned values are.
+Some may not get modular arithmetic,
+and so don't understand what happens
+operations exceed the supported range,
+but the real confusion comes from mixed arithmetic, particularly
+when mixing unsigned and signed values, as mentioned below:
+
+\begin{plQuote}
+{\citeAuthorYearTitle{JDK-4879804}}{}%
+{%
+A DESCRIPTION OF THE REQUEST: (Ranjith Mandala)
+
+I've seen that there have been several requests 
+for unsigned integral types in Java, 
+and you have generally blown these off 
+in a fairly cavalier manner. 
+Usually you report that these types are unnecessary 
+and can be worked around. In some cases you are correct, 
+and I can write code that chews up CPU time 
+masking and shifting bits around, 
+using the char type as an unsigned temporary bucket, etc. 
+However, I'm dealing with a stream of bytes 
+that contains numeric values. 
+I have to grab a few bytes at a time 
+and make a number out of them---an integer, a long, whatever. 
+Obviously, some of those bytes may have the high-order bit set, 
+not because they are negative numbers 
+but because that's how they fit in that particular byte 
+in the sequence. 
+Java's insistence on treating each byte as a signed value, 
+and therefore doing sign-extension for me, is a major pain.
+
+What this all boils down to is this: 
+as a language vendor you should not be continually telling 
+your user community that they are wrong 
+when they request support from the language. 
+Support the unsigned types because it is a reasonable thing to do, 
+and stop pontificating. 
+This is a major oversight in the language, and quite frankly, 
+I'm amazed that you think it's okay to waste CPU run time 
+rather than CPU compile time!
+
+Joe Darcy added a comment - 2003-06-16 17:00
+
+BT2:EVALUATION
+
+If you want to more conveniently convert bytes to int or long, 
+consider using nio byte buffers and viewing the byte buffer 
+as an int or long buffer instead.
+
+A parallel family of unsigned types was deliberately 
+omitted from Java to avoid the confusion 
+of combining signed and unsigned values in arithmetic expressions. 
+That said, there are times
+ when having unsigned arithmetic operations would be convenient. 
+ However, if the bits of an int or long are interpreted 
+ as unsigned two's complement numbers, 
+ the output of add/subtract and multiply are 
+ the same as if the numbers are interpreted as signed values 
+ (this is a features of two's complement arithmetic). 
+ Therefore, if you track signed-ness yourself, 
+ you only need a separate unsigned divide method 
+ and some conversion methods to have all the operations.}
+\end{plQuote}
+
+The real problem is trying to have one size fits all arithmetic.
+
+When you have nested sets of numbers,you can get away with
+automatic ``promotion'', 
+although I think even there it is a mistake.
+In other words, the set of numbers representable by
+{\javaFont unsigned int} is a subset of those
+representable by {\javaFont unsigned long},
+so arithmetic mixing the two can be defined by identifying
+with the {\javaFont unsigned int} values 
+with the corresponding {\javaFont unsigned long}s,
+and then using {\javaFont unsigned long} operations everywhere.
+
+However, even in this simple case, mixed arithmetic is 
+a source of lurking bugs.
+There may be subexpressions involving only 
+{\javaFont unsigned int} which would overflow/wraparound.
+Might re-arrangements of the code may change whether the
+wraparound happens or not, so a given intermediate value
+may be $0$ in some cases, and $1+2^{32}$ in others.
+
+I think the key problem is an invisible redefinition of 
+``{\javaFont +}''.
+Expressions in {\javaFont unsigned byte} implicitly define
+{\javaFont +} as $\Add{\Naturals[0,0xFF]}$.
+Change one argument to {\javaFont unsigned short} 
+and {\javaFont +} is quietly redefined as
+$\Add{\Naturals[0,0xFFFF]}$.
+I suspect this leads to many developers forgetting about the
+fact that the arithmetic is modular, and ignoring the possibility
+of overflow.
+
+The situation is worse, but not fundamentally different,
+when you mixed number representations where neither set of
+values is a subset of the other.
+{\javaFont unsigned byte} is an implementation of
+$\Naturals[0,255]$;
+{\javaFont signed byte} implements $\Naturals[-128,127]$;
+the union is $\Naturals[-128,255]$.
+What should $+$ mean in that case?
+I don't think anyone would find modular addition
+on $[-128,255]$ an obvious choice (plus it would be expensive to 
+implement).
+The C standard, that Gosling was complaining about,
+interprets the twos-complement bits of the signed number
+as unsigned, effectively for signed/unsigned byte:
+\begin{equation}
+u + s \; \;=
+\begin{cases}
+\, u + s & \text{if } s \geq 0 \\
+\, u + s + 256 & \text{if } s < 0 \\
+\end{cases}
+\end{equation}
+which makes even less sense as ``generic addition''.
+
+\TODO C-standard ref?
+
+\NOTE Java's exclusion of unsigned integer types doesn't
+eliminate the problem---the same issue arises in arithmetic mixing
+{\javaFont long} and {\javaFont double},
+where, despite it being described as a ``widening'' conversion 
+\cite[section 5.1.2]{GoslingEtAl:2021:JLS16},
+the set of numbers representable in neither of the two types
+is a subset of the other.
+
+So then. what could/should $+$ mean---when given operands
+representing different subsets of $\Naturals$?
+\begin{itemize}
+  \item No overflow: Implement {\javaFont +} as 
+  $\Add{\Naturals}$. In other words, whenever the value of 
+  {\javaFont a + b} would be outside the subset of $\Naturals$
+  covered by their implementations, return an implementation
+  that can handle that value. 
+  
+  This could be done statically,
+  {\javaFont 
+  ((unsigned int) a) + ((unsigned int) b) -> unsigned long},
+  for all {\javaFont unsigned int} {\javaFont a} and {\javaFont b},
+  or dynamically, where the returned type depends whether 
+  {\javaFont a + b} fits in an {\javaFont unsigned int} or not.
+  
+  Either way is very expensive. The static version would quickly
+  promote all but the simplest expressions to an impractical
+  unbounded representation.
+  The dynamic version requires giving up primitive arithmetic
+  for object-based. (at least, I don't know of any language 
+  that supports dynamically changing which primitive type is
+  returned from a function, though I think I can see how 
+  that might be done in some kind of tagged architecture.)
+  
+  \TODO JMH code to measure the cost of static/dynamic promotion,
+  at least for a proof-of-concept implementation.
+  
+  \item Overflow exceptions: 
+  \href{https://github.com/palisades-lakes/nzqr/blob/main/src/main/java/nzqr/java/numbers/BoundedNatural.java}
+{\javaFont BoundedNatural} and 
+\href{https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/math/BigInteger.java}
+{\javaFont BigInteger}
+both behave this way.
+  
+  Java offers this in some cases (for signed integers)
+  with {\javaFont Math.addExact}.
+  
+  This still has significant cost relative to instruction level
+  modular addition.
+  
+  \TODO JHM code to measure this, at least p-o-c.
+  
+  \item All arithmetic is modular, 
+  using a specific $\Add{\Naturals[n_0,n_1]}$.
+  Mixing arguments from implementations covering different subsets
+  of $\Naturals$ requires explicit conversion to a monoid
+  $\Naturals[n_0,n_1]$ that includes all of them.
+  The danger here is that it's easy to forget that the arithmetic
+  is modular, because the $+$ we learned in elementary school
+  wasn't, and it's also easy to lose track of exactly which
+  $\Naturals[n_0,n_1]$ we are operating in 
+  (though requiring explicit conversion helps.)
+  
+  One way to think about this is that it is exposing a fundamental
+  difference between mathematics (as a language) and programming
+  languages. 
+  Mathematics, as practiced is full of ambiguity---one 
+  of its great strengths I would argue.
+  We can view $3$ as simultaneously an element of $\Naturals$
+  and any of the modular subsets of $\Naturals$ that contain it.
+  Or we can think of $\Naturals[n_0,n_1]$ as isomorphic to 
+  a subset of $\Naturals$, with a very distinct addition operator.
+  
+  When we start talking about implementation, on the other hand,
+  we have to make a choice. 
+  
+  Are {\javaFont unsigned byte},
+  {\javaFont unsigned short}, {\ldots} are to be viewed as
+  elements of distinct monoids (or semi-rings),
+  with natural isomorphisms between matching subsets?
+  Then requiring explicit conversion makes sense.
+  
+  Or do we want to think of them all as elements of one big set?
+  Then, to get one big monoid, we need to pick one definition
+  of {\javaFont +}, and the modular $\Add{\Naturals[n_0,n_1]}$
+  for the enclosing $\Naturals[n_0,n_1]$ 
+  is the only choice that works.
+  This is equivalent to automatic promotion to the largest 
+  word size, as discussed above.
+  
+\end{itemize}
+
+\end{plSection}%{Implementations}
+%-----------------------------------------------------------------
+\end{plSection}%{Natural numbers}
+%-----------------------------------------------------------------
+\begin{plSection}{Integers}
+
+A common situation that leads to new mathematical structures
+is this:
+We have a problem that can be expressed in an existing structure,
+but doesn't have a solution that can be expressed 
+in that structure, at least, not in all cases.
+
+This is how we get from the natural numbers to the positive
+and negative integers.
+Posing an example problem requiring
+negative integers will no doubt seem silly,
+since nearly all developers already know the answer.
+But perhaps it will make the core process clearer,
+without the potential distraction that later,
+more complex problems may add.
+
+And it's worth noting that, even though just about everyone learns
+about negative numbers in elementary school,
+and they were in use by at least the $200$s (in Han China),
+european mathematicians resisted them
+an invalid, or cheating, up to the $1800$s. 
+(See \citeAuthorTitle{wiki:NegativeNumber}.)
+
+Suppose I have $12$ loaves and I've promised 
+my friend $8$. How many can I give to someone else?
+Abstracting that a bit,
+we have
+$a = b + c$
+where $a,b,c \in \Naturals$ and I know 
+$a$, the number of loaves I have, 
+and $b$, the number I've promised,
+but not $c$, the number that will remain.
+I am also assuming I have more loaves than I have promised.
+Pretending that we have never heard of subtraction,
+we might solve for $c$ with a simple search:
+
+\begin{plAlgorithm}
+{Reinventing subtraction}
+{reinventSubtraction}
+\begin{lstlisting}[language=pseudocode]
+(defn $\Sub{\Naturals}$ [^$\Naturals$ a ^$\Naturals$ b]
+  (assert ($\Leq{\Naturals}$ b a))
+  (let [step (fn [c]
+                    (if ($\Eq{\Naturals}$ a ($\Add{\Naturals}$ b c))
+                      c
+                      (step ($\Add{\Naturals}$ 1 c))]
+    (step 0)))
+\end{lstlisting}
+\end{plAlgorithm}
+
+Given an implementation for $\Naturals$, or some subset that
+includes $a,b,c$, and a little thought, 
+we can come up with a more efficient, direct algorithm 
+for $\Sub{\Naturals}$, one that doesn't involve trying all 
+possibilities.
+
+What we end up with is a new operator (binary function),
+which, unlike the previous ones, is only defined on a 
+subset:
+$\Sub{\Naturals}:
+\left\{ \, [a,b] \in \Naturals{\times}\Naturals 
+\; \middle|  \; a \geq b \, \right\} \, \rightarrow \, \Naturals$.
+
+%-----------------------------------------------------------------
+\begin{plSection}{Implementations}
+%-----------------------------------------------------------------
+\begin{plSection}{Primitives}
+
+\end{plSection}%{Primtives}
+%-----------------------------------------------------------------
+\begin{plSection}{\texorpdfstring{{\javaFont java.math.BigInteger}}{java.math.BigInteger}}
+
+\end{plSection}%{\javaFont BigInteger}
+%-----------------------------------------------------------------
+\begin{plSection}{\texorpdfstring{{\javaFont clojure.lang.BigInt}}{clojure.lang.BigInt}}
+
+{\javaFont clojure.lang.BigInt} is a minimal wrapper around
+{\javaFont java.math.BigInteger}, primarily to provide
+a large integer implementation whose {\javaFont hashCode}
+matches the {\javaFont hashCode} for {\javaFont Long}'s
+representing the same integer value---{\javaFont BigInteger}'s 
+does not.~\cite[page 438]{EmerickCarperGrand:2012:ClojureProgramming}
+
+Because {\javaFont BigInt} doesn't provide an API comparable to
+{\javaFont BigInteger}, it's much less useful than
+{\javaFont BigInteger}, and probably best reserved as a wrapper
+for keys in hashtables or sets the might be either
+{\javaFont Long} or {\javaFont BigInteger}---though even in that
+case, it would be simpler to just coerce all the keys to
+{\javaFont BigInteger}.
+
+(\TODO 
+More about hashcodes and implications of equivalence across 
+implementations/representations.
+
+The fundamental problem is Java's assumption
+that ``correct'' {\javaFont equals}
+and {\javaFont hashCode} can be defined for a single class
+in isolation.
+For any (mathematical) set of objects, there are many possible
+notions of equivalence (\TODO what's this called?).
+The ``correct'' one depends on the problem being solved.
+(\TODO examples).
+A ``correct'' hashcode preserves the equivalence:
+\begin{equation}
+a \approx b \; \implies \; \text{hashcode}(a) = \text{hashcode}(b)
+\end{equation}
+(What's the right way to say this?)
+
+Check {\javaFont Byte}'s, {\javaFont Short's}, or
+{\javaFont Integer}'s representing the same integer value.
+Also, the value of getting {\javaFont BigInt}'s 
+{\javaFont hashCode} ``right'' is diminished by uncertainty
+about exactly what implementation will be returned when
+doing arithmetic in Clojure.) 
+
+{\javaFont BigInt} also ``optimizes'' the case where the value
+would fit in $64$ two's complement bits (ie a {\javaFont long}).
+It's not clear to me that this actually improves performance.
+
+\end{plSection}%{\ clojure.lang.BigInt}
+%-----------------------------------------------------------------
+\end{plSection}%{Implementations}
+%-----------------------------------------------------------------
+\end{plSection}%{Integers}
+%-----------------------------------------------------------------
+\begin{plSection}{Rationals}
+
+%-----------------------------------------------------------------
+\begin{plSection}{B-adic numbers}
+
+
+\end{plSection}%{B-adic numbers}
+%-----------------------------------------------------------------
+\begin{plSection}{Floating point}
+
+
+\end{plSection}%{Floating point}
+%-----------------------------------------------------------------
+\begin{plSection}{Implementations}
+%-----------------------------------------------------------------
+\begin{plSection}{\texorpdfstring{\javaFont RationalFloat}{RationalFloat}}
+
+\end{plSection}%{\javaFont RationalFloat}
+%-----------------------------------------------------------------
+\begin{plSection}{Primitives}
+
+\end{plSection}%{Primtives}
+%-----------------------------------------------------------------
+\end{plSection}%{Implementations}
+%-----------------------------------------------------------------
+\end{plSection}%{Rationals}
+%-----------------------------------------------------------------
+\begin{plSection}{Classical Reals}
+
+
+\end{plSection}%{Classical Reals}
+%-----------------------------------------------------------------
+\begin{plSection}{Computable Reals}
+
+\cite{Aberth:2001:ComputableCalculus,
+BratkaHertlingWeihrauch:2008:TutorialComputableAnalysis,
+Weihrauch:2000:ComputableAnalysis}
+
+%-----------------------------------------------------------------
+\begin{plSection}{Implementations}
+\end{plSection}%{Implementations}
+%-----------------------------------------------------------------
+\end{plSection}%{Computable Reals}
+%-----------------------------------------------------------------
+%\BeginAppendices
+%\input{typesetting}
+%-----------------------------------------------------------------
+\end{document}
+%-----------------------------------------------------------------

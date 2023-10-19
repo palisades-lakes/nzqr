@@ -1,18 +1,18 @@
 % !TEX TS-program = arara
 % arara: xelatex: { synctex: on, options: [-halt-on-error] } 
 % arara: biber
-% % arara: biber: { options: [--noremove-tmp-dir] }
+% arara: biber: { options: [--noremove-tmp-dir] }
 % % arara: texindy: { markup: xelatex }
 % %% arara: makeglossaries
-% % arara: xelatex: { synctex: on, options: [-interaction=batchmode, -halt-on-error] }
-% % arara: xelatex: { synctex: on, options: [-interaction=batchmode, -halt-on-error]  }
+% arara: xelatex: { synctex: on, options: [-interaction=batchmode, -halt-on-error] }
+% arara: xelatex: { synctex: on, options: [-interaction=batchmode, -halt-on-error]  }
 % % arara: clean: { extensions: [ aux, log, out, run.xml, ptc, toc, mw, synctex.gz, ] }
 % % arara: clean: { extensions: [ bbl, bcf, blg, ] }
 % % arara: clean: { extensions: [ glg, glo, gls, ] }
 % % arara: clean: { extensions: [ idx, ilg, ind, xdy, ] }
 % % arara: clean: { extensions: [ plCode, plData, plMath, plExercise, plNote, plQuote, ] }
 %-----------------------------------------------------------------
-\documentclass[11pt]{PalisadesLakesBook}
+\documentclass[12pt]{PalisadesLakesBook}
 % \geomHDTV
 % \geomLandscape
 \geomHalfDTV
@@ -180,7 +180,7 @@ for much larger numbers.
 potentially outperforms Schönhage–Strassen,
 for numbers with more than $2^{64}$ bits, 
 outside the range required by the {\javaFont BigInteger} 
-API, requiring perhaps $10^{-4} \cdots 10^{-6}$ 
+API, requiring perhaps $10^{4} \cdots 10^{6}$ 
 of the total digital storage---possible, but only if there were
 some truly compelling reason.
 
@@ -334,7 +334,7 @@ The problem with this viewpoint is that computer arithmetic
 doesn't work this way
 and, more critically, computer arithmetic \emph{can't} work
 this way.
-The (classical) reals, $\Re$, are \emph{uncountable};
+The (classical) reals, $\Reals$, are \emph{uncountable};
 computer arithmetic can at most handle countably infinite sets
 (in the sense that the representable values are 
 bounded by available memory (and time),
@@ -342,7 +342,7 @@ rather than having an intrinsically limited range)
 
 This suggests the following question:
 Is there a countable, implementable number system,
-probably a subset of $\Re$,
+probably a subset of $\Reals$,
 which is sufficient for, in my case,
 ``scientific computing''?
 

@@ -13,6 +13,8 @@
 % % arara: clean: { extensions: [ plCode, plData, plMath, plExercise, plNote, plQuote, ] }
 %-----------------------------------------------------------------
 \documentclass[12pt]{PalisadesLakesBook}
+\usepackage{biblatex}
+\usepackage{textcomp}
 % \geomHDTV
 % \geomLandscape
 \geomHalfDTV
@@ -69,7 +71,7 @@ In this section, I intend to present generic function
 from something like first principles.
 
 Generic functions are often presented as some kind of unusual 
-addons to ``normal'' object-oriented languages..
+addons to ``normal'' object-oriented languages.
 An example of this is the choice of  naming in Clojure,
 which implies that there are ``normal'' (single-dispatch)
 methods, and then there are these odd things called 
@@ -83,7 +85,7 @@ I think it's worth coming at this from a different direction:
 
 (Languages where all functions are generic: 
 Dylan~\cite{ShalitPiazzaMoon:1992:Dylan}, 
-Julia~\cite{Bezanson:2017:Julia}, ...)
+Julia~\cite{Bezanson:2017:Julia}, \ldots)
 
 It is common for procedures to begin by analyzing their inputs,
 and using the result to choose a specific algorithm.
@@ -112,7 +114,7 @@ plus a flag for positive or negative.
 {\javaFont BigInteger.multiply(BigInteger)} 
 is a procedure which computes the product of $2$ 
 {\javaFont BigInteger}s.
-It chooses among $8$--$12$ 'methods' (depending on how you want to
+It chooses among $8$--$12$ `methods' (depending on how you want to
 count):
 \begin{enumerate}
   \item It first checks if either input number if zero,
@@ -124,7 +126,7 @@ than a certain number of significant bits),
 in which case it hands off to a similar  procedure optimized
 for \textit{squaring}---multiplying  a number by itself.
 
-\item It then chooses sequentially from $4$ 'methods', 
+\item It then chooses sequentially from $4$ `methods', 
 depending on the number of
 significant bits in \textit{both} arguments:
 \begin{enumerate}
@@ -162,22 +164,21 @@ What changes might one want to make to
 \begin{itemize}
 \item An obvious one is to add algorithms which are faster for
 larger integer values.
-The \textit{Schönhage–Strassen} 
+The \textit{Sch\"{o}nhage–Strassen} 
 algorithm~\cite{wiki:SchonhageStrassenMultiplication}
 potentially outperforms Toom-Cook for numbers with more
 than $2^{15}$ bits well within the minimum value range
 required by the {\javaFont BigInteger} API.
-An alternate implementation that adds Schönhage–Strassen
+An alternate implementation that adds Sch\"{o}nhage–Strassen
 to the sequence of tests choosing between
 single {\javaFont int}, grade-school, Karatsuba, and
-Toom-Cook can be found at 
-\cite{tbuktu:2015:EfficientBigIntegerImplementation}.
+Toom-Cook can be found at~\cite{tbuktu:2015:EfficientBigIntegerImplementation}.
 
 There are algorithms which are even faster,
 for much larger numbers.
 
-\textit{Fürer}'s algorithm~\cite{ wiki:FurerMultiplication}
-potentially outperforms Schönhage–Strassen,
+\textit{F\"{u}rer}\textquotesingle s algorithm~\cite{ wiki:FurerMultiplication}
+potentially outperforms Sch\"{o}nhage–Strassen,
 for numbers with more than $2^{64}$ bits, 
 outside the range required by the {\javaFont BigInteger} 
 API, requiring perhaps $10^{4} \cdots 10^{6}$ 
@@ -186,7 +187,7 @@ some truly compelling reason.
 
 There are even faster algorithms~\cite{
 Hartnett:2019:NLogNIntegerMultiplication,
-HarveyVanDerHoeven:2020:NLogNIntegerMultiplication}),
+HarveyVanDerHoeven:2020:NLogNIntegerMultiplication},
 but they fall into the class of 
 ``galactic algorithms''~\cite{wiki:GalacticAlgorithm},
 meaning, in this case, they only win as the number of bits
@@ -405,7 +406,7 @@ The idea here is that the laws (axioms)
 in the definition of a mathematical structure
 will be expressed using
 universal (``for all'') quantifiers, 
-not existential (``there exists") ones.
+not existential (``there exists'') ones.
 
 For example, the classical definition of 
 \emph{monoid}~\cite{wiki:Monoid} $\Space{M} = [\Set{M}, \odot]$
@@ -457,7 +458,18 @@ that real machines are bounded in space and time.
 There is at least some reason to think 
 that this kind of foundation covers all ``scientifically
 applicable mathematics''.
-See:
+See:\\
+\citeAuthorYearTitle{Feferman:1989:IsCantorNecessary}\\
+\citeAuthorYearTitle{Feferman:1992:ALittleBit}\\
+(Reprinted, updated in:\\
+\citeAuthorYearTitle[ch.~2 ``Is Cantor necessary?'']{
+  Feferman:1998:LightOfLogic}\\
+\citeAuthorYearTitle[ch.~12 ``Is Cantor necessary? (Conclusion)'']
+{Feferman:1998:LightOfLogic}\\
+\citeAuthorYearTitle[ch~14 ``Why a little bit goes a long way:
+logical foundations of scientifically applicable mathematics'']{
+  Feferman:1998:LightOfLogic})\\
+\citeAuthorYearTitle{Aberth:2001:ComputableCalculus}\\
 
 This approach to mathematics eliminates much of the ugliness
 of classical analysis---no axiom of choice, no unmeasurable
@@ -475,7 +487,18 @@ or is just very slow.
 
 \end{itemize}
 
+\begin{plSection}{${RCA}_{0}$}
+
+  `The initials ``${RCA}$'' stand for ``recursive comprehension axiom``,
+  where ``recursive'' means ``computable'',
+  as in recursive function.
+  This name is used because ${RCA}_{0}$
+  corresponds informally to ``computable mathematics''.'~\cite{wiki:ReverseMathematics}
+
+\end{plSection}%{{RCA}_{0}}
+
 \end{plSection}%{Foundations}
+
 %-----------------------------------------------------------------
 \begin{plSection}{Natural numbers}
 
@@ -505,8 +528,11 @@ So, if this seems a bit too trivial,
 
 The natural numbers answer two kinds of questions:
 \begin{itemize}
-\item How many? (cardinality)
-\item What's next? or Which is bigger? (ordinality)
+\item How many?
+(cardinality)
+\item What's next?
+(or Which is bigger?)
+(ordinality)
 \end{itemize}
 
 Addition, $\Add{\Naturals}$, answers questions like:
@@ -515,7 +541,7 @@ and my friend has $n$, how many do we have all together?
 
 The ordering tells us: Who has more bread?
 
-\TODO: This isn't very satisfying.
+\TODO This isn't very satisfying.
 Look into origins of math, Egypt, Mesopotamia, etc, for better
 examples?
 
@@ -593,7 +619,8 @@ to be defined on subsets of $\Set{N}$, which require
 different definitions for $\Add{\Naturals}$ and $\Mul{\Naturals}$.
 
 The too simple motivating question here might be:
-It is the $20$th hour of the day. What hour will it be $5$ hours
+It is the $20$th hour of the day.
+What hour will it be $5$ hours
 from now?
 
 To deal with questions like this, we need to modify 
@@ -612,7 +639,8 @@ I prefer to define all integer intervals as half-open.
 But that is a bit difficult without subtraction.
 
 \NOTE Modular arithmetic is more often defined for the special 
-case of $n_0=0$. My reasons for this slightly more general 
+case of $n_0=0$.
+My reasons for this slightly more general
 version should become apparent soon.)
 
 Then we can define a new addition operator 
@@ -684,8 +712,8 @@ where $\beta_{k}(n)$ is $0$ or $1$,
 and exponentiation over natural numbers is defined from
 $\Mul{\Naturals}$ in the obvious way.
 I'll note without proof that for any $n$ there is a 
-$k_{\text{max}}(n)$ such that $\beta_{k}(n) \equiv 0$ for all
-$k \geq k_{\text{max}(n)}$.
+$k_{\max}(n)$ such that $\beta_{k}(n) \equiv 0$ for all
+$k \geq k_{\max(n)}$.
 In other words, all such sequences are finite. 
 
 Note also that we can define addition on bit sequences in the
@@ -693,7 +721,7 @@ obvious way, to match addition of the corresponding numbers.
 
 The set of finite bit sequences 
 $\Space{B} = \left\{[\beta_{0}, \beta_{1}, \cdots, 
-\beta_{k_{\text{max}}]} \right\}$
+\beta_{k_{\max}]} \right\}$
  is a 
 \emph{representation} of $\Naturals$
 in the sense that we can define an invertible function,
@@ -815,7 +843,7 @@ are unconvincing:
 {\citeAuthorYearTitle{RitchieStroustrupGosling:2000:CFamily}}{}%
 {%
 Q: Programmers often talk about the advantages and disadvantages 
-of programming in a "simple language."  
+of programming in a ''simple language.''  
 What does that phrase mean to you, and is [C/C++/Java] 
 a simple language in your view? 
 
@@ -823,7 +851,7 @@ a simple language in your view?
 
 Gosling: For me as a language designer, 
 which I don't really count myself as these days, 
-what "simple" really ended up meaning was could I expect 
+what ''simple'' really ended up meaning was could I expect 
 J. Random Developer to hold the spec in his head. 
 That definition says that, for instance, Java isn't---and 
 in fact a lot of these languages end up 
@@ -966,8 +994,7 @@ which makes even less sense as ``generic addition''.
 \NOTE Java's exclusion of unsigned integer types doesn't
 eliminate the problem---the same issue arises in arithmetic mixing
 {\javaFont long} and {\javaFont double},
-where, despite it being described as a ``widening'' conversion 
-\cite[section 5.1.2]{GoslingEtAl:2021:JLS16},
+where, despite it being described as a ``widening'' conversion~\cite[section 5.1.2]{GoslingEtAl:2021:JLS16},
 the set of numbers representable in neither of the two types
 is a subset of the other.
 
@@ -1138,9 +1165,9 @@ $\Sub{\Naturals}:
 {\javaFont clojure.lang.BigInt} is a minimal wrapper around
 {\javaFont java.math.BigInteger}, primarily to provide
 a large integer implementation whose {\javaFont hashCode}
-matches the {\javaFont hashCode} for {\javaFont Long}'s
-representing the same integer value---{\javaFont BigInteger}'s 
-does not.~\cite[page 438]{EmerickCarperGrand:2012:ClojureProgramming}
+matches the {\javaFont hashCode} for {\javaFont Long}s
+representing the same integer value---{\javaFont BigInteger}s
+does not~\cite[page 438]{EmerickCarperGrand:2012:ClojureProgramming}.
 
 Because {\javaFont BigInt} doesn't provide an API comparable to
 {\javaFont BigInteger}, it's much less useful than
@@ -1168,9 +1195,9 @@ a \approx b \; \implies \; \text{hashcode}(a) = \text{hashcode}(b)
 \end{equation}
 (What's the right way to say this?)
 
-Check {\javaFont Byte}'s, {\javaFont Short's}, or
-{\javaFont Integer}'s representing the same integer value.
-Also, the value of getting {\javaFont BigInt}'s 
+Check {\javaFont Byte}s, {\javaFont Short}s, or
+{\javaFont Integer}s representing the same integer value.
+Also, the value of getting {\javaFont BigInt}s
 {\javaFont hashCode} ``right'' is diminished by uncertainty
 about exactly what implementation will be returned when
 doing arithmetic in Clojure.) 

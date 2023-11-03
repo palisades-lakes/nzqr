@@ -13,8 +13,6 @@
 % % arara: clean: { extensions: [ plCode, plData, plMath, plExercise, plNote, plQuote, ] }
 %-----------------------------------------------------------------
 \documentclass[12pt]{PalisadesLakesBook}
-\usepackage{biblatex}
-\usepackage{textcomp}
 % \geomHDTV
 % \geomLandscape
 \geomHalfDTV
@@ -169,7 +167,7 @@ algorithm~\cite{wiki:SchonhageStrassenMultiplication}
 potentially outperforms Toom-Cook for numbers with more
 than $2^{15}$ bits well within the minimum value range
 required by the {\javaFont BigInteger} API.
-An alternate implementation that adds Sch\"{o}nhage–Strassen
+An alternate implementation that adds Sch\"{o}nhage-Strassen
 to the sequence of tests choosing between
 single {\javaFont int}, grade-school, Karatsuba, and
 Toom-Cook can be found at~\cite{tbuktu:2015:EfficientBigIntegerImplementation}.
@@ -177,8 +175,8 @@ Toom-Cook can be found at~\cite{tbuktu:2015:EfficientBigIntegerImplementation}.
 There are algorithms which are even faster,
 for much larger numbers.
 
-\textit{F\"{u}rer}\textquotesingle s algorithm~\cite{ wiki:FurerMultiplication}
-potentially outperforms Sch\"{o}nhage–Strassen,
+\textit{F\"{u}rer}'s algorithm~\cite{ wiki:FurerMultiplication}
+potentially outperforms Sch\"{o}nhage-Strassen,
 for numbers with more than $2^{64}$ bits, 
 outside the range required by the {\javaFont BigInteger} 
 API, requiring perhaps $10^{4} \cdots 10^{6}$ 
@@ -487,13 +485,112 @@ or is just very slow.
 
 \end{itemize}
 
-\begin{plSection}{${RCA}_{0}$}
+\begin{plSection}{\RCA{0}}
 
-  `The initials ``${RCA}$'' stand for ``recursive comprehension axiom``,
+(This section will most likely not appear in a final version.)
+
+  `The initials ``${RCA}$'' stand for ``recursive comprehension axiom'',
   where ``recursive'' means ``computable'',
   as in recursive function.
-  This name is used because ${RCA}_{0}$
+  This name is used because \RCA{0}
   corresponds informally to ``computable mathematics''.'~\cite{wiki:ReverseMathematics}
+
+  \begin{plQuote}
+  {\citeAuthorTitle{wiki:ReverseMathematics}}%
+  {foo}%
+  {%
+    Despite its seeming weakness (of not proving any non-computable sets exist), 
+    \RCA{0} is sufficient to prove a number of classical theorems which, therefore, 
+    require only minimal logical strength. 
+    These theorems are, in a sense, below the reach of the reverse mathematics enterprise 
+    because they are already provable in the base system. 
+    The classical theorems provable in \RCA{0} include:
+  \begin{itemize}
+    \item Basic properties of the natural numbers, integers, and rational numbers (for example,
+    that the latter form an ordered field).
+    \item Basic properties of the real numbers (the real numbers are an Archimedean ordered field;
+    any nested sequence of closed intervals whose lengths tend to zero has a single point in its intersection;
+    the real numbers are not countable)~\cite[Section II.4]{Simpson:2009:Subsystems}.
+    \item The Baire category theorem for a complete separable metric space
+    (the separability condition is necessary to even state the theorem in the language of second-order
+    arithmetic)~\cite[Theorem II.5.8]{Simpson:2009:Subsystems}.
+    \item The intermediate value theorem on continuous real
+    functions~\cite[Theorem II.6.6]{Simpson:2009:Subsystems}.
+    \item The Banach-Steinhaus theorem for a sequence of continuous linear operators
+    on separable Banach spaces~\cite[theorem II.10.8]{Simpson:2009:Subsystems}.
+    \item A weak version of G\"{o}del's completeness theorem (for a set of sentences, in a countable language,
+    that is already closed under consequence).
+    \item The existence of an algebraic closure for a countable field
+    (but not its uniqueness)~\cite[Sections II.9.4--II.9.8]{Simpson:2009:Subsystems}
+    \item The existence and uniqueness of the real closure
+    of a countable ordered field~\cite[Sections II.9.5, II.9.7]{Simpson:2009:Subsystems}.
+    \item The first-order part of \RCA{0} (the theorems of the system that do not involve any set variables)
+    is the set of theorems of first-order Peano arithmetic with induction limited to $\Sigma^{0}_{1}$ formulas.
+    It is provably consistent, as is \RCA{0}, in full first-order Peano arithmetic.
+  \end{itemize}
+  }
+  \end{plQuote}
+
+  \begin{plSection}{Robinson arithmetic~ \cite{wiki:RobinsonArithmetic}}
+
+    Robinson Arithmetic referred to as $\RobinsonA$.
+
+    (\TODO Is there an alternative not confusable with rationals $\Rationals$?)
+
+    Domain is a set $\Set{N}$ (some version of the natural numbers).
+
+    Equivalence: $\Eq{\RobinsonA}$
+
+    Unary operation: $\mathsf{successor} : \Set{N} \rightarrow \Set{N}$
+
+    Binary operations:
+    $\Add{\RobinsonA} : \Set{N} \times \Set{N} \rightarrow \Set{N}$,
+    $\Mul{\RobinsonA} : \Set{N} \times \Set{N} \rightarrow \Set{N}$\\
+
+    Special element: $0_{\RobinsonA} \in \Set{N}$
+
+    Axioms:
+    \begin{enumerate}
+      \item For all $n \in \Set{N}$,
+      $\mathsf{successor}(n) \Neq{\RobinsonA} n$
+
+      \item For all $n, m \in \Set{N}$,
+      $\left( \mathsf{successor}(n) \Eq{\RobinsonA}
+      \mathsf{successor}(m) \right)
+      \implies \left( n \Eq{\RobinsonA} m \right)$
+
+      \item If $n \Neq{\RobinsonA} 0_{\RobinsonA}$,
+      there exists $m \in \Set{N}$ such that
+      $\mathsf{successor}(m) \Eq{\RobinsonA} n$.
+
+      \item For all $n \in \Set{N}$,
+      $n \Add{\RobinsonA} 0_{\RobinsonA} \Eq{\RobinsonA} n$
+
+      \item For all $n, m \in \Set{N}$,
+      $\left( \mathsf{successor}(n) \Add{\RobinsonA} m \right)
+      \Eq{\RobinsonA}
+      \mathsf{successor}(n \Add{\RobinsonA} m)$
+
+      \item For all $n \in \Set{N}$,
+      $n \Mul{\RobinsonA} 0_{\RobinsonA} \Eq{\RobinsonA} 0_{\RobinsonA}$
+
+      \item For all $n, m \in \Set{N}$,
+      $\left( \mathsf{successor}(n) \Mul{\RobinsonA} m \right)
+      \Eq{\RobinsonA}
+      \left(
+      \left( n \Mul{\RobinsonA} m \right)  \Add{\RobinsonA} m)
+      \right)$
+
+    \end{enumerate}
+
+
+  \end{plSection}%{Robinson arithmetic}
+
+  \begin{plSection}{Induction for $\Sigma^{0}_{1}$ formulas}
+  \end{plSection}%{Induction for $\Sigma^{0}_{1}$ formulas}
+
+  \begin{plSection}{Comprehension for $\Delta^{0}_{1}$ formulas}
+  \end{plSection}%{Comprehension for $\Delta^{0}_{1}$ formulas}
 
 \end{plSection}%{{RCA}_{0}}
 

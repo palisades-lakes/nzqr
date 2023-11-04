@@ -485,7 +485,7 @@ or is just very slow.
 
 \end{itemize}
 
-\begin{plSection}{\RCA{0}}
+\begin{plSection}{\texorpdfstring{\RCA{0}}{RCA0}}
 
 (This section will most likely not appear in a final version.)
 
@@ -531,68 +531,148 @@ or is just very slow.
   }
   \end{plQuote}
 
-  \begin{plSection}{Robinson arithmetic~ \cite{wiki:RobinsonArithmetic}}
+  \begin{plSection}{Robinson arithmetic~\cite{wiki:RobinsonArithmetic}}
 
-    Robinson Arithmetic referred to as $\RobinsonA$.
+    Robinson Arithmetic referred to as $\RobAr$.
 
-    (\TODO Is there an alternative not confusable with rationals $\Rationals$?)
+    (\TODO \textit{Is there an alternative not confusable with rationals $\Rationals$?})
 
     Domain is a set $\Set{N}$ (some version of the natural numbers).
 
-    Equivalence: $\Eq{\RobinsonA}$
+    Equivalence: $\Eq{\RobAr}$
 
-    Unary operation: $\mathsf{successor} : \Set{N} \rightarrow \Set{N}$
+    Unary operation: $\Successor{\RobAr} : \Set{N} \rightarrow \Set{N}$
 
     Binary operations:
-    $\Add{\RobinsonA} : \Set{N} \times \Set{N} \rightarrow \Set{N}$,
-    $\Mul{\RobinsonA} : \Set{N} \times \Set{N} \rightarrow \Set{N}$\\
+    $\Add{\RobAr} : \Set{N} \times \Set{N} \rightarrow \Set{N}$,
+    $\Mul{\RobAr} : \Set{N} \times \Set{N} \rightarrow \Set{N}$\\
 
-    Special element: $0_{\RobinsonA} \in \Set{N}$
+    Special element: $\Zero{\RobAr} \in \Set{N}$
 
     Axioms:
     \begin{enumerate}
       \item For all $n \in \Set{N}$,
-      $\mathsf{successor}(n) \Neq{\RobinsonA} n$
+      $\Successor{\RobAr}(n) \Neq{\RobAr} \Zero{\RobAr}$
 
       \item For all $n, m \in \Set{N}$,
-      $\left( \mathsf{successor}(n) \Eq{\RobinsonA}
-      \mathsf{successor}(m) \right)
-      \implies \left( n \Eq{\RobinsonA} m \right)$
+      $\left( \Successor{\RobAr}(n) \Eq{\RobAr}
+      \Successor{\RobAr}(m) \right)
+      \implies \left( n \Eq{\RobAr} m \right)$
 
-      \item If $n \Neq{\RobinsonA} 0_{\RobinsonA}$,
+      \item If $n \Neq{\RobAr} \Zero{\RobAr}$,
       there exists $m \in \Set{N}$ such that
-      $\mathsf{successor}(m) \Eq{\RobinsonA} n$.
+      $\Successor{\RobAr}(m) \Eq{\RobAr} n$.
 
       \item For all $n \in \Set{N}$,
-      $n \Add{\RobinsonA} 0_{\RobinsonA} \Eq{\RobinsonA} n$
+      $n \Add{\RobAr} \Zero{\RobAr} \Eq{\RobAr} n$
 
       \item For all $n, m \in \Set{N}$,
-      $\left( \mathsf{successor}(n) \Add{\RobinsonA} m \right)
-      \Eq{\RobinsonA}
-      \mathsf{successor}(n \Add{\RobinsonA} m)$
+      $\left( \Successor{\RobAr}(n) \Add{\RobAr} m \right)
+      \Eq{\RobAr}
+      \Successor{\RobAr}(n \Add{\RobAr} m)$
 
       \item For all $n \in \Set{N}$,
-      $n \Mul{\RobinsonA} 0_{\RobinsonA} \Eq{\RobinsonA} 0_{\RobinsonA}$
+      $n \Mul{\RobAr} \Zero{\RobAr} \Eq{\RobAr} \Zero{\RobAr}$
 
       \item For all $n, m \in \Set{N}$,
-      $\left( \mathsf{successor}(n) \Mul{\RobinsonA} m \right)
-      \Eq{\RobinsonA}
+      $\left( \Successor{\RobAr}(n) \Mul{\RobAr} m \right)
+      \Eq{\RobAr}
       \left(
-      \left( n \Mul{\RobinsonA} m \right)  \Add{\RobinsonA} m)
+      \left( n \Mul{\RobAr} m \right)  \Add{\RobAr} m)
       \right)$
 
     \end{enumerate}
 
 
+    (\TODO \textit{What axioms define modular arithmetic?})
+
   \end{plSection}%{Robinson arithmetic}
 
-  \begin{plSection}{Induction for $\Sigma^{0}_{1}$ formulas}
+  \begin{plSection}{Induction for \texorpdfstring{$\Sigma^{0}_{1}$}{Sigma01} formulas}
+
+  $\Sigma^{0}_{1}$:
+
+  ``The superscript
+  $0$ in the symbols $\Sigma _{n}^{0}$,
+  $\Pi^0_n$, and
+  $\Delta_{n}^{0}$ indicates the type of the objects being quantified over.
+  Type $0$ objects are natural numbers, and objects of type
+  $i+1$ are functions that map the set of objects of type
+  $i$ to the natural numbers.''~\cite{wiki:ArithmeticalHierarchy}
+
+  ``A $\Sigma _{n}^{0}$ formula is equivalent to a formula that begins with some existential quantifiers and alternates
+  $n-1$ times between series of existential and universal quantifiers...''~\cite{wiki:ArithmeticalHierarchy}
+
+  So $\Sigma _{1}^{0}$ has only existential quantifiers over the natural numbers?
+
+  Induction:
+  $\varphi(\Zero{\RobAr})$ and $\left( \varphi(n) \implies \varphi(\Successor{\RobAr}(n)) \right)$ for all $n \in \Set{N}$
+  implies $\varphi(n)$ for all $n \in \Set{N}$.~\cite{wiki:Induction}
+
   \end{plSection}%{Induction for $\Sigma^{0}_{1}$ formulas}
 
-  \begin{plSection}{Comprehension for $\Delta^{0}_{1}$ formulas}
+  \begin{plSection}{Comprehension for \texorpdfstring{$\Delta^{0}_{1}$}{Delta01} formulas}
+
+    $\Delta^{0}_{1}$:
+
+    ``The superscript
+    $0$ in the symbols $\Sigma_{n}^{0}$,
+    $\Pi^0_n$, and
+    $\Delta_{n}^{0}$ indicates the type of the objects being quantified over.
+    Type $0$ objects are natural numbers, and objects of type
+    $i+1$ are functions that map the set of objects of type
+    $i$ to the natural numbers.''~\cite{wiki:ArithmeticalHierarchy}
+
+    $\Delta^{0}_{1}$: \textit{(Can't find a clear definition, seems to be:)}
+    subsets of $\Set{N}$ defined with only bounded quantifiers~\cite{wiki:BoundedQuantifier}.
+    In other words, finite sets that are ``computable'' in the sense that set membership
+    true-or-false can be determined in a finite number os steps for all elements of $\Set{N}$.
+
+    (\TODO \textit{find a clear definition and readily accessible reference.})
+
+    Comprehension: define a set via, eg, $\SetSpec{n \in \Set{S}}{n+1 \in \Set{S}}$
+
   \end{plSection}%{Comprehension for $\Delta^{0}_{1}$ formulas}
 
-\end{plSection}%{{RCA}_{0}}
+  \begin{plSection}{Implementation sketch}
+
+    Take $\Set{N}$ to be the set of non-negative instances of any Java or Clojure ``integer'' type,
+    plus at least one implementation of unbounded natural numbers.~\footnote{
+    The range of values that can be represented by {\javaFont java.math.BigInteger}
+    has an implementation specific bound determined the private
+    {\javaFont private static final int BigInteger.MAX\_MAG\_LENGTH}
+    and {\javaFont private void BigInteger.checkRange()}.}
+
+    There is an issue here: our $\Set{N}$ should be the set of equivalence classes of instances,
+    where $2$ instances are equivalent if they represent the same value.
+    With this approach, a specific instance is treated a reference to or representative of its equivalence class.
+
+    Or we can change the definitions of $\Eq{\RobAr}$ so that distinct elements can be ``equal'',
+    $\Zero{\RobAr}$ to be a set of ``zero'' elements, etc.
+
+    Our implementation of $\Successor{\RobAr}(n)$ will just be $n \,\rightarrow\, n \Add{\RobAr} 1$.
+
+    Our implementations of $\Add{\RobAr}$ and $\Mul{\RobAr}$ will need to handle any pair of
+    ``integer'' types with non-negative values, and promote to a type with large enough range
+    for the returned value, i.e. no overflows.
+
+    A simpler alternative is to use a single unbounded natural number implementation.
+    The hope is that the extra complexity of supporting multiple implementations allows the code
+    to be fast enough when the values fit in small, primitive ranges.
+    This might make more sense in the context of computable reals,
+    where equality is not decidable, so we have to deal with representations directly,
+    rather than the abstractions they represent.
+
+  \textit{Question: is there a way to re-write $\Sigma^0_1$ with only universal quantifiers?
+  That would allow for automated randomized tests.}
+
+  $\Delta^0_1$ comprehension in Clojure:\\
+    {\clojureFont (filter predicate (range bound))} or\\
+      {\clojureFont (filter \#(and ($<$ \% bound) (predicate \%)) (iterate inc 0))}  .
+
+  \end{plSection}%{Implementation sketch}
+
+  \end{plSection}%{{RCA}_{0}}
 
 \end{plSection}%{Foundations}
 

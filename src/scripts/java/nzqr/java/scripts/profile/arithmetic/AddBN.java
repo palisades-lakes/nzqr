@@ -1,29 +1,29 @@
 package nzqr.java.scripts.profile.arithmetic;
 
-import java.math.BigInteger;
-
 import nzqr.java.numbers.BoundedNatural;
 import nzqr.java.numbers.Naturals;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.Generators;
 import nzqr.java.prng.PRNG;
 
+import java.math.BigInteger;
+
 //----------------------------------------------------------------
+
 /** Profile natural number division.
  * <p>
  * <pre>
- * j --enable-preview --source 21 src/scripts/java/nzqr/java/scripts/profile/arithmetic/DivideAndRemainderBN.java
- * jy --enable-preview --source 21 src/scripts/java/nzqr/java/scripts/profile/arithmetic/DivideAndRemainderBN.java
+ * jy --enable-preview --source 21 src/scripts/java/nzqr/java/scripts/profile/arithmetic/AddBN.java
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2023-12-29
+ * @version 2023-12-31
  */
 
-public final class DivideAndRemainderBN {
+public final class AddBN {
   private static final Naturals NATURALS = Naturals.get();
-  private static final int NBYTES = 256;
-  private static final int NINTS = 2 * 1024 * 1024;
+  private static final int NBYTES = 1024;
+  private static final int NINTS = 1 * 1024 * 1024;
 
   private static final Generator generator =  
     Generators.nonNegativeBigIntegerGenerator(
@@ -34,31 +34,30 @@ public final class DivideAndRemainderBN {
   private static final BigInteger[] x0 = (BigInteger[]) generator.next();
   private static final BigInteger[] x1 = (BigInteger[]) generator.next(); 
 
-  private static final Object[] fromBigInteger (final BigInteger[] x) {
+  private static final BoundedNatural[] fromBigInteger (final BigInteger[] x) {
     final int n = x.length;
-    final Object[] y = new Object[n];
+    final BoundedNatural[] y = new BoundedNatural[n];
     for (int i=0;i<n;i++) { y[i] = BoundedNatural.valueOf(x[i]); }
     return y; }
 
-  private static final Object[] y0 = fromBigInteger(x0);
-  private static final Object[] y1 = fromBigInteger(x1);
-  private static final Object[] p = new Object[NINTS];
+  private static final BoundedNatural[] y0 = fromBigInteger(x0);
+  private static final BoundedNatural[] y1 = fromBigInteger(x1);
+  private static final BoundedNatural[] p = new BoundedNatural[NINTS];
 
-  private static final void divideAndRemainder (final String stage,
-                                                final int iterations) {
+  private static final void add (final String stage,
+                                 final int iterations) {
     final int n = y0.length;
     for (int j=0;j<iterations;j++) {
       final long t0 = System.nanoTime();
       for (int i=0;i<n;i++) {
-        p[i] = NATURALS.divideAndRemainderUnsafe(y0[i],y1[i]);
-        final BoundedNatural rem = (BoundedNatural) ((Object[]) p[i])[1];
-        assert ((BoundedNatural)y1[i]).compareTo(rem) > 0; }
+        p[i] = y0[i].add(y1[i]);
+        assert y1[i].compareTo(p[i]) <= 0; }
       System.out.printf(stage + " " + j + " Total seconds: %4.3f\n",
         (System.nanoTime()-t0)*1.0e-9); } }
 
   // distinguish warmup run from profile run in call tree
-  private static final void warmup () { divideAndRemainder("warmup",8); }
-  private static final void profile () { divideAndRemainder("profile",64); }
+  private static final void warmup () { add("warmup",8); }
+  private static final void profile () { add("profile",64); }
 
   //--------------------------------------------------------------
 

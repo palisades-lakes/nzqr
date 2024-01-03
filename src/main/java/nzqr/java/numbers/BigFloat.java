@@ -1,18 +1,18 @@
 package nzqr.java.numbers;
 
-import static nzqr.java.numbers.Doubles.doubleMergeBits;
-import static nzqr.java.numbers.Floats.floatMergeBits;
-import static nzqr.java.numbers.Numbers.loBit;
+import nzqr.java.Exceptions;
 
 import java.util.Objects;
 
-import nzqr.java.Exceptions;
+import static nzqr.java.numbers.Doubles.doubleMergeBits;
+import static nzqr.java.numbers.Floats.floatMergeBits;
+import static nzqr.java.numbers.Numbers.loBit;
 
 /** A sign times a {@link BoundedNatural} significand times 2 to a
  * <code>int</code> exponent.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2019-10-11
+ * @version 2024-01-02
  */
 
 @SuppressWarnings("unchecked")
@@ -212,7 +212,7 @@ implements Ringlike<BigFloat> {
     final int e1 = loBit(x1);
     final BoundedNatural y0 =  ((0==e0) ? x0 : x0.shiftDown(e0));
     final long y1 = (((0==e1)||(64==e1)) ? x1 : (x1 >>> e1));
-    return valueOf(p1,y0.multiply(y1),e0+e1); }
+    return valueOf(p1,NaturalMultiply.multiply(y0,y1),e0+e1); }
 
   private final BigFloat
   multiply (final boolean p,
@@ -243,7 +243,7 @@ implements Ringlike<BigFloat> {
 
     return valueOf(
       (nonNegative()==p1),
-      significand().multiply(t1),
+      NaturalMultiply.multiply(significand(),t1),
       exponent()+e1); }
 
   public final BigFloat
@@ -483,6 +483,49 @@ implements Ringlike<BigFloat> {
     throw Exceptions.unsupportedOperation(this,"longValue"); }
 
   //--------------------------------------------------------------
+  /** get the least significant int word of (u >>> shift) */
+
+  private static final int getShiftedInt (final BoundedNatural u,
+                                         final int downShift) {
+    assert 0<=downShift;
+    final int iShift = (downShift>>>5);
+    if (u.hiInt()<=iShift) { return 0; }
+    final int rShift = (downShift & 0x1f);
+    if (0==rShift) { return u.word(iShift); }
+    final int r2 = 32-rShift;
+    // TODO: optimize using startWord and endWord.
+    final long lo = (u.uword(iShift) >>> rShift);
+    final long hi = (u.uword(iShift+1) << r2);
+    return (int) (hi | lo); }
+
+  private static final boolean testBit (final int[] tt,
+                                        final int nt,
+                                        final int i) {
+    assert 0<=nt;
+    final int iShift = (i>>>5);
+    if (nt<=iShift) { return false; }
+    final int bShift = (i & 0x1F);
+    return 0!=(tt[iShift] & (1<<bShift)); }
+
+  private static final boolean roundUp (final BoundedNatural u,
+                                        final int e) {
+    final int nt = u.hiInt();
+    if (nt<=(e>>>5)) { return false; }
+    final int[] tt = u.words();
+    final int e1 = e-1;
+    final int n1 = (e1>>>5);
+    if (nt<=n1) { return false; }
+    final int w1 = (tt[n1] & (1<<(e1&0x1F)));
+    if (0==w1) { return false; }
+    final int e2 = e-2;
+    if (0<=e2) {
+      final int n2 = (e2>>>5);
+      if (nt<=n2) { return false; }
+      final int tt2 = tt[n2];
+      for (int i=e2-(n2<<5);i>=0;i--) {
+        if (0!=(tt2&(1<<i))) { return true; } }
+      for (int i=n2-1;i>=0;i--) { if (0!=tt[i]) { return true; } } }
+    return testBit(tt,nt,e); }
 
   public static final float floatValue (final boolean p0,
                                         final BoundedNatural s0,
@@ -503,10 +546,10 @@ implements Ringlike<BigFloat> {
       return floatMergeBits(p0,s1,e1); }
     if (eh <= es) { return (p0 ? 0.0F : -0.0F); }
     // eh > es > 0
-    final boolean up = s0.roundUp(es);
+    final boolean up = roundUp(s0,es);
     // TODO: faster way to select the right bits as a int?
     //final int s1 = s0.shiftDown(es).intValue();
-    final int s1 = s0.getShiftedInt(es);
+    final int s1 = getShiftedInt(s0,es);
     final int e1 = e0 + es;
     if (up) {
       final int s2 = s1 + 1;
@@ -526,6 +569,39 @@ implements Ringlike<BigFloat> {
   @Override
   public final float floatValue () {
     return floatValue(nonNegative(),significand(),exponent()); }
+
+  //--------------------------------------------------------------
+  /** get the least significant two int words of
+   * <code>(this>>>downShift)</code>
+   * as a long.
+   */
+
+  private static final long getShiftedLong (final BoundedNatural u,
+                                            final int downShift) {
+    assert 0<=downShift;
+    final int nt = u.hiInt();
+    final int iShift = (downShift>>>5);
+    if (nt<=iShift) { return 0L; }
+    final long wi = u.uword(iShift);
+    final int bShift = (downShift&0x1F);
+    final int iShift1 = iShift+1;
+
+    if (0==bShift) {
+      if (nt==iShift1) { return wi; }
+      return ((u.uword(iShift1)<<32) | wi); }
+
+    final long lo0 = (wi>>>bShift);
+    if (nt==iShift1) { return lo0; }
+    final long u1 = u.uword(iShift1);
+    final int rShift = 32-bShift;
+    final long lo1 = (u1<<rShift);
+    final long lo = lo1 | lo0;
+    final long hi0 = (u1>>>bShift);
+    final int iShift2 = iShift+2;
+    if (nt==iShift2) { return (hi0 << 32) | lo; }
+    final long hi1 = u.uword(iShift2)<<rShift;
+    final long hi = hi1 | hi0;
+    return (hi << 32) | lo; }
 
   //--------------------------------------------------------------
   /** @return closest half-even rounded <code>double</code>
@@ -553,8 +629,8 @@ implements Ringlike<BigFloat> {
       return doubleMergeBits(p0,s1,e1); }
     if (eh <= es) { return (p0 ? 0.0 : -0.0); }
     // eh > es > 0
-    final boolean up = s0.roundUp(es);
-    final long s1 = s0.getShiftedLong(es);
+    final boolean up = roundUp(s0,es);
+    final long s1 = getShiftedLong(s0,es);
     final int e1 = e0 + es;
     if (up) {
       final long s2 = s1 + 1L;

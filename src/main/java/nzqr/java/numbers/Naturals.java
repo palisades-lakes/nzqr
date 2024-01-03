@@ -1,21 +1,20 @@
 package nzqr.java.numbers;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiPredicate;
-import java.util.function.BinaryOperator;
-import java.util.function.Supplier;
-
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.CollectionSampler;
-
 import nzqr.java.algebra.OneSetOneOperation;
 import nzqr.java.algebra.OneSetTwoOperations;
 import nzqr.java.algebra.Set;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.GeneratorBase;
 import nzqr.java.prng.Generators;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.CollectionSampler;
+
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
+import java.util.function.Supplier;
 
 /** Natural numbers as a commutative semi-ring,
  * allowing a variety of implementations,
@@ -25,7 +24,6 @@ import nzqr.java.prng.Generators;
  * <ul>
  * <li> {@link BoundedNatural}
  * <li> {@link NaiveUnboundedNatural}
- * <li> {@link UnboundedNatural}
  * <li> <code>java.math.BigInteger</code> (only nonnegative)
  * <li> <code>java.lang.Long</code> (only nonnegative)
  * <li> <code>java.lang.Integer</code> (only nonnegative)
@@ -38,7 +36,7 @@ import nzqr.java.prng.Generators;
  * both BigInteger and newly written classes.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-11-15
+ * @version 2023-12-30
  */
 @SuppressWarnings({"unchecked","static-method","preview","boxing"})
 public final class Naturals implements Set {
@@ -64,16 +62,16 @@ public final class Naturals implements Set {
 
   private static final BoundedNatural toBoundedNatural (final Object x) {
     return switch (x)  {
-    case Byte y -> BoundedNatural.valueOf(y.longValue()); 
-    case Short y -> BoundedNatural.valueOf(y.longValue()); 
-    case Integer y -> BoundedNatural.valueOf(y.longValue()); 
-    case Long y -> BoundedNatural.valueOf(y.longValue()); 
-    case BoundedNatural y -> y;
-    case BigInteger y -> BoundedNatural.valueOf(y); 
-    default -> 
-    throw new UnsupportedOperationException(
-      "can't convert " + x.getClass().getName() +
-      " to BoundedNatural"); }; }
+      case BoundedNatural y -> y;
+      case Byte y -> BoundedNatural.valueOf(y.longValue());
+      case Short y -> BoundedNatural.valueOf(y.longValue());
+      case Integer y -> BoundedNatural.valueOf(y.longValue());
+      case Long y -> BoundedNatural.valueOf(y.longValue());
+      case BigInteger y -> BoundedNatural.valueOf(y);
+      default ->
+        throw new UnsupportedOperationException(
+          "can't convert " + x.getClass().getName() +
+            " to BoundedNatural"); }; }
 
   //--------------------------------------------------------------
   // operations for algebraic structures over BigFloats.
@@ -117,24 +115,24 @@ public final class Naturals implements Set {
     assert contains(x0);
     assert contains(x1);
     return switch (x1) {
-    // reduce number of cases to implement by converting all
-    // "primitive" numbers to Long.
-    // TODO: profile to determine if it's worth keeping returned
-    // values as int or smaller
-    case final Byte y1 -> add(x0,y1.longValue());
-    case final Short y1 -> add(x0,y1.longValue());
-    case final Integer y1 -> add(x0,y1.longValue());
-    case final Long y1 -> add(x0,y1);
-    // TODO: these 2 cases return a result of the same type as the 
-    // first argument. will probably want to change that to return
-    // the larger, which needs to be determined
-    case final BigInteger y1 -> y1.add(toBigInteger(x0));
-    case final BoundedNatural y1 -> y1.add(toBoundedNatural(x0));
-    default -> throw new UnsupportedOperationException(
-      "can't add " + 
-        x0.getClass().getName() +
-        " and " +
-        x1.getClass().getName()); }; }
+      case final BoundedNatural y1 -> y1.add(toBoundedNatural(x0));
+      // reduce number of cases to implement by converting all
+      // "primitive" numbers to Long.
+      // TODO: profile to determine if it's worth keeping returned
+      // values as int or smaller
+      case final Byte y1 -> add(x0,y1.longValue());
+      case final Short y1 -> add(x0,y1.longValue());
+      case final Integer y1 -> add(x0,y1.longValue());
+      case final Long y1 -> add(x0,y1);
+      // TODO: these 2 cases return a result of the same type as the
+      // first argument. will probably want to change that to return
+      // the larger, which needs to be determined
+      case final BigInteger y1 -> y1.add(toBigInteger(x0));
+      default -> throw new UnsupportedOperationException(
+        "can't add " +
+          x0.getClass().getName() +
+          " and " +
+          x1.getClass().getName()); }; }
 
   //--------------------------------------------------------------
 
@@ -171,13 +169,13 @@ public final class Naturals implements Set {
                                         final Long y1) {
 
     return switch (x0) {
-    case final Byte y0 -> multiply(y0.longValue(),y1);
-    case final Short y0 -> multiply(y0.longValue(),y1);
-    case final Integer y0 -> multiply(y0.longValue(),y1);
-    case final Long y0 -> multiply(y0,y1); 
-    case final BigInteger y0 -> y0.multiply(toBigInteger(y1));
-    case final BoundedNatural y0 -> y0.multiply(toBoundedNatural(y1));
-    default -> throw new UnsupportedOperationException(
+      case final Byte y0 -> multiply(y0.longValue(),y1);
+      case final Short y0 -> multiply(y0.longValue(),y1);
+      case final Integer y0 -> multiply(y0.longValue(),y1);
+      case final Long y0 -> multiply(y0,y1);
+      case final BigInteger y0 -> y0.multiply(toBigInteger(y1));
+      case final BoundedNatural y0 -> y0.multiply(toBoundedNatural(y1));
+      default -> throw new UnsupportedOperationException(
       "can't multiply " + 
         x0.getClass().getName() + " and Long"); }; }
 
@@ -188,24 +186,24 @@ public final class Naturals implements Set {
     assert contains(x0);
     assert contains(x1);
     return switch (x1) {
-    // reduce number of cases to implement by converting all
-    // "primitive" numbers to Long.
-    // TODO: profile to determine if it's worth keeping returned
-    // values as int or smaller
-    case final Byte y1 -> multiply(x0,y1.longValue());
-    case final Short y1 -> multiply(x0,y1.longValue());
-    case final Integer y1 -> multiply(x0,y1.longValue());
-    case final Long y1 -> multiply(x0,y1);
-    // TODO: these 2 cases return a result of the same type as the 
-    // first argument. will probably want to change that to return
-    // the larger, which needs to be determined
-    case final BigInteger y1 -> y1.multiply(toBigInteger(x0));
-    case final BoundedNatural y1 -> y1.multiply(toBoundedNatural(x0));
-    default -> throw new UnsupportedOperationException(
-      "can't multiply " + 
-        x0.getClass().getName() +
-        " and " +
-        x1.getClass().getName()); }; }
+      // reduce number of cases to implement by converting all
+      // "primitive" numbers to Long.
+      // TODO: profile to determine if it's worth keeping returned
+      // values as int or smaller
+      case final Byte y1 -> multiply(x0,y1.longValue());
+      case final Short y1 -> multiply(x0,y1.longValue());
+      case final Integer y1 -> multiply(x0,y1.longValue());
+      case final Long y1 -> multiply(x0,y1);
+      // TODO: these 2 cases return a result of the same type as the
+      // first argument. will probably want to change that to return
+      // the larger, which needs to be determined
+      case final BigInteger y1 -> y1.multiply(toBigInteger(x0));
+      case final BoundedNatural y1 -> y1.multiply(toBoundedNatural(x0));
+      default -> throw new UnsupportedOperationException(
+        "can't multiply " +
+          x0.getClass().getName() +
+          " and " +
+          x1.getClass().getName()); }; }
 
   //--------------------------------------------------------------
 
@@ -219,14 +217,12 @@ public final class Naturals implements Set {
         return Naturals.this.multiply(x0,x1); } }; }
 
   //--------------------------------------------------------------
-
   public final Object multiplicativeIdentity () {
     return Integer.valueOf(1); }
 
   //--------------------------------------------------------------
   // non-ring arithmetic methods
   //--------------------------------------------------------------
-
   private static final Object absDiff (final Long y0,
                                        final Long y1) {
 
@@ -302,51 +298,54 @@ public final class Naturals implements Set {
     case final Byte y0 -> divideAndRemainder(y0.longValue(),y1);
     case final Short y0 -> divideAndRemainder(y0.longValue(),y1);
     case final Integer y0 -> divideAndRemainder(y0.longValue(),y1);
-    case final Long y0 -> divideAndRemainder(y0,y1); 
+    case final Long y0 -> divideAndRemainder(y0,y1);
     case final BigInteger y0 -> y0.divideAndRemainder(toBigInteger(y1));
-    case final BoundedNatural y0 -> divideAndRemainder(y0,toBoundedNatural(y1));
+    case final BoundedNatural y0 -> y0.divideAndRemainder(toBoundedNatural(y1));
     default -> throw new UnsupportedOperationException(
-      "can't divideAndRemainder " + 
+      "can't divideAndRemainder " +
         x0.getClass().getName() + " and Long"); }; }
 
-  private static final BoundedNatural[] 
-    divideAndRemainder (final BoundedNatural x0,
-                        final BoundedNatural x1) {
-    final List<BoundedNatural> qr = x0.divideAndRemainder(x1);
-    return new BoundedNatural[] { qr.get(0), qr.get(1), }; }
+  //--------------------------------------------------------------
+  /** doesn't pre-check that args are Naturals. */
+
+  public final Object[]
+  divideAndRemainderUnsafe (final Object x0,
+                            final Object x1) {
+    return switch (x1) {
+      case final BoundedNatural y1 -> divideAndRemainder(toBoundedNatural(x0),y1);
+      // reduce number of cases to implement by converting all
+      // "primitive" numbers to Long.
+      // TODO: profile to determine if it's worth keeping returned
+      // values as int or smaller
+      case final Byte y1 -> divideAndRemainder(x0,y1.longValue());
+      case final Short y1 -> divideAndRemainder(x0,y1.longValue());
+      case final Integer y1 -> divideAndRemainder(x0,y1.longValue());
+      case final Long y1 -> divideAndRemainder(x0,y1);
+      // TODO: these 2 cases return a result of the same type as the
+      // first argument. will probably want to change that to return
+      // the larger, which needs to be determined
+      case final BigInteger y1 -> toBigInteger(x0).divideAndRemainder(y1);
+      default -> throw new UnsupportedOperationException(
+        "can't divideAndRemainder " +
+          x0.getClass().getName() +
+          " and " +
+          x1.getClass().getName()); }; }
 
   //--------------------------------------------------------------
 
-  public final Object[] divideAndRemainder (final Object x0,
-                                            final Object x1) {
+  public final Object[]
+  divideAndRemainder (final Object x0,
+                      final Object x1) {
     assert contains(x0);
     assert contains(x1);
-    return switch (x1) {
-    // reduce number of cases to implement by converting all
-    // "primitive" numbers to Long.
-    // TODO: profile to determine if it's worth keeping returned
-    // values as int or smaller
-    case final Byte y1 -> divideAndRemainder(x0,y1.longValue());
-    case final Short y1 -> divideAndRemainder(x0,y1.longValue());
-    case final Integer y1 -> divideAndRemainder(x0,y1.longValue());
-    case final Long y1 -> divideAndRemainder(x0,y1);
-    // TODO: these 2 cases return a result of the same type as the 
-    // first argument. will probably want to change that to return
-    // the larger, which needs to be determined
-    case final BigInteger y1 -> toBigInteger(x0).divideAndRemainder(y1);
-    case final BoundedNatural y1 -> divideAndRemainder(toBoundedNatural(x0),y1);
-    default -> throw new UnsupportedOperationException(
-      "can't divideAndRemainder " + 
-        x0.getClass().getName() +
-        " and " +
-        x1.getClass().getName()); }; }
+    return divideAndRemainderUnsafe(x0,x1); }
 
   //--------------------------------------------------------------
 
   public final BinaryOperator<Object> divideAndRemainderer () {
     return new BinaryOperator<> () {
       @Override
-      public final String toString () { 
+      public final String toString () {
         return "Naturals.divideAndRemainder()"; }
       @Override
       public final Object apply (final Object x0,

@@ -14,17 +14,13 @@ import java.util.function.ToIntBiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import nzqr.java.numbers.*;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.junit.jupiter.api.Assertions;
 
 import nzqr.java.Classes;
 import nzqr.java.Debug;
 import nzqr.java.accumulators.Accumulator;
-import nzqr.java.numbers.BoundedNatural;
-import nzqr.java.numbers.Doubles;
-import nzqr.java.numbers.Floats;
-import nzqr.java.numbers.NaturalDivide;
-import nzqr.java.numbers.Ringlike;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.Generators;
 import nzqr.java.prng.PRNG;
@@ -339,9 +335,9 @@ public final class Common {
       final Ringlike y0 = fromBI.apply(x0);
       final Ringlike y1 = fromBI.apply(x1);
       final BigInteger[] x2 = x0.divideAndRemainder(x1);
-      final List<T> y2 = y0.divideAndRemainder(y1);
-      final BigInteger[] x3 = { toBI.apply(y2.get(0)),
-                                toBI.apply(y2.get(1)),};
+      final T[] y2 = (T[]) y0.divideAndRemainder(y1);
+      final BigInteger[] x3 = { toBI.apply(y2[0]),
+                                toBI.apply(y2[1]),};
 
       Assertions.assertEquals(x2[0],x3[0],() ->
       x0.toString(0x10)
@@ -353,7 +349,7 @@ public final class Common {
       + "\n / "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(0).toString()
+      + "\n" + y2[0].toString()
       + "\n" + x3[0].toString(0x10));
 
       Assertions.assertEquals(x2[1],x3[1],() ->
@@ -366,7 +362,7 @@ public final class Common {
       + "\n rem "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(1).toString()
+      + "\n" + y2[1].toString()
       + "\n" + x3[1].toString(0x10)); } }
 
   public static final void
@@ -374,13 +370,14 @@ public final class Common {
                            final Function<BoundedNatural,BigInteger> toBI,
                            final BigInteger x0,
                            final BigInteger x1) {
+
     if (0 != x1.signum()) {
       final BoundedNatural y0 = fromBI.apply(x0);
       final BoundedNatural y1 = fromBI.apply(x1);
       final BigInteger[] x2 = x0.divideAndRemainder(x1);
-      final List<BoundedNatural> y2 = y0.divideAndRemainderKnuth(y1);
-      final BigInteger[] x3 = { toBI.apply(y2.get(0)),
-                                toBI.apply(y2.get(1)),};
+      final BoundedNatural[] y2 = y0.divideAndRemainderKnuth(y1);
+      final BigInteger[] x3 = { toBI.apply(y2[0]),
+                                toBI.apply(y2[1]),};
 
       Assertions.assertEquals(x2[0],x3[0],() ->
       x0.toString(0x10)
@@ -393,8 +390,8 @@ public final class Common {
       + "\n / "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(0).getClass()
-      + "\n" + y2.get(0).toString()
+      + "\n" + y2[0].getClass()
+      + "\n" + y2[0].toString()
       + "\n" + x3[0].toString(0x10));
 
       Assertions.assertEquals(x2[1],x3[1],() ->
@@ -407,7 +404,7 @@ public final class Common {
       + "\n rem "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(1).toString()
+      + "\n" + y2[1].toString()
       + "\n" + x3[1].toString(0x10)); } }
 
   public static final void
@@ -419,9 +416,9 @@ public final class Common {
       final BoundedNatural y0 = fromBI.apply(x0);
       final BoundedNatural y1 = fromBI.apply(x1);
       final BigInteger[] x2 = x0.divideAndRemainder(x1);
-      final List<BoundedNatural> y2 = y0.divideAndRemainderBurnikelZiegler(y1);
-      final BoundedNatural q = y2.get(0);
-      final BoundedNatural r = y2.get(1);
+      final BoundedNatural[] y2 = y0.divideAndRemainderBurnikelZiegler(y1);
+      final BoundedNatural q = y2[0];
+      final BoundedNatural r = y2[1];
       final BigInteger[] x3 = { toBI.apply(q), toBI.apply(r),};
 
       Assertions.assertEquals(x2[0],x3[0],() ->
@@ -434,7 +431,7 @@ public final class Common {
       + "\n / "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(0).toString()
+      + "\n" + y2[0].toString()
       + "\n" + x3[0].toString(0x10) + "\n");
 
       Assertions.assertEquals(x2[1],x3[1],() ->
@@ -447,7 +444,7 @@ public final class Common {
       + "\n rem "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(1).toString()
+      + "\n" + y2[1].toString()
       + "\n" + x3[1].toString(0x10) + "\n"); } }
 
   public static final <T extends Ringlike<T>> void
@@ -500,20 +497,42 @@ public final class Common {
       + "\n" + y2.toString()
       + "\n" + x3.toString(0x10)); } }
 
+  private static final List<BigInteger>
+  reduceBigInteger (final BigInteger n0,
+                    final BigInteger d0) {
+    final int shift =
+      Math.min(Numbers.loBit(n0), Numbers.loBit(d0));
+    final BigInteger n =
+      ((shift != 0) ? n0.shiftRight(shift) : n0);
+    final BigInteger d =
+      ((shift != 0) ? d0.shiftRight(shift) : d0);
+    if (n.equals(d)) {
+      return List.of(BigInteger.ONE,BigInteger.ONE); }
+    if (d.equals(BigInteger.ONE)) {
+      return List.of(n,BigInteger.ONE); }
+    if (n.equals(BigInteger.ONE)) {
+      return List.of(BigInteger.ONE,d); }
+    final BigInteger g = n.gcd(d);
+    if (g.compareTo(BigInteger.ONE) > 0) {
+      final BigInteger ng = n.divide(g);
+      final BigInteger dg = d.divide(g);
+      return List.of(ng,dg); }
+    return List.of(n,d); }
+
   public static final <T extends Ringlike<T>> void
-  reduce (final Function<BigInteger,T> fromBI,
+  reduceBigInteger (final Function<BigInteger,T> fromBI,
           final Function<T,BigInteger> toBI,
           final BigInteger x0,
           final BigInteger x1) {
     if (0 != x1.signum()) {
       final Ringlike y0 = fromBI.apply(x0);
       final Ringlike y1 = fromBI.apply(x1);
-      final List<BigInteger> x2 = NaturalDivide.reduce(x0,x1);
-      final List<T> y2 = y0.reduce(y1);
+      final List<BigInteger> x2 = reduceBigInteger(x0, x1);
+      final T[] y2 = (T[]) y0.reduce(y1);
       final List<BigInteger> x3 =
         List.of (
-          toBI.apply(y2.get(0)),
-          toBI.apply(y2.get(1)));
+          toBI.apply(y2[0]),
+          toBI.apply(y2[1]));
 
       Assertions.assertEquals(x2.get(0),x3.get(0),() ->
       x0.toString(0x10)
@@ -525,7 +544,7 @@ public final class Common {
       + "\n / "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(0).toString()
+      + "\n" + y2[0].toString()
       + "\n" + x3.get(0).toString(0x10));
 
       Assertions.assertEquals(x2.get(1),x3.get(1),() ->
@@ -538,7 +557,7 @@ public final class Common {
       + "\n rem "
       + "\n" +  y1.toString()
       + "\n -> "
-      + "\n" + y2.get(1).toString()
+      + "\n" + y2[1].toString()
       + "\n" + x3.get(1).toString(0x10)); } }
 
   //--------------------------------------------------------------
@@ -583,8 +602,8 @@ public final class Common {
     remainder(fromBI,toBI,z0,z0);
     gcd(fromBI,toBI,z0,z1);
     gcd(fromBI,toBI,z0,z0);
-    reduce(fromBI,toBI,z0,z1);
-    reduce(fromBI,toBI,z0,z0);
+    reduceBigInteger(fromBI, toBI, z0, z1);
+    reduceBigInteger(fromBI, toBI, z0, z0);
   }
 
 

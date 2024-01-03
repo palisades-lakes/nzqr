@@ -1,12 +1,11 @@
 package nzqr.java.numbers;
 
-import static nzqr.java.numbers.Numbers.hiBit;
+import nzqr.java.Exceptions;
 
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Objects;
 
-import nzqr.java.Exceptions;
+import static nzqr.java.numbers.Numbers.hiBit;
 
 /** Representing a rational number as a sign times a ratio of
  * {@link BoundedNatural} numbers times 2 to a <code>int</code> exponent.
@@ -235,7 +234,7 @@ implements Ringlike<RationalFloat> {
                                            final long n1,
                                            final int e1) {
     //if (d0.isOne()) { return add6(p0,n0,e0,p1,n1,e1); }
-    final BoundedNatural n1d0 = d0.multiply(n1);
+    final BoundedNatural n1d0 = NaturalMultiply.multiply(d0,n1);
 
     final BoundedNatural a;
     final BoundedNatural b;
@@ -425,12 +424,12 @@ implements Ringlike<RationalFloat> {
     if (d.isOne()) {
       return valueOf(
         (nonNegative()==p1),
-        numerator().multiply(t1),
+        NaturalMultiply.multiply(numerator(),t1),
         exponent()+e1); }
 
     return valueOf(
       (nonNegative()==p1),
-      numerator().multiply(t1),
+      NaturalMultiply.multiply(numerator(),t1),
       d,
       exponent()+e1); }
 
@@ -739,8 +738,7 @@ implements Ringlike<RationalFloat> {
     //Debug.println("num=" + n3.toHexString());
     //Debug.println("den=" + d3.toHexString());
 
-    final BoundedNatural[] qr =
-      n3.divideAndRemainder(d3).toArray(new BoundedNatural[0]);
+    final BoundedNatural[] qr = n3.divideAndRemainder(d3);
 
     //Debug.println("quo=" + qr[0].toHexString());
     //Debug.println("quo=" + Long.toHexString(qr[0].longValueExact()));
@@ -812,9 +810,9 @@ implements Ringlike<RationalFloat> {
 
     final int e4 = e3 - Doubles.STORED_SIGNIFICAND_BITS;
 
-    final List<BoundedNatural> qr = n3.divideAndRemainder(d3);
-    final BoundedNatural qr0 = qr.get(0);
-    final BoundedNatural qr1 = qr.get(1);
+    final BoundedNatural[] qr = n3.divideAndRemainder(d3);
+    final BoundedNatural qr0 = qr[0];
+    final BoundedNatural qr1 = qr[1];
 
     // round down or up?
     // want to know if remainder/denominator is

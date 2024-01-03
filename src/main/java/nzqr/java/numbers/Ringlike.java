@@ -64,10 +64,10 @@ extends Comparable<T> {
   default boolean isOne() {
     throw Exceptions.unsupportedOperation(this,"isOne"); }
 
-  default List<T> divideAndRemainder (final T x) {
+  default Object[] divideAndRemainder (final T x) {
     final T d = divide(x);
     final T r = subtract((T) x.multiply(d));
-    return List.of(d,r); }
+    return new Object[] { d, r, }; }
 
   default T remainder (final T x) {
     final T d = divide(x);
@@ -81,7 +81,7 @@ extends Comparable<T> {
    * where <code>f</code> is the {@link #gcd} of this and
    * <code>u</code>>
    */
-  default List<T> reduce (final T u) {
+  default T[] reduce (final T u) {
     throw Exceptions.unsupportedOperation(this,"reduce",u); }
 
   //--------------------------------------------------------------

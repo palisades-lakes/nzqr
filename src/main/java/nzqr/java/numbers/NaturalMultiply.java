@@ -1,21 +1,178 @@
 package nzqr.java.numbers;
 
-import static nzqr.java.numbers.Numbers.loWord;
+import static nzqr.java.numbers.Numbers.*;
+import static nzqr.java.numbers.Numbers.hiWord;
 
 /** Multiplication of natural numbers.
  *
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-11-07
+ * @version 2024-01-02
  */
 
 @SuppressWarnings("unchecked")
-public final class NaturalMultiply {
+final class NaturalMultiply {
+
+  //--------------------------------------------------------------
+
+  static final BoundedNatural multiplySimple (final BoundedNatural t,
+                                              final BoundedNatural v) {
+    // the equivalent method in BigInteger is marked @IntrinsicCandidate
+    // it may not be possible to get the same performance with
+    // ordinary java code?
+    final int n0 = t.hiInt();
+    final int n1 = v.hiInt();
+    final int[] w = new int[n0+n1];
+    // UNSAFE: direct reference to internal arrays
+    final int[] uu = t.words();
+    final int[] vv = v.words();
+    long carry;// = 0L;
+    for (int i0=0;i0<n0;i0++) {
+      carry = 0L;
+      for (int i1=0;i1<n1;i1++) {
+        final int i2 = i0+i1;
+        final long vi = unsigned(vv[i1]);
+        final long ui = unsigned(uu[i0]);
+        final long product =
+          (vi*ui) + unsigned(w[i2]) + carry;
+        w[i2] = (int) product;
+        carry = (product>>>32); }
+      final int i2 = i0+n1;
+      w[i2] = (int) carry; }
+    return BoundedNatural.unsafe(w); }
+
+  //--------------------------------------------------------------
+
+  static final BoundedNatural multiply (final BoundedNatural t,
+                                        final long v) {
+    if (0L==v) { return BoundedNatural.ZERO; }
+    if (1L==v) { return t; }
+    if (t.isZero()) { return BoundedNatural.ZERO; }
+    assert 0L < v;
+    final long hi = Numbers.hiWord(v);
+    final long lo = Numbers.loWord(v);
+    final int n0 = t.hiInt();
+    final int[] tt = t.words();
+    // TODO: assume minimal carry and allocate smaller array;
+    // then fix when needed
+    final int nv = n0+((hi==0)?1:2);
+    final int[] vv = new int[nv];
+    long carry = 0;
+    int i=0;
+    for (;i<n0;i++) {
+      final long product = (unsigned(tt[i])*lo) + carry;
+      vv[i] = (int) product;
+      carry = (product>>>32); }
+    vv[i] = (int) carry;
+    if (0!=hi) {
+      carry = 0;
+      i=0;
+      for (;i<n0;i++) {
+        final int i1 = i+1;
+        final long product = (unsigned(tt[i])*hi)
+          + unsigned(vv[i1]) + carry;
+        vv[i1] = (int) product;
+        carry = (product>>>32); }
+      vv[i+1]= (int) carry; }
+    return BoundedNatural.unsafe(vv); }
+
+  //--------------------------------------------------------------
+
+  static final BoundedNatural multiply (final BoundedNatural t,
+                                        final long u,
+                                        final int upShift) {
+    ////assert isValid();
+    assert 0L<=u;
+    assert 0<=upShift;
+    if (0L==u) { return t.zero(); }
+    if (0==upShift) { return multiply(t,u); }
+    if (t.isZero()) { return t; }
+    return t.multiply(BoundedNatural.valueOf(u,upShift)); }
 
   //--------------------------------------------------------------
   // square
   //--------------------------------------------------------------
+  //--------------------------------------------------------------
+  /** From {@link java.math.BigInteger}:
+   * <p>
+   * The algorithm used here is adapted from Colin Plumb's C
+   * library.
+   * <p>
+   * Technique: Consider the partial products in the
+   * multiplication of "abcde" by itself:
+   *<pre>
+   * a b c d e
+   * * a b c d e
+   * ==================
+   * ae be ce de ee
+   * ad bd cd dd de
+   * ac bc cc cd ce
+   * ab bb bc bd be
+   * aa ab ac ad ae
+   * </pre>
+   * Note that everything above the main diagonal:
+   * <pre>
+   * ae be ce de = (abcd) * e
+   * ad bd cd = (abc) * d
+   * ac bc = (ab) * c
+   * ab = (a) * b
+   * </pre>
+   * is a copy of everything below the main diagonal:
+   * <pre>
+   * de
+   * cd ce
+   * bc bd be
+   * ab ac ad ae
+   * </pre>
+   * Thus, the sum is 2 * (off the diagonal) + diagonal.
+   * This is accumulated beginning with the diagonal (which
+   * consist of the squares of the digits of the input), which
+   * is then divided by two, the off-diagonal added, and
+   * multiplied by two again. The low bit is simply a copy of
+   * the low bit of the input, so it doesn't need special care.
+   */
+
+  static final BoundedNatural squareSimple (final BoundedNatural t) {
+    final int nt = t.hiInt();
+    final int[] tt = t.words();
+    final int[] vv = new int[2*nt];
+    // diagonal
+    for (int i=0;i<nt;i++) {
+      final long tti = unsigned(tt[i]);
+      final long prod = tti*tti;
+      final int i2 = 2*i;
+      vv[i2] = (int) prod;
+      vv[i2+1] = (int) hiWord(prod); }
+    // off diagonal
+    for (int i0=0;i0<nt;i0++) {
+      long prod;// = 0L;
+      long carry = 0L;
+      final long tt0 = unsigned(tt[i0]);
+      int i2 = 0;
+      for (int i1=0;i1<i0;i1++) {
+        i2 = i0+i1;
+        prod = unsigned(vv[i2]) + carry;
+        carry = hiWord(prod);
+        long vvi2 = loWord(prod);
+        final long tt1 = unsigned(tt[i1]);
+        final long tt01 = tt0*tt1;
+        prod = vvi2 + tt01;
+        carry = hiWord(prod) + carry;
+        vvi2 = loWord(prod);
+        prod = vvi2 + tt01;
+        carry = hiWord(prod) + carry;
+        vv[i2] = (int) prod;
+      }
+      while ((0L!=carry)&&(i2<(2*nt))) {
+        i2++;
+        prod = unsigned(vv[i2]) + carry;
+        carry = hiWord(prod);
+        vv[i2] = (int) prod;  }
+      assert 0L==carry;
+    }
+    return BoundedNatural.unsafe(vv); }
+
 
   static final BoundedNatural squareKaratsuba (final BoundedNatural u) {
     final int n = u.hiInt();
@@ -29,8 +186,7 @@ public final class NaturalMultiply {
     return
       xhs.shiftUp(h32)
       .add(
-        xl.add(xh).square()
-        .subtract(xhs.add(xls)))
+        xl.add(xh).square().subtract(xhs.add(xls)))
       .shiftUp(h32)
       .add(xls); }
 
@@ -81,67 +237,6 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-//  private static final BoundedNatural multiplySimple (final BoundedNatural u,
-//                                                      final BoundedNatural v) {
-//    final int n0 = u.hiInt();
-//    final int n1 = v.hiInt();
-//    final int[] w = new int[n0+n1];
-//    // UNSAFE: direct reference to internal arrays
-//    final int[] uu = u.words();
-//    final int[] vv = v.words();
-//    long carry = 0L;
-//    for (int i0=0;i0<n0;i0++) {
-//      carry = 0L;
-//      for (int i1=0;i1<n1;i1++) {
-//        final int i2 = i0+i1;
-//        final long vi = unsigned(vv[i1]);
-//        final long ui = unsigned(uu[i0]);
-//        final long product =
-//          (vi*ui) + unsigned(w[i2]) + carry;
-//        w[i2] = (int) product;
-//        carry = (product>>>32); }
-//      final int i2 = i0+n1;
-//      w[i2] = (int) carry; }
-//    return BoundedNatural.unsafe(w); }
-
-//  private static final BoundedNatural multiplySimple (final BoundedNatural u,
-//                                                      final BoundedNatural v) {
-//    final int n0 = u.hiInt();
-//    final int n1 = v.hiInt();
-//    final int[] w = new int[n0+n1];
-//    long carry = 0L;
-//    for (int i0=0;i0<n0;i0++) {
-//      carry = 0L;
-//      for (int i1=0;i1<n1;i1++) {
-//        final int i2 = i0+i1;
-//        final long product =
-//          (v.uword(i1)*u.uword(i0)) + Numbers.unsigned(w[i2]) + carry;
-//        w[i2] = (int) product;
-//        carry = (product>>>32); }
-//      final int i2 = i0+n1;
-//      w[i2] = (int) carry; }
-//    return BoundedNatural.unsafe(w); }
-
-//  private static final BoundedNatural multiplySimple (final BoundedNatural u,
-//                                                      final BoundedNatural v) {
-//    final int n0 = u.hiInt();
-//    final int n1 = v.hiInt();
-//    BoundedNatural w = u.zero();
-//    long carry = 0L;
-//    for (int i0=0;i0<n0;i0++) {
-//      carry = 0L;
-//      for (int i1=0;i1<n1;i1++) {
-//        final int i2 = i0+i1;
-//        final long product =
-//          (v.uword(i1)*u.uword(i0)) + w.uword(i2) + carry;
-//        w = w.setWord(i2, (int) product);
-//        carry = (product>>>32); }
-//      final int i2 = i0+n1;
-//      w = w.setWord(i2, (int) carry); }
-//    return w; }
-
-  //--------------------------------------------------------------
-
   static final BoundedNatural multiplyKaratsuba (final BoundedNatural u,
                                                          final BoundedNatural v) {
     final int n0 = u.hiInt();
@@ -163,27 +258,7 @@ public final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-  //  private static final BoundedNatural exactDivideBy3 (final BoundedNatural u) {
-  //    final int n = u.hiInt();
-  //    BoundedNatural t = u;
-  //    long borrow = 0L;
-  //    for (int i=0;i<n;i++) {
-  //      final long x = u.uword(i);
-  //      final long w = x-borrow;
-  //      if (x<borrow) { borrow = 1L; }
-  //      else { borrow = 0L; }
-  //      // 0xAAAAAAAB is the modular inverse of 3 (mod 2^32). Thus,
-  //      // the effect of this is to divide by 3 (mod 2^32).
-  //      // This is much faster than division on most architectures.
-  //      final long q = loWord(w*0xAAAAAAABL);
-  //      t = t.setWord(i,(int) q);
-  //      // Check the borrow.
-  //      if (q>=0x55555556L) {
-  //        borrow++;
-  //        if (q>=0xAAAAAAABL) { borrow++; } } }
-  //    return t; }
-
-  private static final BoundedNatural exactDivideBy3 (final BoundedNatural u) {
+   private static final BoundedNatural exactDivideBy3 (final BoundedNatural u) {
     final int n = u.hiInt();
     final int[] t = new int[n];
     long borrow = 0L;
@@ -310,54 +385,6 @@ public final class NaturalMultiply {
       .add(t1).shiftUp(ss)
       .add(tm1).shiftUp(ss)
       .add(v0); }
-
-  //--------------------------------------------------------------
-
-//  public static final BoundedNatural multiply (final BoundedNatural u,
-//                                               final BoundedNatural v) {
-//    if ((u.isZero()) || (v.isZero())) { return u.zero(); }
-//    final int n0 = u.hiInt();
-//    if (u.equals(v) && (n0>MULTIPLY_SQUARE_THRESHOLD)) {
-//      return u.square(); }
-//    if (n0==1) { return v.multiply(u.uword(0)); }
-//    final int n1 = v.hiInt();
-//    if (n1==1) { return u.multiply(v.uword(0)); }
-//    if ((n0<KARATSUBA_THRESHOLD) || (n1<KARATSUBA_THRESHOLD)) {
-//      return u.multiplySimple(v); }
-//    if ((n0<TOOM_COOK_THRESHOLD) && (n1<TOOM_COOK_THRESHOLD)) {
-//      return multiplyKaratsuba(u,v); }
-//    return multiplyToomCook3(u,v); }
-
-  //  public static final BoundedNatural multiply (final BoundedNatural t,
-  //                                        final long u) {
-  //    if (0L==u) { return BoundedNatural.ZERO; }
-  //    if (t.isZero()) { return BoundedNatural.ZERO; }
-  //    if (1L==u) { return t; }
-  //    //assert 0L < v;
-  //    final long hi = Numbers.hiWord(u);
-  //    final long lo = Numbers.loWord(u);
-  //    final int n0 = t.hiInt();
-  //    // TODO: assume minimal carry and allocate smaller array;
-  //    // then fix when needed
-  //    final int[] vv = new int[n0+2];
-  //    long carry = 0;
-  //    int i=0;
-  //    for (;i<n0;i++) {
-  //      final long product = (t.uword(i)*lo) + carry;
-  //      vv[i] = (int) product;
-  //      carry = (product>>>32); }
-  //    vv[i] = (int) carry;
-  //    if (hi != 0L) {
-  //      carry = 0;
-  //      i=0;
-  //      for (;i<n0;i++) {
-  //        final int i1 = i+1;
-  //        final long product = (t.uword(i)*hi)
-  //          + unsigned(vv[i1]) + carry;
-  //        vv[i1] = (int) product;
-  //        carry = (product>>>32); }
-  //      vv[i+1]= (int) carry; }
-  //    return BoundedNatural.unsafe(vv); }
 
   //--------------------------------------------------------------
   // disable constructor

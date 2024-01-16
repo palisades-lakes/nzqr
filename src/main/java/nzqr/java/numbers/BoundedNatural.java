@@ -8,8 +8,6 @@ import org.apache.commons.rng.UniformRandomProvider;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import static nzqr.java.numbers.NaturalMultiply.multiplyKaratsuba;
-import static nzqr.java.numbers.NaturalMultiply.multiplyToomCook3;
 import static nzqr.java.numbers.Numbers.*;
 
 /** Immutable large but bounded (like BigInteger) non-negative integers
@@ -62,7 +60,7 @@ import static nzqr.java.numbers.Numbers.*;
  * when the operation result exceeds the bound.
  *  <br>
  * @author palisades dot lakes at gmail dot com
- * @version 2023-12-30
+ * @version 2024-01-03
  */
 
 //@SuppressWarnings("unchecked")
@@ -851,25 +849,10 @@ implements Ringlike<BoundedNatural> {
   // multiply
   //--------------------------------------------------------------
 
-  private static final int MULTIPLY_SQUARE_THRESHOLD = 20;
-  private static final int KARATSUBA_THRESHOLD = 80;
-  private static final int TOOM_COOK_THRESHOLD = 240;
-
   @Override
   public final BoundedNatural multiply (final BoundedNatural v) {
-    if ((v.isZero()) || (isZero())) { return v.zero(); }
-    final int n0 = v.hiInt();
-    if (equals(v) && (n0>MULTIPLY_SQUARE_THRESHOLD)) {
-      return v.square(); }
-    if (n0==1) {
-      return NaturalMultiply.multiply(this,v.uword(0)); }
-    final int n1 = hiInt();
-    if (n1==1) { return NaturalMultiply.multiply(v,uword(0)); }
-    if ((n0< KARATSUBA_THRESHOLD) || (n1<KARATSUBA_THRESHOLD)) {
-      return NaturalMultiply.multiplySimple(this,v); }
-    if ((n0<TOOM_COOK_THRESHOLD) && (n1<TOOM_COOK_THRESHOLD)) {
-      return multiplyKaratsuba(v,this); }
-    return multiplyToomCook3(v,this); }
+
+    return NaturalMultiply.multiply(v,this); }
 
   //--------------------------------------------------------------
   // divide

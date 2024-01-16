@@ -36,13 +36,10 @@ import java.util.function.Supplier;
  * both BigInteger and newly written classes.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2023-12-30
+ * @version 2024-01-03
  */
 @SuppressWarnings({"unchecked","static-method","preview","boxing"})
 public final class Naturals implements Set {
-
-  // NOTE: instanceof pattern matching in java 18 is a preview
-  // may need to be re-written as if-then-else cascade...
 
   //--------------------------------------------------------------
   // utilities

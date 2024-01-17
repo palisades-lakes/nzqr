@@ -36,7 +36,7 @@ import nzqr.java.prng.PRNG;
 /** Utilities for <code>double</code>, <code>double[]</code>.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-07-08
+ * @version 2024-01-16
  */
 public final class Doubles implements Set {
 
@@ -343,7 +343,7 @@ public final class Doubles implements Set {
     final long s = (nonNegative ? SIGN_0 : SIGN_1);
     final int be = exponent + EXPONENT_BIAS;
     final long e =
-      (Numbers.UNSIGNED_MASK & be) << STORED_SIGNIFICAND_BITS;
+      Numbers.unsigned(be) << STORED_SIGNIFICAND_BITS;
     final long t = significand & STORED_SIGNIFICAND_MASK;
     final double x = longBitsToDouble(s | e | t);
     return x; }

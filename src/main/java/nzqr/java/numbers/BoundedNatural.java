@@ -78,7 +78,6 @@ implements Ringlike<BoundedNatural> {
 
   public final int hiInt () {
     return NaturalInts.hiInt(words()); }
-    //return _words.length; }
 
   public final int hiBit () {
     return NaturalInts.hiBit(words()); }
@@ -746,54 +745,65 @@ implements Ringlike<BoundedNatural> {
 
   @Override
   public final BoundedNatural add (final BoundedNatural u) {
-    final int nt = hiInt();
-    final int nu = u.hiInt();
-    if (nt<nu) { return u.add(this); }
-    final int[] tt = words();
-    final int[] uu = u.words();
-    NaturalInts.checkOverflow(nt+1);
-    final int[] vv = new int[nt+1];
-    long sum = 0L;
-    int i=0;
-    for (;i<nu;i++) {
-      sum += unsigned(tt[i]) + unsigned(uu[i]);
-      vv[i] = (int) sum;
-      sum = hiWord(sum);}
-    for (;i<nt;i++) {
-      if (0L==sum) { break; }
-      sum += unsigned(tt[i]);
-      vv[i] = (int) sum;
-      sum = hiWord(sum);}
-    for (;i<nt;i++) { vv[i] = tt[i]; }
-    if (0L!=sum) { vv[nt] = 1; }
-    return new BoundedNatural(vv); }
+    return unsafe(NaturalAdd.add(words(),hiInt(),u.words(),u.hiInt())); }
 
+//  @Override
+//  public final BoundedNatural add (final BoundedNatural u) {
+//    final int nt = hiInt();
+//    final int nu = u.hiInt();
+//    if (nt<nu) { return u.add(this); }
+//    final int[] tt = words();
+//    final int[] uu = u.words();
+//    NaturalInts.checkOverflow(nt+1);
+//    final int[] vv = new int[nt+1];
+//    long sum = 0L;
+//    int i=0;
+//    for (;i<nu;i++) {
+//      sum += unsigned(tt[i]) + unsigned(uu[i]);
+//      vv[i] = (int) sum;
+//      sum = hiWord(sum);}
+//    for (;i<nt;i++) {
+//      if (0L==sum) { break; }
+//      sum += unsigned(tt[i]);
+//      vv[i] = (int) sum;
+//      sum = hiWord(sum);}
+//    for (;i<nt;i++) { vv[i] = tt[i]; }
+//    if (0L!=sum) { vv[nt] = 1; }
+//    return new BoundedNatural(vv); }
+//
   //--------------------------------------------------------------
 
   @Override
   public final BoundedNatural subtract (final BoundedNatural u) {
     assert 0<=compareTo(u);
-    final int nt = hiInt();
     final int nu = u.hiInt();
-    assert nu<=nt;
-    final int[] tt = words();
-    final int[] uu = u.words();
     if (0>=nu) { return this; }
-    final int[] vv = new int[nt];
-    long dif = 0L;
-    int i=0;
-    for (;i<nu;i++) {
-      dif += unsigned(tt[i])-unsigned(uu[i]);
-      vv[i] = (int) dif;
-      dif= (dif>>32); }
-    for (;i<nt;i++) {
-      if (0L==dif) { break; }
-      dif += unsigned(tt[i]);
-      vv[i] = (int) dif;
-      dif = (dif>>32); }
-    assert 0L==dif;
-    for (;i<nt;i++) { vv[i] = tt[i]; }
-    return unsafe(vv); }
+    return unsafe(NaturalAdd.subtract(words(),hiInt(),u.words(),nu)); }
+
+//  @Override
+//  public final BoundedNatural subtract (final BoundedNatural u) {
+//    assert 0<=compareTo(u);
+//    final int nt = hiInt();
+//    final int nu = u.hiInt();
+//    assert nu<=nt;
+//    final int[] tt = words();
+//    final int[] uu = u.words();
+//    if (0>=nu) { return this; }
+//    final int[] vv = new int[nt];
+//    long dif = 0L;
+//    int i=0;
+//    for (;i<nu;i++) {
+//      dif += unsigned(tt[i])-unsigned(uu[i]);
+//      vv[i] = (int) dif;
+//      dif= (dif>>32); }
+//    for (;i<nt;i++) {
+//      if (0L==dif) { break; }
+//      dif += unsigned(tt[i]);
+//      vv[i] = (int) dif;
+//      dif = (dif>>32); }
+//    assert 0L==dif;
+//    for (;i<nt;i++) { vv[i] = tt[i]; }
+//    return unsafe(vv); }
 
   //--------------------------------------------------------------
 
@@ -1109,13 +1119,13 @@ implements Ringlike<BoundedNatural> {
     return new BoundedNatural(Arrays.copyOf(words,end)); }
 
   //--------------------------------------------------------------
-  /** If there are leading zeros, return a copy without them.
-   *  If none, return <code>this</code>.
-   */
-  public final BoundedNatural compress () {
-    final int hi = NaturalInts.hiInt(words());
-    if (words().length == hi) { return this; }
-    return new BoundedNatural(Arrays.copyOf(words(),hi)); }
+//  /** If there are leading zeros, return a copy without them.
+//   *  If none, return <code>this</code>.
+//   */
+//  public final BoundedNatural compress () {
+//    final int hi = NaturalInts.hiInt(words());
+//    if (words().length == hi) { return this; }
+//    return new BoundedNatural(Arrays.copyOf(words(),hi)); }
 
   //--------------------------------------------------------------
   /** From a big endian {@code byte[]}, as produced by

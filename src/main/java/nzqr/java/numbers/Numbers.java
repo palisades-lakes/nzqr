@@ -17,7 +17,7 @@ import nzqr.java.prng.Generators;
 /** Utilities for Object and primitive numbers.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-11-07
+ * @version 2024-01-16
  */
 @SuppressWarnings("unchecked")
 public final class Numbers implements Set {
@@ -25,65 +25,59 @@ public final class Numbers implements Set {
   /** <code>(int &amp; UNSIGNED_MASK)</code>
    * returns <code>long<code> containing <code>unsigned int</code>
  . */
-  public static final long UNSIGNED_MASK = 0xFFFFFFFFL;
+  private static final long UNSIGNED_MASK = 0xFFFFFFFFL;
 
-  /** <code>(int &amp; UNSIGNED_MASK)</code>
-   * returns <code>long<code> containing <code>unsigned int</code>
- . */
-  public static final long unsigned (final int i) {
-    return i & UNSIGNED_MASK; }
+  static final long unsigned (final int i) { return i & UNSIGNED_MASK; }
 
-  public static final long loWord (final long i) {
-    return i & UNSIGNED_MASK; }
+  static final long loWord (final long i) { return i & UNSIGNED_MASK; }
 
-  public static final long hiWord (final long i) {
-    return i >>> 32; }
+  static final long hiWord (final long i) { return i >>> 32; }
 
   //--------------------------------------------------------------
-  /** Like {@link Arrays#toString(double[])}. */
+//  /** Like {@link Arrays#toString(double[])}. */
+//
+//  public static final String toHexString (final double[] x) {
+//    if (null == x) { return "null"; }
+//    final StringBuilder b = new StringBuilder("[");
+//    if (x.length > 0) { b.append(Double.toHexString(x[0])); }
+//    for (int i=1;i<x.length;i++) {
+//      // Arrays.toString wastes space with commas
+//      //b.append(",");
+//      b.append(" "); b.append(Double.toHexString(x[i])); }
+//    return b.append("]").toString(); }
 
-  public static final String toHexString (final double[] x) {
-    if (null == x) { return "null"; }
-    final StringBuilder b = new StringBuilder("[");
-    if (x.length > 0) { b.append(Double.toHexString(x[0])); }
-    for (int i=1;i<x.length;i++) {
-      // Arrays.toString wastes space with commas
-      //b.append(",");
-      b.append(" "); b.append(Double.toHexString(x[i])); }
-    return b.append("]").toString(); }
+//  public static final String toHexString (final int[] x) {
+//    if (null == x) { return "null"; }
+//    final StringBuilder b = new StringBuilder("[");
+//    if (x.length > 0) { b.append(Integer.toHexString(x[0])); }
+//    for (int i=1;i<x.length;i++) {
+//      // Arrays.toString wastes space with commas
+//      //b.append(",");
+//      b.append(" "); b.append(Integer.toHexString(x[i])); }
+//    return b.append("]").toString(); }
 
-  public static final String toHexString (final int[] x) {
-    if (null == x) { return "null"; }
-    final StringBuilder b = new StringBuilder("[");
-    if (x.length > 0) { b.append(Integer.toHexString(x[0])); }
-    for (int i=1;i<x.length;i++) {
-      // Arrays.toString wastes space with commas
-      //b.append(",");
-      b.append(" "); b.append(Integer.toHexString(x[i])); }
-    return b.append("]").toString(); }
+//  public static final String toHexString (final long[] x) {
+//    if (null == x) { return "null"; }
+//    final StringBuilder b = new StringBuilder("[");
+//    if (x.length > 0) { b.append(Long.toHexString(x[0])); }
+//    for (int i=1;i<x.length;i++) {
+//      // Arrays.toString wastes space with commas
+//      //b.append(",");
+//      b.append(" "); b.append(Long.toHexString(x[i])); }
+//    return b.append("]").toString(); }
 
-  public static final String toHexString (final long[] x) {
-    if (null == x) { return "null"; }
-    final StringBuilder b = new StringBuilder("[");
-    if (x.length > 0) { b.append(Long.toHexString(x[0])); }
-    for (int i=1;i<x.length;i++) {
-      // Arrays.toString wastes space with commas
-      //b.append(",");
-      b.append(" "); b.append(Long.toHexString(x[i])); }
-    return b.append("]").toString(); }
-
-  public static final String toHexString (final long x) {
-    return Long.toHexString(x); }
-
-  public static final String toHexString (final int x) {
-    return Integer.toHexString(x); }
-
-  public static final String toHexString (final double x) {
-    return Double.toHexString(x); }
-
-  public static final String toHexString (final BigInteger x) {
-    return x.toString(0x10); }
-
+//  public static final String toHexString (final long x) {
+//    return Long.toHexString(x); }
+//
+//  public static final String toHexString (final int x) {
+//    return Integer.toHexString(x); }
+//
+//  public static final String toHexString (final double x) {
+//    return Double.toHexString(x); }
+//
+//  public static final String toHexString (final BigInteger x) {
+//    return x.toString(0x10); }
+//
   //--------------------------------------------------------------
   // useful class methods
   //--------------------------------------------------------------

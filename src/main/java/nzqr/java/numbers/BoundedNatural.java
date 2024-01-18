@@ -60,7 +60,7 @@ import static nzqr.java.numbers.Numbers.*;
  * when the operation result exceeds the bound.
  *  <br>
  * @author palisades dot lakes at gmail dot com
- * @version 2024-01-03
+ * @version 2024-01-17
  */
 
 //@SuppressWarnings("unchecked")
@@ -108,16 +108,14 @@ implements Ringlike<BoundedNatural> {
                                      final int i1) {
     assert 0<=i0;
     assert i0<i1;
-    assert i0 < NaturalInts.MAX_WORDS : "word index too large" + i0;
-    assert i1 < NaturalInts.MAX_WORDS : "word index too large" + i1;
-
-    if ((0==i0) && (hiInt()<=i1)) { return this; }
-    final int n = Math.max(0,i1-i0);
-    //if (0>=n) { return zero(); }
-    final int[] tt = words();
-    final int[] vv = new int[n];
-    System.arraycopy(tt,i0,vv,0,n);
-    return unsafe(vv); }
+//    assert i0 < NaturalInts.MAX_WORDS : "word index too large" + i0;
+//    assert i1 < NaturalInts.MAX_WORDS : "word index too large" + i1;
+//    if ((0==i0) && (hiInt()<=i1)) { return this; }
+    return unsafe(Arrays.copyOfRange(words(),i0,i1)); }
+//    final int[] tt = words();
+//    final int[] vv = new int[n];
+//    System.arraycopy(tt,i0,vv,0,n);
+//    return unsafe(vv); }
 
   public final BoundedNatural setWord (final int i,
                                        final int w) {

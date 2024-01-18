@@ -4,42 +4,48 @@ import static nzqr.java.numbers.Numbers.*;
 import static nzqr.java.numbers.Numbers.hiWord;
 
 /** Multiplication of natural numbers.
- *
+ * <br>
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2024-01-03
+ * @version 2024-01-17
  */
 
-@SuppressWarnings("unchecked")
 final class NaturalMultiply {
 
   //--------------------------------------------------------------
+  // the equivalent method in BigInteger is marked @IntrinsicCandidate
+  // it may not be possible to get the same performance with
+  // ordinary java code?
+  // UNSAFE: modifies contents of ww.
+
+  private static final void multiplySimple (final int[] uu, final int nu,
+                                            final int[] vv, final int nv,
+                                            final int[] ww) {
+    long carry;
+    for (int iu=0;iu<nu;iu++) {
+      carry = 0L;
+      final long ui = unsigned(uu[iu]);
+      for (int iv=0,iw=iu;iv<nv;iv++,iw++) {
+        final long vi = unsigned(vv[iv]);
+        final long wi = unsigned(ww[iw]);
+        final long product = (vi*ui) + wi + carry;
+        ww[iw] = (int) product;
+        carry = (product>>>32); }
+      final int i2 = iu+nv;
+      ww[i2] = (int) carry; } }
 
   private static final BoundedNatural multiplySimple (final BoundedNatural u,
                                                       final BoundedNatural v) {
     // the equivalent method in BigInteger is marked @IntrinsicCandidate
     // it may not be possible to get the same performance with
     // ordinary java code?
-    final int n0 = u.hiInt();
-    final int n1 = v.hiInt();
-    final int[] ww = new int[n0+n1];
+    final int nu = u.hiInt();
+    final int nv = v.hiInt();
+    final int[] ww = new int[nu+nv];
     // UNSAFE: direct reference to internal arrays
-    final int[] uu = u.words();
-    final int[] vv = v.words();
-
-    long carry = 0L;
-    for (int i0=0;i0<n0;i0++) {
-      carry = 0L;
-      final long ui = unsigned(uu[i0]);
-      for (int i1=0,i2=i0;i1<n1;i1++,i2++) {
-        final long vi = unsigned(vv[i1]);
-        final long wi = unsigned(ww[i2]);
-        final long product = (vi*ui) + wi + carry;
-        ww[i2] = (int) product;
-        carry = (product>>>32); }
-      final int i2 = i0+n1;
-      ww[i2] = (int) carry; }
+    // UNSAFE: modifies contents of ww.
+    multiplySimple(u.words(),nu,v.words(),nv,ww);
     return BoundedNatural.unsafe(ww); }
 
 //  private static final BoundedNatural multiplySimple (final BoundedNatural t,
@@ -103,16 +109,16 @@ final class NaturalMultiply {
 
   //--------------------------------------------------------------
 
-  private static final BoundedNatural multiply (final BoundedNatural t,
-                                                final long u,
-                                                final int upShift) {
-    ////assert isValid();
-    assert 0L<=u;
-    assert 0<=upShift;
-    if (0L==u) { return t.zero(); }
-    if (0==upShift) { return multiply(t,u); }
-    if (t.isZero()) { return t; }
-    return t.multiply(BoundedNatural.valueOf(u,upShift)); }
+//  private static final BoundedNatural multiply (final BoundedNatural t,
+//                                                final long u,
+//                                                final int upShift) {
+//    ////assert isValid();
+//    assert 0L<=u;
+//    assert 0<=upShift;
+//    if (0L==u) { return t.zero(); }
+//    if (0==upShift) { return multiply(t,u); }
+//    if (t.isZero()) { return t; }
+//    return t.multiply(BoundedNatural.valueOf(u,upShift)); }
 
   //--------------------------------------------------------------
 
@@ -130,9 +136,8 @@ final class NaturalMultiply {
     final BoundedNatural p3 = xh.add(xl).multiply(yh.add(yl));
     final int h32 = half*32;
     final BoundedNatural p4 = p1.shiftUp(h32);
-    final BoundedNatural p5 =
-      p4.add(p3.subtract(p1).subtract(p2))
-        .shiftUp(h32);
+    final BoundedNatural p5 = p4.add(p3.subtract(p1).subtract(p2))
+                                .shiftUp(h32);
     return p5.add(p2); }
 
   //--------------------------------------------------------------

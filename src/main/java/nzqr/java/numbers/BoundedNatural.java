@@ -60,7 +60,7 @@ import static nzqr.java.numbers.Numbers.*;
  * when the operation result exceeds the bound.
  *  <br>
  * @author palisades dot lakes at gmail dot com
- * @version 2024-01-17
+ * @version 2024-01-18
  */
 
 //@SuppressWarnings("unchecked")
@@ -743,7 +743,7 @@ implements Ringlike<BoundedNatural> {
 
   @Override
   public final BoundedNatural add (final BoundedNatural u) {
-    return unsafe(NaturalAdd.add(words(),hiInt(),u.words(),u.hiInt())); }
+    return NaturalAdd.add(this,u); }
 
 //  @Override
 //  public final BoundedNatural add (final BoundedNatural u) {

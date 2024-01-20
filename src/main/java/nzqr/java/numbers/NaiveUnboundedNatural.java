@@ -3,6 +3,7 @@ package nzqr.java.numbers;
 import static nzqr.java.numbers.Numbers.hiWord;
 import static nzqr.java.numbers.Numbers.unsigned;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
@@ -27,7 +28,7 @@ import nzqr.java.prng.Generators;
  * by <code>int</code>.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2022-07-31
+ * @version 2024-01-20
  */
 
 @SuppressWarnings("unchecked")
@@ -221,6 +222,27 @@ implements Comparable<NaiveUnboundedNatural> {
     Words r = null;
     for (int i=0;i<n;i++) { r = new Words(u.word(i),r); }
     return new NaiveUnboundedNatural(reverse(r)); }
+
+  private static final NaiveUnboundedNatural fromBigEndianBytes (final byte[] a) {
+    final int nBytes = a.length;
+    int keep = 0;
+    while ((keep<nBytes) && (0==a[keep])) { keep++; }
+    Words r = null;
+    final int nInts = ((nBytes-keep) + 3) >>> 2;
+    int b = nBytes-1;
+    for (int i = nInts - 1; i >= 0; i--) {
+      int ri = a[b--] & 0xff;
+      final int bytesRemaining = (b - keep) + 1;
+      final int bytesToTransfer = Math.min(3,bytesRemaining);
+      for (int j = 8; j <= (bytesToTransfer << 3); j += 8) {
+        ri |= ((a[b--] & 0xff) << j); }
+    r = new Words(ri,r); }
+    return new NaiveUnboundedNatural(reverse(r)); }
+
+  public static final NaiveUnboundedNatural
+  valueOf (final BigInteger u) {
+    assert 0<=u.signum();
+    return fromBigEndianBytes(u.toByteArray()); }
 
   //--------------------------------------------------------------
   // mathematical structures using NaiveUnboundedNatural

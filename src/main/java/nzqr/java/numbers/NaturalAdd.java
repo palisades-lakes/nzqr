@@ -3,12 +3,16 @@ package nzqr.java.numbers;
 import static nzqr.java.numbers.Numbers.hiWord;
 import static nzqr.java.numbers.Numbers.unsigned;
 
-/** Addition of natural numbers.
+/** Addition of natural numbersrepresented by (unsigned) int[].
+ * <br>
+ * Separating these methods into a small static class seems to
+ * make addition/subtraction of BoundedNatural faster,
+ * but I don't pretend to understand why.
  * <br>
  * Non-instantiable.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2024-01-19
+ * @version 2024-01-22
  */
 
 final class NaturalAdd {
@@ -58,8 +62,7 @@ final class NaturalAdd {
   //--------------------------------------------------------------
 
   private NaturalAdd () {
-    throw new
-    UnsupportedOperationException(
+    throw new UnsupportedOperationException(
       "can't instantiate " + getClass().getCanonicalName()); }
 
   //--------------------------------------------------------------

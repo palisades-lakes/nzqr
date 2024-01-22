@@ -48,31 +48,6 @@ final class NaturalMultiply {
     multiplySimple(u.words(),nu,v.words(),nv,ww);
     return BoundedNatural.unsafe(ww); }
 
-//  private static final BoundedNatural multiplySimple (final BoundedNatural t,
-//                                                      final BoundedNatural v) {
-//    // the equivalent method in BigInteger is marked @IntrinsicCandidate
-//    // it may not be possible to get the same performance with
-//    // ordinary java code?
-//    final int n0 = t.hiInt();
-//    final int n1 = v.hiInt();
-//    final int[] w = new int[n0+n1];
-//    // UNSAFE: direct reference to internal arrays
-//    final int[] uu = t.words();
-//    final int[] vv = v.words();
-//    long carry;// = 0L;
-//    for (int i0=0;i0<n0;i0++) {
-//      carry = 0L;
-//      for (int i1=0;i1<n1;i1++) {
-//        final int i2 = i0+i1;
-//        final long vi = unsigned(vv[i1]);
-//        final long ui = unsigned(uu[i0]);
-//        final long product = (vi*ui) + unsigned(w[i2]) + carry;
-//        w[i2] = (int) product;
-//        carry = (product>>>32); }
-//      final int i2 = i0+n1;
-//      w[i2] = (int) carry; }
-//    return BoundedNatural.unsafe(w); }
-
   //--------------------------------------------------------------
   static final BoundedNatural multiply (final BoundedNatural t,
                                         final long v) {

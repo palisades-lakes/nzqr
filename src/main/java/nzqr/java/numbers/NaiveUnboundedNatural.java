@@ -21,14 +21,14 @@ import nzqr.java.prng.Generators;
 /** A proof-of-concept implementation of unbounded natural
  * numbers. Only implementing a commutative monoid
  * (ie just addition) for now.
- *
+ * <br>
  * This is in contrast to {@link BoundedNatural} and
  * {@link java.math.BigInteger}, which both have bounded ranges,
  * limited, for one thing, by the fact that bits are addressable
  * by <code>int</code>.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2024-01-20
+ * @version 2024-01-22
  */
 
 @SuppressWarnings("unchecked")
@@ -47,7 +47,7 @@ implements Comparable<NaiveUnboundedNatural> {
   // TODO: could do without this class; have the U.N. be the
   // sequence. Then next/rest would be shifting down 32 bits?
 
-  private static record Words (int word, Words next) { }
+  private record Words (int word, Words next) { }
 
   /** Will return <code>null</code> if <code>s</code> is
    * <code>null</code>.
@@ -86,16 +86,14 @@ implements Comparable<NaiveUnboundedNatural> {
     Words uu = u.words;
     Words vv = null;
     long sum = 0L;
-    for (;(null!=tt)&&(null!=uu);
-        tt = tt.next,
-        uu = uu.next) {
+    for (; (null!=tt) && (null!=uu); tt = tt.next, uu = uu.next) {
       sum += unsigned(tt.word) + unsigned(uu.word);
-      vv = new Words((int) sum,vv);
+      vv = new Words((int) sum, vv);
       sum = hiWord(sum); }
     if (null==tt) {
       for (;null!=uu;uu=uu.next) {
         sum += unsigned(uu.word);
-        vv = new Words((int) sum,vv);
+        vv = new Words((int) sum, vv);
         sum = hiWord(sum); } }
     else {
       for (;null!=tt;tt=tt.next) {
@@ -134,16 +132,16 @@ implements Comparable<NaiveUnboundedNatural> {
   public final int hashCode () {
     final int prime = 31;
     int c = 1;
-    final Words tt = words;
+    Words tt = words;
     while (null != tt) {
-      c = (int) ((prime * c) + unsigned(tt.word)); }
+      c = (int) ((prime * c) + unsigned(tt.word));
+      tt = tt.next; }
     return c; }
 
   @Override
   public final boolean equals (final Object x) {
     if (x==this) { return true; }
-    if (!(x instanceof NaiveUnboundedNatural)) { return false; }
-    final NaiveUnboundedNatural u = (NaiveUnboundedNatural) x;
+    if (!(x instanceof final NaiveUnboundedNatural u)) { return false; }
     Words tt = words;
     Words uu = u.words;
     while ((null!=tt)&&(null!=uu)) {
@@ -262,10 +260,7 @@ implements Comparable<NaiveUnboundedNatural> {
     public final Supplier generator (final Map options) {
       final UniformRandomProvider urp = Set.urp(options);
       final Generator g = NaiveUnboundedNatural.generator(urp);
-      return
-        new Supplier () {
-        @Override
-        public final Object get () { return g.next(); } }; }
+      return g::next; }
   };
 
   public static final BinaryOperator<NaiveUnboundedNatural> adder () {

@@ -1,34 +1,32 @@
 package nzqr.java.test.numbers;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.math.BigInteger;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.google.common.collect.ImmutableMap;
-
 import nzqr.java.algebra.Set;
 import nzqr.java.algebra.Structure;
 import nzqr.java.numbers.BoundedNatural;
 import nzqr.java.numbers.NaiveUnboundedNatural;
 import nzqr.java.prng.PRNG;
 import nzqr.java.test.algebra.SetTests;
+import org.junit.jupiter.api.Assertions;
+import org.testng.annotations.Test;
+
+import java.math.BigInteger;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 //----------------------------------------------------------------
 /** <pre>
- * mvn -Dtest=nzqr/java/test/numbers/UnboundedNaturalTests test > UNT.txt
+ * mvn -Dtest=nzqr/java/test/numbers/NaiveUnboundedNaturalTests test > UNT.txt
  * </pre>
  * @author palisades dot lakes at gmail dot com
- * @version 2022-07-31
+ * @version 2024-01-22
  */
 
 @SuppressWarnings("unchecked")
-public final class UnboundedNaturalTests {
+public final class NaiveUnboundedNaturalTests {
 
   @SuppressWarnings({ "static-method" })
   @Test
@@ -40,11 +38,9 @@ public final class UnboundedNaturalTests {
 
     final NaiveUnboundedNatural ui = NaiveUnboundedNatural.valueOf(bi);
     final NaiveUnboundedNatural un = NaiveUnboundedNatural.valueOf(bn);
-    Assertions.assertTrue(
-      ui.equals(un),
-      () -> {
-        return "\nvalueOf BigInteger and BoundedNatural do not match.\n"
-          + ui + "\n" + un + "\n"; }); }
+    Assertions.assertEquals(ui, un, () ->
+      "\nvalueOf BigInteger and BoundedNatural do not match.\n"
+      + ui + "\n" + un + "\n"); }
 
   @SuppressWarnings({ "static-method" })
   @Test
@@ -56,9 +52,7 @@ public final class UnboundedNaturalTests {
     final int cmp = u.compareTo(v);
     Assertions.assertTrue(
       (cmp < 0),
-      () -> {
-        return "\nadd one doesn't increase value\n"
-          + "compareTo -> " + cmp; }); }
+      () -> "\nadd one doesn't increase value\ncompareTo -> " + cmp); }
 
   @SuppressWarnings({ "static-method" })
   @Test
@@ -75,8 +69,7 @@ public final class UnboundedNaturalTests {
     for(final Predicate law : s.laws()) {
       for (int i=0; i<n; i++) {
         final boolean result = law.test(generators);
-        assertTrue(result,
-          s.toString() + " : " + law.toString()); } } }
+        assertTrue(result,s + " : " + law); } } }
 
 
   //--------------------------------------------------------------

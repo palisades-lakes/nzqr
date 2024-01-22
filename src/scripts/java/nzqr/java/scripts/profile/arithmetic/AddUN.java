@@ -1,8 +1,6 @@
 package nzqr.java.scripts.profile.arithmetic;
 
-import nzqr.java.numbers.BoundedNatural;
 import nzqr.java.numbers.NaiveUnboundedNatural;
-import nzqr.java.numbers.Naturals;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.Generators;
 import nzqr.java.prng.PRNG;
@@ -18,11 +16,10 @@ import java.math.BigInteger;
  * </pre>
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2024-01-20
+ * @version 2024-01-2
  */
 
 public final class AddUN {
-  private static final Naturals NATURALS = Naturals.get();
   private static final int FACTOR = 1;
   private static final int NBYTES = FACTOR * 256;
   private static final int NINTS = 1024 * 1024 / FACTOR;
@@ -58,8 +55,8 @@ public final class AddUN {
         (System.nanoTime()-t0)*1.0e-9); } }
 
   // distinguish warmup run from profile run in call tree
-  private static final void warmup () { add("warmup",16); }
-  private static final void profile () { add("profile",128); }
+  private static final void warmup () { add("warmup",4); }
+  private static final void profile () { add("profile",32); }
 
   //--------------------------------------------------------------
 

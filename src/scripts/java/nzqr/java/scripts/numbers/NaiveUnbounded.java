@@ -1,12 +1,12 @@
 package nzqr.java.scripts.numbers;
 
-import nzqr.java.numbers.NaiveUnboundedNatural;
+import nzqr.java.numbers.UnboundedNatural;
 import nzqr.java.numbers.NaturalInts;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.PRNG;
 
 //----------------------------------------------------------------
-/** Profiling {@link NaiveUnboundedNatural}.
+/** Profiling {@link UnboundedNatural}.
  * <p>
  * <pre>
  * j src/scripts/java/nzqr/java/scripts/numbers/NaiveUnbounded.java
@@ -36,15 +36,15 @@ public final class NaiveUnbounded {
       System.out.println("n=" + n);
       System.out.flush();
       final Generator g =
-        NaiveUnboundedNatural.randomBitsGenerator(
+        UnboundedNatural.randomBitsGenerator(
           n,PRNG.well44497b("seeds/Well44497b-2019-01-05.txt"));
 
-      final NaiveUnboundedNatural u0 =
-        (NaiveUnboundedNatural) g.next();
+      final UnboundedNatural u0 =
+        (UnboundedNatural) g.next();
       //    final NaiveUnboundedNatural u1 =
       //      (NaiveUnboundedNatural) g.next();
       // no overflow from add
-      final NaiveUnboundedNatural v = u0.add(u0);
+      final UnboundedNatural v = u0.add(u0);
       final int c0 = u0.compareTo(v);
       assert (c0 < 0) :
         "\nadd u0 doesn't increase value\n"

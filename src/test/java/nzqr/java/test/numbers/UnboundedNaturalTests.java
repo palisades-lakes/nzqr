@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import nzqr.java.algebra.Set;
 import nzqr.java.algebra.Structure;
 import nzqr.java.numbers.BoundedNatural;
-import nzqr.java.numbers.NaiveUnboundedNatural;
+import nzqr.java.numbers.UnboundedNatural;
 import nzqr.java.prng.PRNG;
 import nzqr.java.test.algebra.SetTests;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @SuppressWarnings("unchecked")
-public final class NaiveUnboundedNaturalTests {
+public final class UnboundedNaturalTests {
 
   @SuppressWarnings({ "static-method" })
   @Test
@@ -36,8 +36,8 @@ public final class NaiveUnboundedNaturalTests {
       0x10);
     final BoundedNatural bn = BoundedNatural.valueOf(bi);
 
-    final NaiveUnboundedNatural ui = NaiveUnboundedNatural.valueOf(bi);
-    final NaiveUnboundedNatural un = NaiveUnboundedNatural.valueOf(bn);
+    final UnboundedNatural ui = UnboundedNatural.valueOf(bi);
+    final UnboundedNatural un = UnboundedNatural.valueOf(bn);
     Assertions.assertEquals(ui, un, () ->
       "\nvalueOf BigInteger and BoundedNatural do not match.\n"
       + ui + "\n" + un + "\n"); }
@@ -45,10 +45,10 @@ public final class NaiveUnboundedNaturalTests {
   @SuppressWarnings({ "static-method" })
   @Test
   public final void noOverflow () {
-    final NaiveUnboundedNatural u =
-      NaiveUnboundedNatural.valueOf(BoundedNatural.maxValue());
+    final UnboundedNatural u =
+      UnboundedNatural.valueOf(BoundedNatural.maxValue());
     // no overflow from add
-    final NaiveUnboundedNatural v = u.add(u);
+    final UnboundedNatural v = u.add(u);
     final int cmp = u.compareTo(v);
     Assertions.assertTrue(
       (cmp < 0),
@@ -58,7 +58,7 @@ public final class NaiveUnboundedNaturalTests {
   @Test
   public final void monoid () {
 
-    final Structure s = NaiveUnboundedNatural.MONOID;
+    final Structure s = UnboundedNatural.MONOID;
     final int n = 2;
     SetTests.tests(s,n);
     final Map<Set,Supplier> generators =

@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * Implementations (eventually):
  * <ul>
  * <li> {@link BoundedNatural}
- * <li> {@link NaiveUnboundedNatural}
+ * <li> {@link UnboundedNatural}
  * <li> <code>java.math.BigInteger</code> (only nonnegative)
  * <li> <code>java.lang.Long</code> (only nonnegative)
  * <li> <code>java.lang.Integer</code> (only nonnegative)

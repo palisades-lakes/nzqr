@@ -1,6 +1,6 @@
 package nzqr.java.scripts.profile.arithmetic;
 
-import nzqr.java.numbers.NaiveUnboundedNatural;
+import nzqr.java.numbers.UnboundedNatural;
 import nzqr.java.prng.Generator;
 import nzqr.java.prng.Generators;
 import nzqr.java.prng.PRNG;
@@ -33,15 +33,15 @@ public final class AddUN {
   private static final BigInteger[] x0 = (BigInteger[]) generator.next();
   private static final BigInteger[] x1 = (BigInteger[]) generator.next(); 
 
-  private static final NaiveUnboundedNatural[] fromBigInteger (final BigInteger[] x) {
+  private static final UnboundedNatural[] fromBigInteger (final BigInteger[] x) {
     final int n = x.length;
-    final NaiveUnboundedNatural[] y = new NaiveUnboundedNatural[n];
-    for (int i=0;i<n;i++) { y[i] = NaiveUnboundedNatural.valueOf(x[i]); }
+    final UnboundedNatural[] y = new UnboundedNatural[n];
+    for (int i=0;i<n;i++) { y[i] = UnboundedNatural.valueOf(x[i]); }
     return y; }
 
-  private static final NaiveUnboundedNatural[] y0 = fromBigInteger(x0);
-  private static final NaiveUnboundedNatural[] y1 = fromBigInteger(x1);
-  private static final NaiveUnboundedNatural[] p = new NaiveUnboundedNatural[NINTS];
+  private static final UnboundedNatural[] y0 = fromBigInteger(x0);
+  private static final UnboundedNatural[] y1 = fromBigInteger(x1);
+  private static final UnboundedNatural[] p = new UnboundedNatural[NINTS];
 
   private static final void add (final String stage,
                                  final int iterations) {

@@ -32,8 +32,8 @@ import nzqr.java.prng.Generators;
  */
 
 @SuppressWarnings("unchecked")
-public final class NaiveUnboundedNatural
-implements Comparable<NaiveUnboundedNatural> {
+public final class UnboundedNatural
+implements Comparable<UnboundedNatural> {
 
   //--------------------------------------------------------------
   // an unbounded immutable sequence of ints
@@ -70,18 +70,18 @@ implements Comparable<NaiveUnboundedNatural> {
   private final Words words;
 
   /** Singleton. */
-  public static final NaiveUnboundedNatural ZERO =
-    new NaiveUnboundedNatural(null);
+  public static final UnboundedNatural ZERO =
+    new UnboundedNatural(null);
 
   /** Singleton. */
-  public static final NaiveUnboundedNatural ONE =
-    new NaiveUnboundedNatural(new Words(1,null));
+  public static final UnboundedNatural ONE =
+    new UnboundedNatural(new Words(1, null));
 
   //--------------------------------------------------------------
   // monoid operation
   //--------------------------------------------------------------
 
-  public final NaiveUnboundedNatural add (final NaiveUnboundedNatural u) {
+  public final UnboundedNatural add (final UnboundedNatural u) {
     Words tt = words;
     Words uu = u.words;
     Words vv = null;
@@ -101,14 +101,14 @@ implements Comparable<NaiveUnboundedNatural> {
         vv = new Words((int) sum,vv);
         sum = hiWord(sum); } }
     if (0L!=sum) { vv = new Words(1,vv); }
-    return new NaiveUnboundedNatural(reverse(vv)); }
+    return new UnboundedNatural(reverse(vv)); }
 
   //--------------------------------------------------------------
   // Comparable
   //--------------------------------------------------------------
 
   @Override
-  public final int compareTo (final NaiveUnboundedNatural u) {
+  public final int compareTo (final UnboundedNatural u) {
     Words tt = words;
     Words uu = u.words;
     int result = 0;
@@ -141,7 +141,7 @@ implements Comparable<NaiveUnboundedNatural> {
   @Override
   public final boolean equals (final Object x) {
     if (x==this) { return true; }
-    if (!(x instanceof final NaiveUnboundedNatural u)) { return false; }
+    if (!(x instanceof final UnboundedNatural u)) { return false; }
     Words tt = words;
     Words uu = u.words;
     while ((null!=tt)&&(null!=uu)) {
@@ -164,7 +164,7 @@ implements Comparable<NaiveUnboundedNatural> {
   // "random" instances for testing, etc.
   //--------------------------------------------------------------
 
-  /** Generate an {@link NaiveUnboundedNatural} with <code>n</code>
+  /** Generate an {@link UnboundedNatural} with <code>n</code>
    * random <code>int</code> words.
    */
 
@@ -177,7 +177,7 @@ implements Comparable<NaiveUnboundedNatural> {
       public final Object next () {
         Words w = null;
         for (long i=0;i<n;i++) { w = new Words(ig.nextInt(),w); }
-        return new NaiveUnboundedNatural(w); } }; }
+        return new UnboundedNatural(w); } }; }
 
   /** Intended primarily for testing.
    * For now, just a relatively small number of random bits.
@@ -212,16 +212,16 @@ implements Comparable<NaiveUnboundedNatural> {
   // construction
   //-------------------------------------------------------------
 
-  private NaiveUnboundedNatural (final Words w) { words = w; }
+  private UnboundedNatural (final Words w) { words = w; }
 
-  public static final NaiveUnboundedNatural
+  public static final UnboundedNatural
   valueOf (final BoundedNatural u) {
     final int n = u.hiInt();
     Words r = null;
     for (int i=0;i<n;i++) { r = new Words(u.word(i),r); }
-    return new NaiveUnboundedNatural(reverse(r)); }
+    return new UnboundedNatural(reverse(r)); }
 
-  private static final NaiveUnboundedNatural fromBigEndianBytes (final byte[] a) {
+  private static final UnboundedNatural fromBigEndianBytes (final byte[] a) {
     final int nBytes = a.length;
     int keep = 0;
     while ((keep<nBytes) && (0==a[keep])) { keep++; }
@@ -235,9 +235,9 @@ implements Comparable<NaiveUnboundedNatural> {
       for (int j = 8; j <= (bytesToTransfer << 3); j += 8) {
         ri |= ((a[b--] & 0xff) << j); }
     r = new Words(ri,r); }
-    return new NaiveUnboundedNatural(reverse(r)); }
+    return new UnboundedNatural(reverse(r)); }
 
-  public static final NaiveUnboundedNatural
+  public static final UnboundedNatural
   valueOf (final BigInteger u) {
     assert 0<=u.signum();
     return fromBigEndianBytes(u.toByteArray()); }
@@ -245,7 +245,7 @@ implements Comparable<NaiveUnboundedNatural> {
   //--------------------------------------------------------------
   // mathematical structures using NaiveUnboundedNatural
   //--------------------------------------------------------------
-  /** Contains all instances of {@link NaiveUnboundedNatural}.
+  /** Contains all instances of {@link UnboundedNatural}.
    * Could be extended to include BoundedNatural,
    * all non-negative integer values, etc.,
    * but not necessary for proof of concept.
@@ -255,23 +255,23 @@ implements Comparable<NaiveUnboundedNatural> {
     @Override
     @SuppressWarnings("unused")
     public boolean contains (final Object element) {
-      return element instanceof NaiveUnboundedNatural; }
+      return element instanceof UnboundedNatural; }
     @Override
     public final Supplier generator (final Map options) {
       final UniformRandomProvider urp = Set.urp(options);
-      final Generator g = NaiveUnboundedNatural.generator(urp);
+      final Generator g = UnboundedNatural.generator(urp);
       return g::next; }
   };
 
-  public static final BinaryOperator<NaiveUnboundedNatural> adder () {
+  public static final BinaryOperator<UnboundedNatural> adder () {
     return new BinaryOperator<> () {
       @Override
       public final String toString () {
         return "NaiveUnboundedNatural.add(NaiveUnboundedNatural)"; }
       @Override
-      public final NaiveUnboundedNatural
-      apply (final NaiveUnboundedNatural q0,
-             final NaiveUnboundedNatural q1) {
+      public final UnboundedNatural
+      apply (final UnboundedNatural q0,
+             final UnboundedNatural q1) {
         return q0.add(q1); } }; }
 
   public static final OneSetOneOperation MONOID =

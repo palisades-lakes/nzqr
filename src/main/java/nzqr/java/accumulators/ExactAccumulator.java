@@ -1,6 +1,6 @@
 package nzqr.java.accumulators;
 
-/** Basre class for some exact accumulators.
+/** Base class for some exact accumulators.
  * <p>
  * Use twoAdd and twoMul to convert operations to sequence of
  * adds, so that they are exact if {@link #add(double)} is.

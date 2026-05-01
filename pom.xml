@@ -9,7 +9,7 @@
  <parent>
   <groupId>palisades-lakes</groupId>
   <artifactId>palisades-lakes-parent</artifactId>
-  <version>0.0.11-SNAPSHOT</version>
+  <version>0.0.11</version>
  </parent>
  <build>
   <plugins>
@@ -115,13 +115,13 @@
    <artifactId>commons-rng-simple</artifactId>
    <version>${commons-rng-version}</version>
   </dependency>
-  <!-- dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-rng-examples</artifactId> 
+  <!-- dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-rng-examples</artifactId>
    <version>${commons-rng-version}</version> <type>pom</type> </dependency -->
-  <!-- <dependency> <groupId>io.gatling.uncommons.maths</groupId> <artifactId>uncommons-maths</artifactId> 
-   <version>${uncommons-maths-version}</version> <exclusions> <exclusion> <groupId>org.jfree</groupId> 
-   <artifactId>jcommon</artifactId> </exclusion> <exclusion> <groupId>org.jfree</groupId> 
-   <artifactId>jfreechart</artifactId> </exclusion> <exclusion> <groupId>jfree</groupId> 
-   <artifactId>jcommon</artifactId> </exclusion> <exclusion> <groupId>jfree</groupId> 
+  <!-- <dependency> <groupId>io.gatling.uncommons.maths</groupId> <artifactId>uncommons-maths</artifactId>
+   <version>${uncommons-maths-version}</version> <exclusions> <exclusion> <groupId>org.jfree</groupId>
+   <artifactId>jcommon</artifactId> </exclusion> <exclusion> <groupId>org.jfree</groupId>
+   <artifactId>jfreechart</artifactId> </exclusion> <exclusion> <groupId>jfree</groupId>
+   <artifactId>jcommon</artifactId> </exclusion> <exclusion> <groupId>jfree</groupId>
    <artifactId>jfreechart</artifactId> </exclusion> </exclusions> </dependency> -->
   <dependency>
    <groupId>com.google.guava</groupId>

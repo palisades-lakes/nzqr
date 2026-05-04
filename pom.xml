@@ -79,20 +79,33 @@
    <artifactId>oshi-core</artifactId>
    <version>${oshi-version}</version>
   </dependency>
+
+  <dependency>
+   <groupId>org.clojure</groupId>
+   <artifactId>clojure</artifactId>
+   <version>${clojure-version}</version>
+  </dependency>
   <dependency>
    <groupId>org.clojure</groupId>
    <artifactId>math.numeric-tower</artifactId>
    <version>${clojure-math-numeric-tower-version}</version>
+   <exclusions>
+    <exclusion>
+     <groupId>org.clojure</groupId>
+     <artifactId>clojure</artifactId>
+    </exclusion>
+   </exclusions>
   </dependency>
   <dependency>
   <groupId>org.clojure</groupId>
   <artifactId>core.memoize</artifactId>
   <version>${clojure-core-memoize-version}</version>
-  </dependency>
-  <dependency>
-   <groupId>org.apache.commons</groupId>
-   <artifactId>commons-math3</artifactId>
-   <version>${commons-math3-version}</version>
+   <exclusions>
+    <exclusion>
+     <groupId>org.clojure</groupId>
+     <artifactId>clojure</artifactId>
+    </exclusion>
+   </exclusions>
   </dependency>
   <dependency>
    <groupId>criterium</groupId>
@@ -104,6 +117,11 @@
      <artifactId>clojure</artifactId>
     </exclusion>
    </exclusions>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.commons</groupId>
+   <artifactId>commons-math3</artifactId>
+   <version>${commons-math3-version}</version>
   </dependency>
   <dependency>
    <groupId>org.apache.commons</groupId>

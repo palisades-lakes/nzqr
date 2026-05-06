@@ -11,61 +11,6 @@
   <artifactId>palisades-lakes-parent</artifactId>
   <version>0.0.11</version>
  </parent>
- <build>
-  <plugins>
-   <plugin>
-    <groupId>com.theoryinpractise</groupId>
-    <artifactId>clojure-maven-plugin</artifactId>
-    <version>${clojure-maven-version}</version>
-    <extensions>true</extensions>
-    <executions>
-     <execution>
-      <id>clojure-compile</id>
-      <phase>compile</phase>
-      <goals>
-       <goal>compile</goal>
-      </goals>
-     </execution>
-     <execution>
-      <id>test-compile</id>
-      <phase>test-compile</phase>
-      <goals>
-       <goal>testCompile</goal>
-      </goals>
-     </execution>
-     <execution>
-      <id>clojure-test</id>
-      <phase>test</phase>
-      <goals>
-       <goal>test</goal>
-      </goals>
-     </execution>
-    </executions>
-    <configuration>
-     <!-- vmArgs>${clojure.vmargs}</vmArgs -->
-     <clojureOptions>${clojure.options}</clojureOptions>
-     <namespaces>
-      <namespace>!nzqr.test.*</namespace>
-     </namespaces>
-     <copiedNamespaces>
-      <namespace>!.*</namespace>
-     </copiedNamespaces>
-     <testNamespaces>
-      <namespace>!nzqr.test.defs.*</namespace>
-     </testNamespaces>
-    </configuration>
-   </plugin>
-      <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <groupId>org.apache.maven.plugins</groupId>
-          <configuration>
-              <source>${java-version}</source>
-              <target>${java-version}</target>
-           <compilerArgs>--enable-preview</compilerArgs>
-          </configuration>
-      </plugin>
-  </plugins>
- </build>
  <dependencies>
 
   <dependency>
@@ -155,7 +100,7 @@
    <groupId>org.junit.jupiter</groupId>
    <artifactId>junit-jupiter-api</artifactId>
    <version>${junit-jupiter-version}</version>
-   <scope>test</scope>
+<!--   <scope>test</scope>-->
   </dependency>
   <dependency>
    <groupId>org.junit.jupiter</groupId>
@@ -173,14 +118,70 @@
    <groupId>org.testng</groupId>
    <artifactId>testng</artifactId>
    <version>${testng-version}</version>
-   <scope>test</scope>
+<!--   <scope>test</scope>-->
   </dependency>
 
   <dependency>
    <groupId>com.github.peteroupc</groupId>
    <artifactId>numbers</artifactId>
    <version>${numbers-java-version}</version>
-   <scope>test</scope>
+<!--   <scope>test</scope>-->
   </dependency>
  </dependencies>
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>com.theoryinpractise</groupId>
+    <artifactId>clojure-maven-plugin</artifactId>
+    <version>${clojure-maven-version}</version>
+    <extensions>true</extensions>
+    <executions>
+     <execution>
+      <id>clojure-compile</id>
+      <phase>compile</phase>
+      <goals>
+       <goal>compile</goal>
+      </goals>
+     </execution>
+     <execution>
+      <id>test-compile</id>
+      <phase>test-compile</phase>
+      <goals>
+       <goal>testCompile</goal>
+      </goals>
+     </execution>
+     <execution>
+      <id>clojure-test</id>
+      <phase>test</phase>
+      <goals>
+       <goal>test</goal>
+      </goals>
+     </execution>
+    </executions>
+    <configuration>
+     <!-- vmArgs>${clojure.vmargs}</vmArgs -->
+     <clojureOptions>${clojure.options}</clojureOptions>
+     <namespaces>
+      <namespace>!nzqr.test.*</namespace>
+     </namespaces>
+     <copiedNamespaces>
+      <namespace>!.*</namespace>
+     </copiedNamespaces>
+     <testNamespaces>
+      <namespace>!nzqr.test.defs.*</namespace>
+     </testNamespaces>
+    </configuration>
+   </plugin>
+   <plugin>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <groupId>org.apache.maven.plugins</groupId>
+    <configuration>
+     <source>${java-version}</source>
+     <target>${java-version}</target>
+     <compilerArgs>--enable-preview</compilerArgs>
+    </configuration>
+   </plugin>
+  </plugins>
+ </build>
+
 </project>

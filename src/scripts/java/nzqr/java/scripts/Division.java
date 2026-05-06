@@ -1,6 +1,7 @@
 package nzqr.java.scripts;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 
 import nzqr.java.numbers.BoundedNatural;
@@ -17,7 +18,7 @@ import nzqr.java.prng.PRNG;
  * @author palisades dot lakes at gmail dot com
  * @version 2023-08-15
  */
-//@SuppressWarnings("unchecked")
+@SuppressWarnings("unused")
 public final class Division {
 
   private static final void
@@ -29,7 +30,7 @@ public final class Division {
       final BigInteger[] xqr = x0.divideAndRemainder(x1);
       final BigInteger xq = xqr[0];
       final BigInteger xr = xqr[1];
-      final List<BoundedNatural> yqr = y0.divideAndRemainder(y1);
+      final List<BoundedNatural> yqr = Arrays.asList(y0.divideAndRemainder(y1));
       final BigInteger yq = yqr.get(0).toBigInteger();
       final BigInteger yr = yqr.get(1).toBigInteger();
 

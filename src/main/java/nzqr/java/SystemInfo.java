@@ -30,15 +30,16 @@ import oshi.util.FormatUtil;
 import oshi.util.Util;
 
 /** TODO: update to use <code>oshi.SystemInfo</code>.
- *
+ * <br>
  * Derived from oshi.SystemInfoTest example code.
- *
+ * <br>
  * TODO: functions that return a hashmap,
  * rather than printing.
  *
  * @author palisades dot lakes at gmail dot com
- * @version 2021-05-23
+ * @version 2026-05-05
  */
+@SuppressWarnings("unused")
 public final class SystemInfo {
 
   private SystemInfo () {
@@ -87,7 +88,7 @@ public final class SystemInfo {
     pw.println(
       "manufacturer: " + computerSystem.getManufacturer());
     pw.println("model: " + computerSystem.getModel());
-    //pw.println("serialnumber: " + computerSystem.getSerialNumber());
+    //pw.println("serial number: " + computerSystem.getSerialNumber());
     final Firmware firmware = computerSystem.getFirmware();
     pw.println("firmware:");
     pw.println("  manufacturer: " + firmware.getManufacturer());
@@ -104,7 +105,7 @@ public final class SystemInfo {
     pw.println("  manufacturer: " + baseboard.getManufacturer());
     pw.println("  model: " + baseboard.getModel());
     pw.println("  version: " + baseboard.getVersion());
-    //pw.println("  serialnumber: " + baseboard.getSerialNumber());
+    //pw.println("  serial number: " + baseboard.getSerialNumber());
   }
 
   public static void printProcessor (final CentralProcessor processor,
@@ -195,7 +196,7 @@ public final class SystemInfo {
     for (final double avg : load) {
       procCpu.append(String.format(" %.1f%%",avg * 100));
     }
-    pw.println(procCpu.toString());
+    pw.println(procCpu);
   }
 
   @SuppressWarnings("boxing")
@@ -218,9 +219,9 @@ public final class SystemInfo {
         p.getProcessID(),
         (100d * (p.getKernelTime() + p.getUserTime()))
         / p.getUpTime(),
-        (100d * p.getResidentSetSize()) / memory.getTotal(),
+        (100d * p.getResidentMemory()) / memory.getTotal(),
         FormatUtil.formatBytes(p.getVirtualSize()),
-        FormatUtil.formatBytes(p.getResidentSetSize()),
+        FormatUtil.formatBytes(p.getResidentMemory()),
         p.getName());
     }
   }
@@ -263,7 +264,7 @@ public final class SystemInfo {
       sb.append(String.format("%n %s @ %.1f%%",pSource.getName(),
         pSource.getRemainingCapacityPercent() * 100d));
     }
-    pw.println(sb.toString());
+    pw.println(sb);
   }
 
   @SuppressWarnings("boxing")
@@ -316,7 +317,7 @@ public final class SystemInfo {
       final long total = fs.getTotalSpace();
       pw.format(" %s (%s) [%s] %s of %s free (%.1f%%) is %s "
         + ((fs.getLogicalVolume() != null)
-          && (fs.getLogicalVolume().length() > 0) ? "[%s]"
+          && (! fs.getLogicalVolume().isEmpty()) ? "[%s]"
             : "%s")
         + " and is mounted at %s%n",
         fs.getName(),

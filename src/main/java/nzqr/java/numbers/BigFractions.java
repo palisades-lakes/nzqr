@@ -19,6 +19,7 @@ import nzqr.java.prng.Generators;
  * @author palisades dot lakes at gmail dot com
  * @version 2022-09-04
  */
+@SuppressWarnings("unused")
 public final class BigFractions implements Set {
 
   //--------------------------------------------------------------
@@ -29,12 +30,11 @@ public final class BigFractions implements Set {
   public final boolean contains (final Object element) {
     return element instanceof BigFraction; }
 
+  //--------------------------------------------------------------
   public static final boolean equalBigFractions (final BigFraction q0,
                                                  final BigFraction q1) {
     if (q0 == q1) { return true; }
-    if (null == q0) {
-      if (null == q1) { return true; }
-      return false; }
+    if (null == q0) { return false; }
     final BigInteger n0 = q0.getNumerator();
     final BigInteger d0 = q0.getDenominator();
     final BigInteger n1 = q1.getNumerator();
